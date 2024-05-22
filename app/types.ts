@@ -28,7 +28,7 @@ export interface CheckboxTabsProps {
   }[];
   currentStep: number;
   setCurrentStep: Dispatch<SetStateAction<number>>;
-  setData?: Dispatch<SetStateAction<any[]>>;
+  setData?: Dispatch<SetStateAction<FilterQueryProps | null>>;
   localStorageKey: string;
   showResults: boolean;
 }
@@ -39,7 +39,18 @@ export interface RangeSliderProps {
   defaultValue: number[];
   currentStep: number;
   setCurrentStep: Dispatch<SetStateAction<number>>;
-  setData?: Dispatch<SetStateAction<any[]>>;
+  setData?: Dispatch<SetStateAction<FilterQueryProps | null>>;
   localStorageKey: string;
   showResults: boolean;
+}
+
+interface FilterProps {
+  occasions?: string[];
+  interests?: string[];
+  gender?: string[];
+  price?: number[];
+}
+
+export interface FilterQueryProps {
+  [key: number]: FilterProps | undefined;
 }

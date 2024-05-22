@@ -7,6 +7,7 @@ import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import H3Heading from "@/components/custom/heading/h3Heading";
 import { useRouter } from "next/navigation";
 import RangeSlider from "@/components/custom/rangeSlider";
+import { FilterQueryProps } from "@/app/types";
 
 // promotional occasions (e.g. Christmas, Valentine's Day)
 // const holidayOccasions = [
@@ -197,7 +198,7 @@ const SearchCta = ({
   setData,
   showResults,
 }: {
-  setData?: Dispatch<SetStateAction<any[]>>;
+  setData?: Dispatch<SetStateAction<FilterQueryProps | null>>;
   showResults: boolean;
 }) => {
   const router = useRouter();

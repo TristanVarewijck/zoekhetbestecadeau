@@ -47,6 +47,12 @@ const CheckboxTabs = ({
                   : [data.id];
                 setSelectedOptions(() => isSelected);
                 saveOptionsToLocalStorage(isSelected, localStorageKey);
+
+                setData &&
+                  setData((prevState) => ({
+                    ...prevState,
+                    [localStorageKey]: isSelected,
+                  }));
               }}
             >
               <span className="text-xl">{data.icon}</span>

@@ -1,5 +1,3 @@
-import SearchCta from "@/blocks/searchCta";
-
 const PrivacyPolicyPage = () => {
   return (
     <div>

@@ -31,8 +31,19 @@ export const saveOptionsToLocalStorage = (
     // setData && setData((prevState) => [prevState, selectedOptions]);
     const optionsArray = [...selectedOptions, ...selectedOptions];
     return optionsArray;
-    return "";
   } catch (error) {
     console.error(error);
   }
 };
+
+export function getValuesByKeyName(obj: any, keyName: string) {
+  const values = [];
+
+  for (const key in obj) {
+    if (obj[key] && obj[key][keyName]) {
+      values.push(...obj[key][keyName]);
+    }
+  }
+
+  return values;
+}

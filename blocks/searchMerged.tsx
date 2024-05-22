@@ -1,9 +1,11 @@
 "use client";
 
-import { ProductProps } from "@/app/types";
+import { FilterQueryProps, ProductProps } from "@/app/types";
 import SearchCta from "./searchCta";
 import SearchResults from "./searchResults";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { getValuesByKeyName } from "@/lib/utils";
+import axios from "axios";
 
 interface SearchMergedProps {
   showResults: boolean;
@@ -77,8 +79,31 @@ const fakeTestProductsArray: ProductProps[] = [
 ];
 
 const SearchMerged = ({ showResults }: SearchMergedProps) => {
-  const [query, setQuery] = useState([""]);
-  console.log(query);
+  const [query, setQuery] = useState<FilterQueryProps | null>(null);
+  const [products, setProducts] = useState<ProductProps[]>([]);
+
+  // get local storage filters if available
+  useEffect(() => {
+    const filterKeys = ["occasions", "interests", "gender", "price"];
+    const filters = filterKeys.map((key) => {
+      const storedFilters = localStorage.getItem(key);
+      if (storedFilters) {
+        const localParsed = JSON.parse(storedFilters);
+        return { [key]: localParsed };
+      }
+    });
+
+    setQuery((prevState) => {
+      return { ...prevState, ...filters };
+    });
+  }, []);
+
+  useEffect(() => {
+    if (query) {
+      // query the (real) products from the server
+      setProducts(fakeTestProductsArray);
+    }
+  }, [query]);
 
   return (
     <div>
@@ -86,7 +111,7 @@ const SearchMerged = ({ showResults }: SearchMergedProps) => {
         showResults={showResults}
         setData={showResults ? setQuery : undefined}
       />
-      {showResults && <SearchResults productsArray={fakeTestProductsArray} />}
+      {showResults && <SearchResults productsArray={products} />}
     </div>
   );
 };
