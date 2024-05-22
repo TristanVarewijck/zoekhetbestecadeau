@@ -1,12 +1,13 @@
-import H1Heading from "@/components/custom/heading/h1Heading";
-import H2Heading from "@/components/custom/heading/h2Heading";
-import SectionLayout from "@/components/custom/sectionLayout";
+"use client";
 
-import { ProductProps } from "./types";
-import PopularProducts from "@/blocks/popularProducts";
-import Usps from "@/blocks/usps";
-import SearchCta from "@/blocks/searchCta";
-import SearchMerged from "@/blocks/searchMerged";
+import { ProductProps } from "@/app/types";
+import SearchCta from "./searchCta";
+import SearchResults from "./searchResults";
+import { useState } from "react";
+
+interface SearchMergedProps {
+  showResults: boolean;
+}
 
 // example products
 const fakeTestProductsArray: ProductProps[] = [
@@ -75,29 +76,19 @@ const fakeTestProductsArray: ProductProps[] = [
   },
 ];
 
-export default function Home() {
-  return (
-    <main>
-      <SectionLayout bgColor="gray" centered>
-        <div className="mt-10 md:mt-0">
-          <H1Heading
-            title="Zoek het beste cadeau in een paar klikken."
-            subtitle="Wij zoeken elke dag opnieuw naar nieuwe cadeau ideeën! 🔎"
-            centered
-          />
-          {/* <SearchCta /> */}
-          <SearchMerged showResults={false} />
-          <Usps />
-        </div>
-      </SectionLayout>
+const SearchMerged = ({ showResults }: SearchMergedProps) => {
+  const [query, setQuery] = useState([""]);
+  console.log(query);
 
-      <SectionLayout bgColor="white">
-        <H2Heading title="Populaire cadeaus" centered />
-        <div className="space-y-8 mt-6">
-          <PopularProducts productsArray={fakeTestProductsArray} />
-          <PopularProducts productsArray={fakeTestProductsArray} />
-        </div>
-      </SectionLayout>
-    </main>
+  return (
+    <div>
+      <SearchCta
+        showResults={showResults}
+        setData={showResults ? setQuery : undefined}
+      />
+      {showResults && <SearchResults productsArray={fakeTestProductsArray} />}
+    </div>
   );
-}
+};
+
+export default SearchMerged;
