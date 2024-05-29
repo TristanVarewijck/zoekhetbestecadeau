@@ -250,11 +250,9 @@ const SearchCta = ({
           <RangeSlider
             min={5}
             max={100}
-            defaultValue={[25]}
-            currentStep={4}
-            setCurrentStep={setCurrentStep}
+            defaultValue={"25"}
             localStorageKey="price"
-            showResults={showResults}
+            setData={setData}
           />
         );
       // RESULTATEN

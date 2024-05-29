@@ -2,17 +2,28 @@
 
 import { RangeSliderProps } from "@/app/types";
 import { Slider } from "@/components/ui/slider";
-import { useState } from "react";
-import { nextStepHandler, saveOptionsToLocalStorage } from "@/lib/utils";
+import { saveOptionsToLocalStorage } from "@/lib/utils";
+import { useEffect, useState } from "react";
 
 const RangeSlider = ({
   min,
   max,
   defaultValue,
-  setCurrentStep,
-  currentStep,
+  setData,
+  localStorageKey,
 }: RangeSliderProps) => {
   const [value, setValue] = useState(defaultValue);
+
+  // get local storaged occasions if available
+  useEffect(() => {
+    const storedPrice = localStorage.getItem(localStorageKey);
+    if (storedPrice) {
+      setValue(JSON.parse(storedPrice));
+    }
+  }, [
+    localStorageKey,
+    /* no dependencies */
+  ]);
 
   return (
     <div className="flex justify-center flex-col items-center gap-4">
@@ -32,13 +43,19 @@ const RangeSlider = ({
           </div>
 
           <Slider
-            defaultValue={defaultValue}
+            defaultValue={[parseInt(defaultValue)]}
             max={max}
             min={min}
             step={1}
-            value={value}
+            value={[parseInt(value)]}
             onValueChange={(value) => {
-              setValue(value);
+              setValue(value[0].toString());
+              saveOptionsToLocalStorage([value[0].toString()], localStorageKey);
+              setData &&
+                setData((prevState) => ({
+                  ...prevState,
+                  [localStorageKey]: value,
+                }));
             }}
           />
           <div className="flex flex-col items-center">
