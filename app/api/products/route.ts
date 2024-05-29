@@ -260,7 +260,7 @@ export async function POST(request: NextRequest) {
       ? product.gender?.some((g) => query.gender.includes(g))
       : true;
     const matchesPrice = query.price
-      ? product.price >= query.price[0] && product.price <= query.price[1]
+      ? product.price >= 5 && product.price <= parseFloat(query.price[0])
       : true;
 
     return (

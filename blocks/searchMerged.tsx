@@ -96,8 +96,6 @@ const SearchMerged = ({ showResults }: SearchMergedProps) => {
     }));
   }, []);
 
-  console.log(query);
-
   useEffect(() => {
     const fetchProducts = async () => {
       if (query) {
