@@ -237,6 +237,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const { query } = await request.json();
+  console.log(query);
 
   // If query is empty, return everything
   if (!query) {
@@ -258,8 +259,13 @@ export async function POST(request: NextRequest) {
     const matchesGender = query.gender
       ? product.gender?.some((g) => query.gender.includes(g))
       : true;
+    const matchesPrice = query.price
+      ? product.price >= query.price[0] && product.price <= query.price[1]
+      : true;
 
-    return matchesOccasions && matchesInterests && matchesGender;
+    return (
+      matchesOccasions && matchesInterests && matchesGender && matchesPrice
+    );
   });
 
   // Return the filtered products
