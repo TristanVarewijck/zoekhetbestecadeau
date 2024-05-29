@@ -8,6 +8,7 @@ import H3Heading from "@/components/custom/heading/h3Heading";
 import { useRouter } from "next/navigation";
 import RangeSlider from "@/components/custom/rangeSlider";
 import { FilterQueryProps } from "@/app/types";
+import { nextStepHandler } from "@/lib/utils";
 
 // promotional occasions (e.g. Christmas, Valentine's Day)
 // const holidayOccasions = [
@@ -353,6 +354,28 @@ const SearchCta = ({
 
       {/* dynamically based on input */}
       {filterInput}
+
+      {currentStep !== 5 && (
+        <Button
+          variant={"default"}
+          className="flex items-center justify-center gap-2"
+          onClick={() => {
+            const nextStep = nextStepHandler(currentStep, showResults);
+            if (nextStep === "redirect") {
+              router.push("/finder");
+            } else {
+              setCurrentStep(nextStep);
+            }
+          }}
+        >
+          <span>
+            {currentStep === 1 && !showResults
+              ? "Start met zoeken"
+              : content[currentStep].label}
+          </span>
+          <ArrowRight size={18} />
+        </Button>
+      )}
     </div>
   );
 };

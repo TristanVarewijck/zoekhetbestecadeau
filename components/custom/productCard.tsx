@@ -19,7 +19,6 @@ const ProductCard = (product: ProductProps) => {
       </CardHeader>
       <CardContent className="p-0">
         <div>
-          <span className="text-xs mb-1">{product.site}</span>
           <H3Heading title={product.title} subtitle={product.description} />
           <span className="font-bold text-xl mt-1">{product.price}</span>
         </div>

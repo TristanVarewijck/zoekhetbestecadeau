@@ -5,7 +5,6 @@ import SectionLayout from "@/components/custom/sectionLayout";
 import { ProductProps } from "./types";
 import PopularProducts from "@/blocks/popularProducts";
 import Usps from "@/blocks/usps";
-import SearchCta from "@/blocks/searchCta";
 import SearchMerged from "@/blocks/searchMerged";
 
 export default function Home() {
