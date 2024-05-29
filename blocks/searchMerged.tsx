@@ -15,7 +15,6 @@ interface SearchMergedProps {
 const fakeTestProductsArray: ProductProps[] = [
   {
     id: "1",
-    site: "Amazon",
     url: "https://www.amazon.com",
     image: "https://via.placeholder.com/300x200",
     title: "Amazon Echo",
@@ -24,7 +23,6 @@ const fakeTestProductsArray: ProductProps[] = [
   },
   {
     id: "2",
-    site: "Amazon",
     url: "https://www.amazon.com",
     image: "https://via.placeholder.com/300x200",
     title: "Amazon Echo",
@@ -33,7 +31,6 @@ const fakeTestProductsArray: ProductProps[] = [
   },
   {
     id: "3",
-    site: "Amazon",
     url: "https://www.amazon.com",
     image: "https://via.placeholder.com/300x200",
     title: "Amazon Echo",
@@ -42,7 +39,6 @@ const fakeTestProductsArray: ProductProps[] = [
   },
   {
     id: "4",
-    site: "Amazon",
     url: "https://www.amazon.com",
     image: "https://via.placeholder.com/300x200",
     title: "Amazon Echo",
@@ -51,7 +47,6 @@ const fakeTestProductsArray: ProductProps[] = [
   },
   {
     id: "5",
-    site: "Amazon",
     url: "https://www.amazon.com",
     image: "https://via.placeholder.com/300x250",
     title: "Amazon Echo",
@@ -60,7 +55,6 @@ const fakeTestProductsArray: ProductProps[] = [
   },
   {
     id: "6",
-    site: "Amazon",
     url: "https://www.amazon.com",
     image: "https://via.placeholder.com/300x250",
     title: "Amazon Echo",
@@ -69,7 +63,6 @@ const fakeTestProductsArray: ProductProps[] = [
   },
   {
     id: "7",
-    site: "Amazon",
     url: "https://www.amazon.com",
     image: "https://via.placeholder.com/300x250",
     title: "Amazon Echo",
@@ -99,10 +92,22 @@ const SearchMerged = ({ showResults }: SearchMergedProps) => {
   }, []);
 
   useEffect(() => {
-    if (query) {
-      // query the (real) products from the server
-      setProducts(fakeTestProductsArray);
-    }
+    const fetchProducts = async () => {
+      if (query) {
+        try {
+          // Make axios request to the server
+          const response = await axios.post("/api/products", { query });
+          const products = response.data;
+
+          // Update state with the response data
+          setProducts(products);
+        } catch (error) {
+          console.error("Error fetching products:", error);
+        }
+      }
+    };
+
+    fetchProducts();
   }, [query]);
 
   return (
