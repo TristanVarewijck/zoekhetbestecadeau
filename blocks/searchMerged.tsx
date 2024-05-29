@@ -3,9 +3,7 @@
 import { FilterQueryProps, ProductProps } from "@/app/types";
 import SearchCta from "./searchCta";
 import SearchResults from "./searchResults";
-import { useEffect, useMemo, useState } from "react";
-import { getValuesByKeyName } from "@/lib/utils";
-import axios from "axios";
+import { useEffect, useState } from "react";
 
 interface SearchMergedProps {
   showResults: boolean;
@@ -76,22 +74,23 @@ const SearchMerged = ({ showResults }: SearchMergedProps) => {
   const [products, setProducts] = useState<ProductProps[]>([]);
 
   // get local storage filters if available
-  useEffect(() => {
-    const filterKeys = ["occasions", "interests", "gender", "price"];
-    const filters = filterKeys.map((key) => {
-      const storedFilters = localStorage.getItem(key);
-      if (storedFilters) {
-        const localParsed = JSON.parse(storedFilters);
-        return { [key]: localParsed };
-      }
-    });
+  // useEffect(() => {
+  //   const filterKeys = ["occasions", "interests", "gender", "price"];
+  //   const filters = filterKeys.map((key) => {
+  //     const storedFilters = localStorage.getItem(key);
+  //     if (storedFilters) {
+  //       const localParsed = JSON.parse(storedFilters);
+  //       return { [key]: localParsed };
+  //     }
+  //   });
 
-    setQuery((prevState) => {
-      return { ...prevState, ...filters };
-    });
-  }, []);
+  //   setQuery((prevState) => {
+  //     return { ...prevState, ...filters };
+  //   });
+  // }, []);
 
   useEffect(() => {
+    console.log("query", query);
     if (query) {
       // query the (real) products from the server
       setProducts(fakeTestProductsArray);

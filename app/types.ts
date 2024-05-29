@@ -35,12 +35,9 @@ export interface CheckboxTabsProps {
 export interface RangeSliderProps {
   min: number;
   max: number;
-  defaultValue: number[];
-  currentStep: number;
-  setCurrentStep: Dispatch<SetStateAction<number>>;
+  defaultValue: string;
   setData?: Dispatch<SetStateAction<FilterQueryProps | null>>;
   localStorageKey: string;
-  showResults: boolean;
 }
 
 interface FilterProps {

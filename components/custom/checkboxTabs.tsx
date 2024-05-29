@@ -1,22 +1,15 @@
 "use client";
 
 import { CheckboxTabsProps } from "@/app/types";
-import { ArrowRight } from "lucide-react";
-import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { nextStepHandler, saveOptionsToLocalStorage } from "@/lib/utils";
+import { saveOptionsToLocalStorage } from "@/lib/utils";
 
 const CheckboxTabs = ({
   checkBoxDataSet,
-  setCurrentStep,
-  currentStep,
   setData,
   localStorageKey,
-  showResults,
 }: CheckboxTabsProps) => {
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
-  const router = useRouter();
 
   // get local storaged occasions if available
   useEffect(() => {
