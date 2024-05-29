@@ -54,7 +54,7 @@ const RangeSlider = ({
               setData &&
                 setData((prevState) => ({
                   ...prevState,
-                  [localStorageKey]: value,
+                  [localStorageKey]: [value[0].toString()],
                 }));
             }}
           />
