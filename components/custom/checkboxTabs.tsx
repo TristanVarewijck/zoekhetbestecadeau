@@ -61,24 +61,6 @@ const CheckboxTabs = ({
           );
         })}
       </div>
-
-      <Button
-        variant={"default"}
-        className="flex items-center justify-center gap-2"
-        onClick={() => {
-          const nextStep = nextStepHandler(currentStep, showResults);
-          if (nextStep === "redirect") {
-            router.push("/finder");
-          } else {
-            setCurrentStep(nextStep);
-          }
-        }}
-      >
-        <span>
-          {currentStep === 1 && !showResults ? "Start met zoeken" : "Volgende"}
-        </span>
-        <ArrowRight size={18} />
-      </Button>
     </div>
   );
 };

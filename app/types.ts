@@ -8,7 +8,6 @@ export interface HeadingProps {
 
 export interface ProductProps {
   id: string;
-  site: string;
   url: string;
   image: string;
   title: string;

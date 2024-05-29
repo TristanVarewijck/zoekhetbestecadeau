@@ -5,14 +5,12 @@ import SectionLayout from "@/components/custom/sectionLayout";
 import { ProductProps } from "./types";
 import PopularProducts from "@/blocks/popularProducts";
 import Usps from "@/blocks/usps";
-import SearchCta from "@/blocks/searchCta";
 import SearchMerged from "@/blocks/searchMerged";
 
 // example products
 const fakeTestProductsArray: ProductProps[] = [
   {
     id: "1",
-    site: "Amazon",
     url: "https://www.amazon.com",
     image: "https://via.placeholder.com/300x200",
     title: "Amazon Echo",
@@ -21,7 +19,6 @@ const fakeTestProductsArray: ProductProps[] = [
   },
   {
     id: "2",
-    site: "Amazon",
     url: "https://www.amazon.com",
     image: "https://via.placeholder.com/300x200",
     title: "Amazon Echo",
@@ -30,7 +27,6 @@ const fakeTestProductsArray: ProductProps[] = [
   },
   {
     id: "3",
-    site: "Amazon",
     url: "https://www.amazon.com",
     image: "https://via.placeholder.com/300x200",
     title: "Amazon Echo",
@@ -39,7 +35,6 @@ const fakeTestProductsArray: ProductProps[] = [
   },
   {
     id: "4",
-    site: "Amazon",
     url: "https://www.amazon.com",
     image: "https://via.placeholder.com/300x200",
     title: "Amazon Echo",
@@ -48,7 +43,6 @@ const fakeTestProductsArray: ProductProps[] = [
   },
   {
     id: "5",
-    site: "Amazon",
     url: "https://www.amazon.com",
     image: "https://via.placeholder.com/300x250",
     title: "Amazon Echo",
@@ -57,7 +51,6 @@ const fakeTestProductsArray: ProductProps[] = [
   },
   {
     id: "6",
-    site: "Amazon",
     url: "https://www.amazon.com",
     image: "https://via.placeholder.com/300x250",
     title: "Amazon Echo",
@@ -66,7 +59,6 @@ const fakeTestProductsArray: ProductProps[] = [
   },
   {
     id: "7",
-    site: "Amazon",
     url: "https://www.amazon.com",
     image: "https://via.placeholder.com/300x250",
     title: "Amazon Echo",
