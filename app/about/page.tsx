@@ -9,7 +9,7 @@ export default function About() {
       <SectionLayout bgColor="white" centered position={0}>
         <div className="mt-10 md:mt-0 w-full flex justify-center">
           <div className="max-w-[700px] flex flex-col gap-4">
-            <H1Heading title="Over Mygivts" />
+            <H1Heading title="Over ons" />
             <div className="relative h-[325px]">
               <Image
                 src="https://via.placeholder.com/300x250"
