@@ -21,26 +21,25 @@ export default function About() {
                 }}
               />
             </div>
-            <H2Heading title="Bij Mygivts geloven we dat het geven van het perfecte cadeau een waardevolle herinnering creëert. Laat ons je helpen om die speciale momenten te vieren met attent gekozen geschenken." />
+            <H2Heading title="Bij zoekhetbestecadeau geloven we dat het vinden van het perfecte cadeau een magisch moment creëert! 🎁 Laat ons je helpen om die bijzondere gelegenheden te vieren met zorgvuldig uitgekozen geschenken die een blijvende indruk achterlaten." />
           </div>
         </div>
         <div className="flex justify-center w-full mt-3">
           <div className="max-w-[700px] w-full flex flex-col md:flex-row justify-between gap-4">
             <p>
-              Mygivts is een toonaangevend bedrijf dat mensen helpt bij het
-              vinden van geschenken voor hun vrienden en familie. Wij begrijpen
-              dat het vinden van het perfecte cadeau een uitdagende taak kan
-              zijn, en daarom streven we ernaar om het proces eenvoudig en
-              plezierig te maken.
+              zoekhetbestecadeau is jouw ultieme gids in de wereld van
+              geschenken, waar we je helpen om de perfecte verrassing te vinden
+              voor je dierbaren. We begrijpen dat het soms lastig kan zijn om
+              het juiste cadeau te vinden, dus hebben we het zoeken naar dat ene
+              speciale item leuk en moeiteloos gemaakt!.
             </p>
 
             <p>
-              Bij Mygivts geloven we in het creëren van blijvende herinneringen
-              door middel van doordachte geschenken. We begrijpen dat elk
-              individu uniek is, met verschillende smaken en voorkeuren. Daarom
-              bieden we een breed scala aan cadeau-opties, zodat u altijd iets
-              speciaals kunt vinden dat perfect past bij de persoon voor wie het
-              bedoeld is.
+              Bij zoekhetbestecadeau zijn we gepassioneerd over het creëren van
+              onvergetelijke herinneringen met doordachte cadeaus. We weten dat
+              iedereen uniek is, met zijn eigen smaak en stijl. Daarom bieden we
+              een uitgebreide selectie aan cadeau-opties, zodat je altijd iets
+              vindt dat perfect past bij de persoon waar je van houdt.
             </p>
           </div>
         </div>

@@ -100,6 +100,7 @@ const SearchMerged = ({ showResults }: SearchMergedProps) => {
   useEffect(() => {
     if (query) {
       // query the (real) products from the server
+
       setProducts(fakeTestProductsArray);
     }
   }, [query]);
