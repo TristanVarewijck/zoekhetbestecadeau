@@ -32,7 +32,7 @@ const PopularProducts = ({ productsArray }: PopularProductsProps) => {
             key={product.id}
             className="basis-1/1 md:basis-1/2 lg:basis-1/4"
           >
-            <Link href={product.url}>
+            <Link href={product.url} target="_blank">
               <ProductCard {...product} />
             </Link>
           </CarouselItem>

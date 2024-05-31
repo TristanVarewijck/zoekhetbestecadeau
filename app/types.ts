@@ -13,6 +13,9 @@ export interface ProductProps {
   title: string;
   description: string;
   price: number;
+  occasions?: string[];
+  interests?: string[];
+  gender?: string[];
 }
 
 export interface PopularProductsProps {

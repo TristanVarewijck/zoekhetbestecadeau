@@ -4,6 +4,7 @@ import { FilterProps, ProductProps } from "@/app/types";
 import SearchCta from "./searchCta";
 import SearchResults from "./searchResults";
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 interface SearchMergedProps {
   showResults: boolean;
@@ -95,14 +96,23 @@ const SearchMerged = ({ showResults }: SearchMergedProps) => {
     }));
   }, []);
 
-  console.log(query);
-
   useEffect(() => {
-    if (query) {
-      // query the (real) products from the server
+    const fetchProducts = async () => {
+      if (query) {
+        try {
+          // Make axios request to the server
+          const response = await axios.post("/api/products", { query });
+          const products = response.data;
 
-      setProducts(fakeTestProductsArray);
-    }
+          // Update state with the response data
+          setProducts(products);
+        } catch (error) {
+          console.error("Error fetching products:", error);
+        }
+      }
+    };
+
+    fetchProducts();
   }, [query]);
 
   return (

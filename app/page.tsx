@@ -7,67 +7,58 @@ import PopularProducts from "@/blocks/popularProducts";
 import Usps from "@/blocks/usps";
 import SearchMerged from "@/blocks/searchMerged";
 
-// example products
-const fakeTestProductsArray: ProductProps[] = [
-  {
-    id: "1",
-    url: "https://www.amazon.com",
-    image: "https://via.placeholder.com/300x200",
-    title: "Amazon Echo",
-    description: "A smart speaker with Alexa",
-    price: 99.99,
-  },
-  {
-    id: "2",
-    url: "https://www.amazon.com",
-    image: "https://via.placeholder.com/300x200",
-    title: "Amazon Echo",
-    description: "A smart speaker with Alexa",
-    price: 99.99,
-  },
-  {
-    id: "3",
-    url: "https://www.amazon.com",
-    image: "https://via.placeholder.com/300x200",
-    title: "Amazon Echo",
-    description: "A smart speaker with Alexa",
-    price: 99.99,
-  },
-  {
-    id: "4",
-    url: "https://www.amazon.com",
-    image: "https://via.placeholder.com/300x200",
-    title: "Amazon Echo",
-    description: "A smart speaker with Alexa",
-    price: 99.99,
-  },
-  {
-    id: "5",
-    url: "https://www.amazon.com",
-    image: "https://via.placeholder.com/300x250",
-    title: "Amazon Echo",
-    description: "A smart speaker with Alexa",
-    price: 99.99,
-  },
-  {
-    id: "6",
-    url: "https://www.amazon.com",
-    image: "https://via.placeholder.com/300x250",
-    title: "Amazon Echo",
-    description: "A smart speaker with Alexa",
-    price: 99.99,
-  },
-  {
-    id: "7",
-    url: "https://www.amazon.com",
-    image: "https://via.placeholder.com/300x250",
-    title: "Amazon Echo",
-    description: "A smart speaker with Alexa",
-    price: 99.99,
-  },
-];
-
 export default function Home() {
+  const fakeTestProductsArray: ProductProps[] = [
+    {
+      id: "1",
+      url: "https://www.amazon.com",
+      image: "https://via.placeholder.com/300x200",
+      title: "Amazon Echo",
+      description: "A smart speaker with Alexa",
+      price: 99.99,
+    },
+    {
+      id: "2",
+      url: "https://www.amazon.com",
+      image: "https://via.placeholder.com/300x200",
+      title: "Amazon Echo",
+      description: "A smart speaker with Alexa",
+      price: 99.99,
+    },
+    {
+      id: "3",
+      url: "https://www.amazon.com",
+      image: "https://via.placeholder.com/300x200",
+      title: "Amazon Echo",
+      description: "A smart speaker with Alexa",
+      price: 99.99,
+    },
+    {
+      id: "4",
+      url: "https://www.amazon.com",
+      image: "https://via.placeholder.com/300x200",
+      title: "Amazon Echo",
+      description: "A smart speaker with Alexa",
+      price: 99.99,
+    },
+    {
+      id: "5",
+      url: "https://www.amazon.com",
+      image: "https://via.placeholder.com/300x250",
+      title: "Amazon Echo",
+      description: "A smart speaker with Alexa",
+      price: 99.99,
+    },
+    {
+      id: "6",
+      url: "https://www.amazon.com",
+      image: "https://via.placeholder.com/300x250",
+      title: "Amazon Echo",
+      description: "A smart speaker with Alexa",
+      price: 99.99,
+    },
+  ];
+
   return (
     <main>
       <SectionLayout bgColor="gray" centered>
