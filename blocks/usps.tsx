@@ -1,11 +1,11 @@
 const uspsContent = [
   {
     icon: "👣",
-    title: "Vindt je in cadeau in 5 stappen.",
+    title: "Vind je cadeau in 5 stappen.",
   },
   {
     icon: "🔍",
-    title: "Zoek gericht naar cadeau’s.",
+    title: "Zoek gericht naar cadeaus.",
   },
   {
     icon: "🎯",
