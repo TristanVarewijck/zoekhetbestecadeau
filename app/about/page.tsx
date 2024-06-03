@@ -12,6 +12,7 @@ export default function About() {
             <H1Heading title="Over ons" />
             <div className="relative h-[325px]">
               <Image
+                priority
                 src="/images/woman_gifts_bringing.png"
                 alt="About us"
                 fill

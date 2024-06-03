@@ -237,7 +237,6 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const { query } = await request.json();
-  console.log(query);
 
   // If query is empty, return everything
   if (!query) {

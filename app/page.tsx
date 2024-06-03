@@ -1,64 +1,16 @@
+"use client";
+import { useState } from "react";
+
 import H1Heading from "@/components/custom/heading/h1Heading";
-import H2Heading from "@/components/custom/heading/h2Heading";
 import SectionLayout from "@/components/custom/sectionLayout";
 
-import { ProductProps } from "./types";
 import PopularProducts from "@/blocks/popularProducts";
 import Usps from "@/blocks/usps";
 import SearchMerged from "@/blocks/searchMerged";
+import { FilterProps } from "./types";
 
 export default function Home() {
-  const fakeTestProductsArray: ProductProps[] = [
-    {
-      id: "1",
-      url: "https://www.amazon.com",
-      image: "https://via.placeholder.com/300x200",
-      title: "Amazon Echo",
-      description: "A smart speaker with Alexa",
-      price: 99.99,
-    },
-    {
-      id: "2",
-      url: "https://www.amazon.com",
-      image: "https://via.placeholder.com/300x200",
-      title: "Amazon Echo",
-      description: "A smart speaker with Alexa",
-      price: 99.99,
-    },
-    {
-      id: "3",
-      url: "https://www.amazon.com",
-      image: "https://via.placeholder.com/300x200",
-      title: "Amazon Echo",
-      description: "A smart speaker with Alexa",
-      price: 99.99,
-    },
-    {
-      id: "4",
-      url: "https://www.amazon.com",
-      image: "https://via.placeholder.com/300x200",
-      title: "Amazon Echo",
-      description: "A smart speaker with Alexa",
-      price: 99.99,
-    },
-    {
-      id: "5",
-      url: "https://www.amazon.com",
-      image: "https://via.placeholder.com/300x250",
-      title: "Amazon Echo",
-      description: "A smart speaker with Alexa",
-      price: 99.99,
-    },
-    {
-      id: "6",
-      url: "https://www.amazon.com",
-      image: "https://via.placeholder.com/300x250",
-      title: "Amazon Echo",
-      description: "A smart speaker with Alexa",
-      price: 99.99,
-    },
-  ];
-
+  const [query, setQuery] = useState<FilterProps>({});
   return (
     <main>
       <SectionLayout bgColor="gray" centered>
@@ -68,18 +20,13 @@ export default function Home() {
             subtitle="Wij zoeken elke dag opnieuw naar nieuwe cadeau ideeën! 🔎"
             centered
           />
-          {/* <SearchCta /> */}
-          <SearchMerged showResults={false} />
+          <SearchMerged showResults={false} query={query} setQuery={setQuery} />
           <Usps />
         </div>
       </SectionLayout>
 
       <SectionLayout bgColor="white">
-        <H2Heading title="Populaire cadeaus" centered />
-        <div className="space-y-8 mt-6">
-          <PopularProducts productsArray={fakeTestProductsArray} />
-          <PopularProducts productsArray={fakeTestProductsArray} />
-        </div>
+        <PopularProducts occasions={query.occasions} />
       </SectionLayout>
     </main>
   );

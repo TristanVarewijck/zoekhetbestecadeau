@@ -37,7 +37,7 @@ const Footer = () => {
 
           <div className="flex space-x-2 items-center gap-3">
             <Link
-              href="https://instagram.com"
+              href="https://www.instagram.com/zoekhetbestecadeau/?igsh=Yzc2ejdreTViYXoz&utm_source=qr"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
@@ -50,7 +50,7 @@ const Footer = () => {
               />
             </Link>
             <Link
-              href="https://linkedin.com"
+              href="https://vm.tiktok.com/ZIJnsDRJn/"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Tiktok"
@@ -63,7 +63,7 @@ const Footer = () => {
               />
             </Link>
             <Link
-              href="https://facebook.com"
+              href="https://www.facebook.com/profile.php?id=61560445112589"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Facebook"
