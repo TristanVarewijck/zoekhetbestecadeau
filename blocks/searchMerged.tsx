@@ -9,8 +9,8 @@ import { useLocalStorageFilters } from "@/hooks/useLocalStorageFilters";
 
 interface SearchMergedProps {
   showResults: boolean;
-  query: FilterProps;
-  setQuery: Dispatch<SetStateAction<FilterProps | {}>>;
+  query?: FilterProps;
+  setQuery?: Dispatch<SetStateAction<FilterProps | {}>>;
 }
 
 const SearchMerged = ({ showResults, query, setQuery }: SearchMergedProps) => {
@@ -22,8 +22,6 @@ const SearchMerged = ({ showResults, query, setQuery }: SearchMergedProps) => {
   ]);
 
   const newQuery = query || localStoredQuery;
-
-  console.log("newQuery", newQuery); // newQuery is always empty
   const { products, loading, error } = useFetchProducts(newQuery);
 
   console.log(loading);
