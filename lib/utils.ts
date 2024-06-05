@@ -47,3 +47,18 @@ export function getValuesByKeyName(obj: any, keyName: string) {
 
   return values;
 }
+
+export const pdfDownload = (folderName: string, fileName: string) => {
+  // Create a new anchor element
+  const link = document.createElement("a");
+  link.href = `/${folderName}/${fileName}.pdf`;
+  link.download = `${fileName}.pdf`;
+  link.style.display = "none";
+
+  // Append to the document and trigger 'click' to download
+  document.body.appendChild(link);
+  link.click();
+
+  // Remove the link after download
+  document.body.removeChild(link);
+};

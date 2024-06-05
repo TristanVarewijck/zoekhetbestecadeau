@@ -3,7 +3,7 @@
 import { FilterProps } from "@/app/types";
 import SearchCta from "./searchCta";
 import SearchResults from "./searchResults";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { useFetchProducts } from "@/hooks/useFetchProducts";
 import { useLocalStorageFilters } from "@/hooks/useLocalStorageFilters";
 
@@ -26,7 +26,6 @@ const SearchMerged = ({ showResults, query, setQuery }: SearchMergedProps) => {
 
   console.log(loading);
   console.log(error);
-
   return (
     <div>
       <SearchCta showResults={showResults} setData={setQuery} />
