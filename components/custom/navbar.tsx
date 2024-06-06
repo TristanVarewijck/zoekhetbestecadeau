@@ -1,4 +1,4 @@
-import { ArrowRight, MenuIcon, Search, User } from "lucide-react";
+import { ArrowRight, MenuIcon, User } from "lucide-react";
 import { Button } from "../ui/button";
 import { Sheet, SheetTrigger, SheetContent } from "../ui/sheet";
 import Link from "next/link";

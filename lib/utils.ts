@@ -48,10 +48,12 @@ export function getValuesByKeyName(obj: any, keyName: string) {
   return values;
 }
 
-export const pdfDownload = (folderName: string, fileName: string) => {
+export const pdfDownload = (folderRoute: string, fileName: string): void => {
+  console.log("folderRoute", folderRoute);
+  console.log("fileName", fileName);
   // Create a new anchor element
   const link = document.createElement("a");
-  link.href = `/${folderName}/${fileName}.pdf`;
+  link.href = `/${folderRoute}/${fileName}.pdf`;
   link.download = `${fileName}.pdf`;
   link.style.display = "none";
 

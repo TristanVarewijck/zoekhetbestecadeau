@@ -1,29 +1,28 @@
+"use client";
+
+import DownloadPdf from "@/components/custom/downloadPdf";
 import H1Heading from "@/components/custom/heading/h1Heading";
 import H2Heading from "@/components/custom/heading/h2Heading";
 import H3Heading from "@/components/custom/heading/h3Heading";
 import SectionLayout from "@/components/custom/sectionLayout";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-// import { pdfDownload } from "@/lib/utils";
 
 export default function PrivacyPolicy() {
   return (
     <SectionLayout bgColor="white">
-      <div className="mt-10 md:mt-0 w-full flex flex-col justify-center max-w-[700px] mx-auto">
-        {/* <Button
-          onClick={() => {
-            pdfDownload(
-              "conditions",
-              "algemene-voorwaarden-subsidieinformatie.nl"
-            );
-          }}
-        >
-          Download PDF
-        </Button> */}
+      <div className="md:mt-0 w-full flex flex-col justify-center max-w-[700px] mx-auto">
         <H1Heading
           title="Privacybeleid"
           subtitle="Laatst bijgewerkt: 5 juni 2024"
         />
+        <div className="mt-1 lg:mt-2">
+          <DownloadPdf
+            buttonText={"Download het privacybeleid"}
+            folderRoute={"legal/pdf"}
+            fileName={"PRIVACYBELEID_ZOEKHETBESTECADEAU"}
+          />
+        </div>
+
         <div className="flex justify-center w-full mt-10">
           <div className="max-w-[700px] w-full flex flex-col gap-4">
             <H2Heading title="Inleiding" />

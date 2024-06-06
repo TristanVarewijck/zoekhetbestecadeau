@@ -1,3 +1,6 @@
+"use client";
+
+import DownloadPdf from "@/components/custom/downloadPdf";
 import H1Heading from "@/components/custom/heading/h1Heading";
 import H3Heading from "@/components/custom/heading/h3Heading";
 import SectionLayout from "@/components/custom/sectionLayout";
@@ -6,11 +9,19 @@ import Link from "next/link";
 export default function Conditions() {
   return (
     <SectionLayout bgColor="white">
-      <div className="mt-10 md:mt-0 w-full flex flex-col justify-center max-w-[700px] mx-auto">
+      <div className="md:mt-0 w-full flex flex-col justify-center max-w-[700px] mx-auto">
         <H1Heading
           title="Algemene voorwaarden"
           subtitle="Laatst bijgewerkt: 5 juni 2024"
         />
+
+        <div className="mt-1 lg:mt-2">
+          <DownloadPdf
+            buttonText={"Download de algemene voorwaarden"}
+            folderRoute={"legal/pdf"}
+            fileName={"ALGEMENE_VOORWAARDEN_ZOEKHETBESTECADEAU"}
+          />
+        </div>
         <div className="flex justify-center w-full mt-10">
           <div className="max-w-[700px] w-full flex flex-col gap-4">
             <H3Heading title="Artikel 1: Definities" />
