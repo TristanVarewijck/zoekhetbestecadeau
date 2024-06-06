@@ -162,7 +162,7 @@ export default function Conditions() {
             <p>
               Voor vragen over deze algemene voorwaarden kunt u contact met ons
               opnemen via:{" "}
-              <Link href="mailto:zoekhetbestecadeau@gmail.com">
+              <Link href={`mailto:${process.env.NEXT_PUBLIC_APP_MAIL}`}>
                 zoekhetbestecadeau@gmail.com
               </Link>
             </p>

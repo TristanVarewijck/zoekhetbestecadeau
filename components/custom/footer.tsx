@@ -34,7 +34,7 @@ const Footer = () => {
             <Link href="/conditions">Algemene voorwaarden.</Link>
             <Link href="/disclaimer">Disclaimer.</Link>
             <Link href="/privacy-policy">Privacybeleid.</Link>
-            <Link href="mailto:zoekhetbestecadeau@gmail.nl">
+            <Link href={`mailto:${process.env.NEXT_PUBLIC_APP_MAIL}`}>
               zoekhetbestecadeau@gmail.nl
             </Link>
           </div>
