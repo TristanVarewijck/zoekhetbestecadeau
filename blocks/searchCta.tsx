@@ -299,7 +299,7 @@ const SearchCta = ({
   }, []);
 
   return (
-    <div className="relative flex justify-center flex-col mb-10 mt-5 lg:md:w-2/3 md:mx-auto rounded-2xl bg-white border-2 gap-4 h-auto p-10 shadow-md">
+    <div className="relative flex justify-center flex-col mb-10 mt-5 lg:md:w-2/3 md:mx-auto rounded-2xl bg-white border-2 gap-4 h-auto p-6 lg:p-10 shadow-md">
       {/* navigation */}
       {showResults && (
         <div className="flex items-center mb-4">

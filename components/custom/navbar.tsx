@@ -27,6 +27,13 @@ const Navbar = () => {
               className="flex w-full items-center py-2 text-lg font-semibold"
               href="/about"
             >
+              Start met zoeken
+            </Link>
+
+            <Link
+              className="flex w-full items-center py-2 text-lg font-semibold"
+              href="/about"
+            >
               Over ons
             </Link>
           </div>

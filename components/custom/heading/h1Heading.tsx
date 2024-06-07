@@ -1,8 +1,4 @@
-interface HeadingProps {
-  title: string;
-  subtitle?: string;
-  centered?: boolean;
-}
+import { HeadingProps } from "@/app/types";
 
 const H1Heading = ({ title, subtitle, centered }: HeadingProps) => {
   return (

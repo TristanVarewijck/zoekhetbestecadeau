@@ -13,8 +13,8 @@ export default function Home() {
   const [query, setQuery] = useState<FilterProps>({});
   return (
     <main>
-      <SectionLayout bgColor="gray" centered>
-        <div className="mt-10 md:mt-0">
+      <SectionLayout bgColor="gray">
+        <div>
           <H1Heading
             title="Zoek het beste cadeau in een paar klikken."
             subtitle="Wij zoeken elke dag opnieuw naar nieuwe cadeau ideeën! 🔎"
