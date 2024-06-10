@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import H1Heading from "@/components/custom/heading/h1Heading";
 import SectionLayout from "@/components/custom/sectionLayout";
@@ -11,6 +11,15 @@ import { FilterProps } from "./types";
 
 export default function Home() {
   const [query, setQuery] = useState<FilterProps>({});
+  console.log(query);
+
+  useEffect(() => {
+    const storedOccasions = localStorage.getItem("occasions");
+    if (storedOccasions) {
+      setQuery({ occasions: JSON.parse(storedOccasions) });
+    }
+  }, []);
+
   return (
     <main>
       <SectionLayout bgColor="gray">
@@ -26,7 +35,10 @@ export default function Home() {
       </SectionLayout>
 
       <SectionLayout bgColor="white">
-        <PopularProducts occasions={query.occasions} />
+        <PopularProducts
+          occasions={query.occasions}
+          occasion={query?.occasions?.[0]}
+        />
       </SectionLayout>
     </main>
   );

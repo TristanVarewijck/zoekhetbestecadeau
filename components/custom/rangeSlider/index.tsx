@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState, useRef } from "react";
 import "./rangeSlider.css";
 import { RangeSliderProps } from "@/app/types";
+import { saveOptionsToLocalStorage } from "@/lib/utils";
 
 const RangeSlider = ({
   min,
@@ -62,6 +63,10 @@ const RangeSlider = ({
             onChange={(event) => {
               const value = Math.min(Number(event.target.value), maxVal - 1);
               setMinVal(value);
+              saveOptionsToLocalStorage(
+                [value.toString(), maxVal.toString()],
+                localStorageKey
+              );
               setData &&
                 setData((prevState) => ({
                   ...prevState,
@@ -70,7 +75,7 @@ const RangeSlider = ({
 
               minValRef.current = value;
             }}
-            className="thumb thumb--left absolute w-[350px] md:w-[500px] h-0 outline-none"
+            className="thumb thumb--left absolute w-[300px] xs:w-[350px] md:w-[500px] h-0 outline-none"
           />
           <input
             type="range"
@@ -80,6 +85,10 @@ const RangeSlider = ({
             onChange={(event) => {
               const value = Math.max(Number(event.target.value), minVal + 1);
               setMaxVal(value);
+              saveOptionsToLocalStorage(
+                [minVal.toString(), value.toString()],
+                localStorageKey
+              );
               setData &&
                 setData((prevState) => ({
                   ...prevState,
@@ -87,9 +96,9 @@ const RangeSlider = ({
                 }));
               maxValRef.current = value;
             }}
-            className="thumb thumb--right absolute w-[350px] md:w-[500px] h-0 outline-none"
+            className="thumb thumb--right absolute  w-[300px] xs:w-[350px] md:w-[500px] h-0 outline-none"
           />
-          <div className="relative w-[350px] md:w-[500px]">
+          <div className="relative  w-[300px] xs:w-[350px] md:w-[500px]">
             <div className="absolute w-full h-[12px] bg-gray-300 rounded z-[1]" />
             <div
               ref={range}

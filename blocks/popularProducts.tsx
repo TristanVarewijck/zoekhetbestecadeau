@@ -8,19 +8,21 @@ import {
 
 import ProductCard from "@/components/custom/productCard";
 import Autoplay from "embla-carousel-autoplay";
-import { FilterProps, ProductProps } from "@/app/types";
+import { ProductProps } from "@/app/types";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useLocalStorageFilters } from "@/hooks/useLocalStorageFilters";
 import H2Heading from "@/components/custom/heading/h2Heading";
+import { Badge } from "@/components/ui/badge";
 
 // we can make this broader later on for example get the popular products by interests from the backend
 interface PopularProductsProps {
   occasions: string[] | undefined;
+  occasion?: string;
 }
 
-const PopularProducts = ({ occasions }: PopularProductsProps) => {
+const PopularProducts = ({ occasions, occasion }: PopularProductsProps) => {
   const [products, setProducts] = useState<ProductProps[]>([]);
   const localStoredQuery = useLocalStorageFilters(["occasions"]);
 
@@ -46,7 +48,6 @@ const PopularProducts = ({ occasions }: PopularProductsProps) => {
             const products = response.data;
             setProducts(products);
           } else {
-            console.log("popular_products found");
             setProducts(popularProducts);
           }
         } catch (error) {
@@ -60,7 +61,26 @@ const PopularProducts = ({ occasions }: PopularProductsProps) => {
 
   return (
     <div>
-      <H2Heading title="Populaire cadeaus" centered />
+      <Badge variant="default" className="mb-3">
+        {occasion
+          ? `${occasion[0].toUpperCase()}${occasion.slice(1)}: ${
+              products.length
+            } ${products.length === 1 ? "nieuw" : "nieuwe"} ${
+              products.length === 1 ? "cadeau" : "cadeaus"
+            }`
+          : `Populaire cadeaus`}{" "}
+        🔥
+      </Badge>
+      <H2Heading
+        title={`${
+          occasion
+            ? `Populaire cadeaus: "${occasion[0].toUpperCase()}${occasion.slice(
+                1
+              )}"`
+            : `Populaire cadeaus`
+        }`}
+      />
+
       <Carousel
         opts={{
           align: "start",

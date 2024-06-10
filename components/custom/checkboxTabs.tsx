@@ -13,7 +13,11 @@ const CheckboxTabs = ({
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
 
   // get local storaged occasions if available
+
+  // empty selected options if local storage key changes
+
   useEffect(() => {
+    setSelectedOptions([]);
     const storedOccasions = localStorage.getItem(localStorageKey);
     if (storedOccasions) {
       setSelectedOptions(JSON.parse(storedOccasions));
@@ -35,7 +39,6 @@ const CheckboxTabs = ({
 
     setSelectedOptions(updatedOptions);
     saveOptionsToLocalStorage(updatedOptions, localStorageKey);
-
     setData &&
       setData((prevState) => ({
         ...prevState,

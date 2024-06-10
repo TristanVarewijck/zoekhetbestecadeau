@@ -22,12 +22,14 @@ const SearchMerged = ({ showResults, query, setQuery }: SearchMergedProps) => {
   ]);
 
   const newQuery = query || localStoredQuery;
+  console.log(newQuery);
   const { products, loading, error } = useFetchProducts(newQuery);
 
   console.log(query);
 
   console.log(loading);
   console.log(error);
+  console.log(products);
   return (
     <div>
       <SearchCta showResults={showResults} setData={setQuery} />

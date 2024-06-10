@@ -14,15 +14,18 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 const SearchResults = ({ productsArray }: PopularProductsProps) => {
   const productsPerPage = 15;
   const [currentPage, setCurrentPage] = useState(1);
+  const [array, setArray] = useState(productsArray);
+  const [randomizeDisabled, setRandomizeDisabled] = useState(false);
   const totalProducts = productsArray.length;
   const totalPages = Math.ceil(totalProducts / productsPerPage);
   const startIndex = (currentPage - 1) * productsPerPage;
   const endIndex = startIndex + productsPerPage;
-  const currentProducts = productsArray.slice(startIndex, endIndex);
+  const currentProducts = array.slice(startIndex, endIndex);
 
   const handlePrevious = () => {
     setCurrentPage(currentPage > 1 ? currentPage - 1 : 1);
@@ -32,12 +35,42 @@ const SearchResults = ({ productsArray }: PopularProductsProps) => {
     setCurrentPage(currentPage < totalPages ? currentPage + 1 : totalPages);
   };
 
+  const shuffleArray = (array: any[]) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  };
+
+  const handleRandomize = () => {
+    const shuffledArray = [...array];
+    shuffleArray(shuffledArray);
+    setArray(shuffledArray);
+    setRandomizeDisabled(true);
+    setTimeout(() => {
+      setRandomizeDisabled(false);
+    }, 3000);
+  };
+
   return (
     <section>
-      <H3Heading
-        title={`🎁 ${totalProducts} cadeau's gevonden:`}
-        subtitle="Blijf filteren om betere cadeau's te krijgen 🔎"
-      />
+      <div className="flex md:items-end justify-between flex-col md:flex-row">
+        <H3Heading
+          title={`🎁 ${totalProducts} cadeau's gevonden!`}
+          subtitle="Blijf filteren om betere cadeau's te krijgen 🔎"
+        />
+
+        <Button
+          className="mt-3 lg:mt-0"
+          variant="outline"
+          onClick={handleRandomize}
+          disabled={randomizeDisabled}
+        >
+          Randomize de cadeaus
+          <span className="ml-1 text-lg">🎲</span>
+        </Button>
+      </div>
 
       <div
         className="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2 lg:grid-cols-3"

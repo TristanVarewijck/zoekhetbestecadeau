@@ -171,6 +171,11 @@ const content = [
     subtitle: "Wat is de gelegenheid waarvoor je een cadeau zoekt?",
   },
   {
+    label: "Prijs",
+    title: "Wat is het budget voor het cadeau?",
+    subtitle: "Selecteer je budget voor het cadeau.",
+  },
+  {
     label: "Interesses",
     title: "Wat zijn de interesses?",
     subtitle:
@@ -182,11 +187,7 @@ const content = [
     subtitle:
       "Wat is het geslacht van de persoon voor wie je een cadeau zoekt?",
   },
-  {
-    label: "Prijs",
-    title: "Wat is het budget voor het cadeau?",
-    subtitle: "Selecteer je budget voor het cadeau.",
-  },
+
   {
     label: "Resultaten",
     title: "Dit zijn de cadeaus die bij de persoon passen!",
@@ -219,25 +220,6 @@ const SearchCta = ({
         );
 
       case 2:
-        // INTERESSES
-        return (
-          <CheckboxTabs
-            checkBoxDataSet={interests}
-            setData={setData}
-            localStorageKey="interests"
-            multiple
-          />
-        );
-      case 3:
-        // GESLACHT
-        return (
-          <CheckboxTabs
-            checkBoxDataSet={gender}
-            setData={setData}
-            localStorageKey="gender"
-          />
-        );
-      case 4:
         // PRIJS
         return (
           <RangeSlider
@@ -247,6 +229,28 @@ const SearchCta = ({
             setData={setData}
           />
         );
+
+      case 3:
+        // INTERESSES
+        return (
+          <CheckboxTabs
+            checkBoxDataSet={interests}
+            setData={setData}
+            localStorageKey="interests"
+            multiple
+          />
+        );
+
+      case 4:
+        // GESLACHT
+        return (
+          <CheckboxTabs
+            checkBoxDataSet={gender}
+            setData={setData}
+            localStorageKey="gender"
+          />
+        );
+
       // RESULTATEN
       default:
         return (
@@ -275,7 +279,7 @@ const SearchCta = ({
           </div>
         );
     }
-  }, [currentStep, setData, showResults]);
+  }, [currentStep, setData]);
 
   // get the current step from local storage
   useEffect(() => {
@@ -291,7 +295,9 @@ const SearchCta = ({
   }, []);
 
   return (
-    <div className="relative flex justify-center flex-col mb-10 mt-5 lg:md:w-2/3 md:mx-auto rounded-2xl bg-white border-2 gap-4 h-auto p-6 lg:p-10 shadow-md">
+    <div
+      className={`relative h-[200px] overflow-hidden   flex justify-start flex-col mb-10 mt-5 lg:md:w-2/3 md:mx-auto rounded-2xl bg-white border-2 gap-4  p-6 lg:p-10 shadow-md`}
+    >
       {/* navigation */}
       {showResults && (
         <div className="flex items-center">
