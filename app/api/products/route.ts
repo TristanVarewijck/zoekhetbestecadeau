@@ -3,6 +3,7 @@
 import { ProductProps } from "@/app/types";
 import { NextRequest, NextResponse } from "next/server";
 
+// products are always max price of 150,-
 const allProducts: ProductProps[] = [
   {
     id: "1",

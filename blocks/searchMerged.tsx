@@ -24,6 +24,8 @@ const SearchMerged = ({ showResults, query, setQuery }: SearchMergedProps) => {
   const newQuery = query || localStoredQuery;
   const { products, loading, error } = useFetchProducts(newQuery);
 
+  console.log(query);
+
   console.log(loading);
   console.log(error);
   return (

@@ -213,23 +213,19 @@ const SearchCta = ({
           // GELEGENHEDEN
           <CheckboxTabs
             checkBoxDataSet={specialOccasions}
-            setCurrentStep={setCurrentStep}
             setData={setData}
-            currentStep={1}
             localStorageKey="occasions"
-            showResults={showResults}
           />
         );
+
       case 2:
         // INTERESSES
         return (
           <CheckboxTabs
             checkBoxDataSet={interests}
-            setCurrentStep={setCurrentStep}
             setData={setData}
-            currentStep={2}
             localStorageKey="interests"
-            showResults={showResults}
+            multiple
           />
         );
       case 3:
@@ -237,11 +233,8 @@ const SearchCta = ({
         return (
           <CheckboxTabs
             checkBoxDataSet={gender}
-            setCurrentStep={setCurrentStep}
             setData={setData}
-            currentStep={3}
             localStorageKey="gender"
-            showResults={showResults}
           />
         );
       case 4:
@@ -249,8 +242,7 @@ const SearchCta = ({
         return (
           <RangeSlider
             min={5}
-            max={100}
-            defaultValue={"25"}
+            max={150}
             localStorageKey="price"
             setData={setData}
           />
@@ -302,7 +294,7 @@ const SearchCta = ({
     <div className="relative flex justify-center flex-col mb-10 mt-5 lg:md:w-2/3 md:mx-auto rounded-2xl bg-white border-2 gap-4 h-auto p-6 lg:p-10 shadow-md">
       {/* navigation */}
       {showResults && (
-        <div className="flex items-center mb-4">
+        <div className="flex items-center">
           {currentStep > 1 && (
             <Button
               className="mr-auto"
@@ -337,7 +329,7 @@ const SearchCta = ({
                 );
               }}
             >
-              Volgende
+              {content[currentStep].label}
               <ArrowRight size={16} className="ml-1" />
             </Button>
           )}

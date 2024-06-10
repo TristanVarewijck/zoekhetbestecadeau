@@ -1,13 +1,14 @@
 "use client";
 
 import { CheckboxTabsProps } from "@/app/types";
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { saveOptionsToLocalStorage } from "@/lib/utils";
 
 const CheckboxTabs = ({
   checkBoxDataSet,
   setData,
   localStorageKey,
+  multiple,
 }: CheckboxTabsProps) => {
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
 
@@ -17,42 +18,48 @@ const CheckboxTabs = ({
     if (storedOccasions) {
       setSelectedOptions(JSON.parse(storedOccasions));
     }
-  }, [
-    localStorageKey,
-    /* no dependencies */
-  ]);
+  }, [localStorageKey]);
+
+  const handleOptionClick = (id: string) => {
+    let updatedOptions: SetStateAction<string[]>;
+
+    if (multiple) {
+      if (selectedOptions.includes(id)) {
+        updatedOptions = selectedOptions.filter((option) => option !== id);
+      } else {
+        updatedOptions = [...selectedOptions, id];
+      }
+    } else {
+      updatedOptions = selectedOptions.includes(id) ? [] : [id];
+    }
+
+    setSelectedOptions(updatedOptions);
+    saveOptionsToLocalStorage(updatedOptions, localStorageKey);
+
+    setData &&
+      setData((prevState) => ({
+        ...prevState,
+        [localStorageKey]: updatedOptions,
+      }));
+  };
 
   return (
     <div className="flex flex-col gap-4 p-4">
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
-        {checkBoxDataSet.map((data) => {
-          return (
-            <div
-              className={`flex gap-1 w-full items-center flex-row-reverse justify-between p-2 shadow-sm border-2 cursor-pointer ease-in-out duration-150 rounded-lg ${
-                selectedOptions.includes(data.id)
-                  ? "bg-primary text-white"
-                  : "bg-white"
-              }`}
-              key={data.id}
-              onClick={() => {
-                const isSelected = selectedOptions.includes(data.id)
-                  ? []
-                  : [data.id];
-                setSelectedOptions(() => isSelected);
-                saveOptionsToLocalStorage(isSelected, localStorageKey);
-
-                setData &&
-                  setData((prevState) => ({
-                    ...prevState,
-                    [localStorageKey]: isSelected,
-                  }));
-              }}
-            >
-              <span className="text-xl">{data.icon}</span>
-              <span className="text-base font-medium">{data.name}</span>
-            </div>
-          );
-        })}
+        {checkBoxDataSet.map((data) => (
+          <div
+            className={`flex gap-1 w-full items-center flex-row-reverse justify-between p-2 shadow-sm border-2 cursor-pointer ease-in-out duration-150 rounded-lg ${
+              selectedOptions.includes(data.id)
+                ? "bg-primary text-white"
+                : "bg-white"
+            }`}
+            key={data.id}
+            onClick={() => handleOptionClick(data.id)}
+          >
+            <span className="text-xl">{data.icon}</span>
+            <span className="text-base font-medium">{data.name}</span>
+          </div>
+        ))}
       </div>
     </div>
   );

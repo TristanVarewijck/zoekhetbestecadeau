@@ -28,17 +28,14 @@ export interface CheckboxTabsProps {
     name: string;
     id: string;
   }[];
-  currentStep: number;
-  setCurrentStep: Dispatch<SetStateAction<number>>;
-  setData?: Dispatch<SetStateAction<FilterProps | {}>>;
   localStorageKey: string;
-  showResults: boolean;
+  setData?: Dispatch<SetStateAction<FilterProps | {}>>;
+  multiple?: boolean;
 }
 
 export interface RangeSliderProps {
   min: number;
   max: number;
-  defaultValue: string;
   setData?: Dispatch<SetStateAction<FilterProps | {}>>;
   localStorageKey: string;
 }
