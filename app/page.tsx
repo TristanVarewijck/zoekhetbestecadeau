@@ -1,9 +1,8 @@
 "use client";
-import { useEffect, useState } from "react";
 
+import { useEffect, useState } from "react";
 import H1Heading from "@/components/custom/heading/h1Heading";
 import SectionLayout from "@/components/custom/sectionLayout";
-
 import PopularProducts from "@/blocks/popularProducts";
 import Usps from "@/blocks/usps";
 import SearchMerged from "@/blocks/searchMerged";
@@ -11,7 +10,6 @@ import { FilterProps } from "./types";
 
 export default function Home() {
   const [query, setQuery] = useState<FilterProps>({});
-  console.log(query);
 
   useEffect(() => {
     const storedOccasions = localStorage.getItem("occasions");

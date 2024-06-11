@@ -19,13 +19,12 @@ import { Button } from "@/components/ui/button";
 const SearchResults = ({ productsArray }: PopularProductsProps) => {
   const productsPerPage = 15;
   const [currentPage, setCurrentPage] = useState(1);
-  const [array, setArray] = useState(productsArray);
   const [randomizeDisabled, setRandomizeDisabled] = useState(false);
   const totalProducts = productsArray.length;
   const totalPages = Math.ceil(totalProducts / productsPerPage);
   const startIndex = (currentPage - 1) * productsPerPage;
   const endIndex = startIndex + productsPerPage;
-  const currentProducts = array.slice(startIndex, endIndex);
+  const paginatedProducts = productsArray.slice(startIndex, endIndex);
 
   const handlePrevious = () => {
     setCurrentPage(currentPage > 1 ? currentPage - 1 : 1);
@@ -44,9 +43,7 @@ const SearchResults = ({ productsArray }: PopularProductsProps) => {
   };
 
   const handleRandomize = () => {
-    const shuffledArray = [...array];
-    shuffleArray(shuffledArray);
-    setArray(shuffledArray);
+    shuffleArray(productsArray);
     setRandomizeDisabled(true);
     setTimeout(() => {
       setRandomizeDisabled(false);
@@ -76,7 +73,7 @@ const SearchResults = ({ productsArray }: PopularProductsProps) => {
         className="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2 lg:grid-cols-3"
         id="results-list"
       >
-        {currentProducts.map((product) => (
+        {paginatedProducts.map((product) => (
           <Link href={product.url} key={product.id}>
             <ProductCard {...product} />
           </Link>

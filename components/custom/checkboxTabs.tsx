@@ -39,11 +39,19 @@ const CheckboxTabs = ({
 
     setSelectedOptions(updatedOptions);
     saveOptionsToLocalStorage(updatedOptions, localStorageKey);
+    const occasionQuery = { [localStorageKey]: updatedOptions };
+
+    console.log(setData);
     setData &&
-      setData((prevState) => ({
-        ...prevState,
-        [localStorageKey]: updatedOptions,
-      }));
+      setData(
+        (prevState) => (
+          console.log(prevState),
+          {
+            ...prevState,
+            ...occasionQuery,
+          }
+        )
+      );
   };
 
   return (
