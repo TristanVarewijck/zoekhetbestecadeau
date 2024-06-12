@@ -207,7 +207,6 @@ const SearchCta = ({
 }) => {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
-  const [visible, setVisible] = useState(true);
 
   // render content based on the current step
   const filterInput = useMemo(() => {
@@ -299,11 +298,7 @@ const SearchCta = ({
 
   return (
     <div
-      className={`relative ${
-        !visible ? "h-[215px]" : "h-auto"
-      } overflow-hidden flex justify-start flex-col mb-10 mt-5 lg:md:w-2/3 md:mx-auto rounded-2xl bg-white border-2 gap-4  px-6 lg:px-10 ${
-        !visible ? "py-3 lg:py-5 z-10" : "py-6 lg:py-10"
-      }  shadow-md`}
+      className={`relative overflow-hidden flex justify-start flex-col mb-10 mt-5 lg:md:w-2/3 md:mx-auto rounded-2xl bg-white border-2 gap-4 p-10 shadow-md`}
     >
       {/* navigation */}
       {showResults && (
@@ -355,29 +350,6 @@ const SearchCta = ({
         centered
       />
 
-      {!visible && (
-        <Button
-          variant="outline"
-          onClick={() => setVisible((prevState) => !prevState)}
-        >
-          {visible ? "Verberg" : "Toon"} uitleg
-        </Button>
-      )}
-
-      {!visible && (
-        // show what is filtered
-        <div>
-          <h2>Gelegenheid</h2>
-          <ul>
-            {specialOccasions.map((occasion) => (
-              <li key={occasion.id}>
-                {occasion.icon} {occasion.name}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
       {/* dynamically based on input */}
       {filterInput}
 
@@ -402,13 +374,6 @@ const SearchCta = ({
           <ArrowRight size={18} />
         </Button>
       )}
-
-      <Button
-        variant="outline"
-        onClick={() => setVisible((prevState) => !prevState)}
-      >
-        {visible ? "Verberg" : "Toon"} uitleg
-      </Button>
     </div>
   );
 };

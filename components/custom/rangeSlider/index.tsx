@@ -21,10 +21,34 @@ const RangeSlider = ({
     [min, max]
   );
 
-  // Set width of the range to decrease from the left side
+  // set default values in localstorage on first render
+  useEffect(() => {
+    if (!localStorage.getItem(localStorageKey)) {
+      saveOptionsToLocalStorage(
+        [minVal.toString(), maxVal.toString()],
+        localStorageKey
+      );
+      setData &&
+        setData((prevState) => ({
+          ...prevState,
+          [localStorageKey]: [minVal, maxVal],
+        }));
+    } else {
+      const [savedMinVal, savedMaxVal] = JSON.parse(
+        localStorage.getItem(localStorageKey) as string
+      );
+
+      setMinVal(parseInt(savedMinVal));
+      setMaxVal(parseInt(savedMaxVal));
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Update the range bar whenever minVal or maxVal changes
   useEffect(() => {
     const minPercent = getPercent(minVal);
-    const maxPercent = getPercent(maxValRef.current);
+    const maxPercent = getPercent(maxVal);
 
     if (range.current) {
       // @ts-ignore
@@ -32,18 +56,7 @@ const RangeSlider = ({
       // @ts-ignore
       range.current.style.width = `${maxPercent - minPercent}%`;
     }
-  }, [minVal, getPercent]);
-
-  // Set width of the range to decrease from the right side
-  useEffect(() => {
-    const minPercent = getPercent(minValRef.current);
-    const maxPercent = getPercent(maxVal);
-
-    if (range.current) {
-      // @ts-ignore
-      range.current.style.width = `${maxPercent - minPercent}%`;
-    }
-  }, [maxVal, getPercent]);
+  }, [minVal, maxVal, getPercent]);
 
   return (
     <div className="flex justify-center flex-col items-center gap-4 pb-5 mb-5">
@@ -62,6 +75,7 @@ const RangeSlider = ({
             value={minVal}
             onChange={(event) => {
               const value = Math.min(Number(event.target.value), maxVal - 1);
+
               setMinVal(value);
               saveOptionsToLocalStorage(
                 [value.toString(), maxVal.toString()],

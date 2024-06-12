@@ -24,11 +24,9 @@ export const useLocalStorageFilters = (
     };
 
     const filters = getFiltersFromLocalStorage();
-
-    console.log(filters);
     setFilters(filters);
 
-    //
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return filters;

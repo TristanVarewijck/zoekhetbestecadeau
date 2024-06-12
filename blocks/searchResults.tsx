@@ -17,7 +17,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 const SearchResults = ({ productsArray }: PopularProductsProps) => {
-  const productsPerPage = 15;
+  const productsPerPage = 20;
   const [currentPage, setCurrentPage] = useState(1);
   const [randomizeDisabled, setRandomizeDisabled] = useState(false);
   const totalProducts = productsArray.length;
@@ -39,7 +39,7 @@ const SearchResults = ({ productsArray }: PopularProductsProps) => {
       const j = Math.floor(Math.random() * (i + 1));
       [array[i], array[j]] = [array[j], array[i]];
     }
-    return array;
+    return array.slice(0, productsPerPage);
   };
 
   const handleRandomize = () => {
@@ -54,7 +54,7 @@ const SearchResults = ({ productsArray }: PopularProductsProps) => {
     <section>
       <div className="flex md:items-end justify-between flex-col md:flex-row">
         <H3Heading
-          title={`🎁 ${totalProducts} cadeau's gevonden!`}
+          title={`🎁 ${productsArray.length} beste cadeau matches!`}
           subtitle="Blijf filteren om betere cadeau's te krijgen 🔎"
         />
 
