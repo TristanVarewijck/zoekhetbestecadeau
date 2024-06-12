@@ -32,7 +32,7 @@ export default function Finder() {
     if (storedGender) {
       setQuery((prevState) => ({
         ...prevState,
-        ...JSON.parse(storedGender),
+        gender: JSON.parse(storedGender),
       }));
     }
 
@@ -43,6 +43,8 @@ export default function Finder() {
       }));
     }
   }, []);
+
+  console.log(query);
 
   return (
     <main>

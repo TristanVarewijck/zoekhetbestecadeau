@@ -12,7 +12,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
 
 interface SearchMergedProps {
   showResults: boolean;
@@ -28,8 +27,11 @@ const SearchMerged = ({ showResults, query, setQuery }: SearchMergedProps) => {
     "gender",
     "price",
   ]);
+  console.log(localStoredQuery);
+  console.log(query);
 
   const newQuery = query || localStoredQuery;
+  console.log(newQuery);
   const queryKeysLength = Object.keys(newQuery || {}).filter(
     // @ts-ignore - fix this (weird typing issue)
     (key) => Array.isArray(newQuery[key]) && newQuery[key].length >= 1
