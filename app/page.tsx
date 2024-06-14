@@ -1,9 +1,8 @@
 "use client";
-import { useEffect, useState } from "react";
 
+import { useEffect, useState } from "react";
 import H1Heading from "@/components/custom/heading/h1Heading";
 import SectionLayout from "@/components/custom/sectionLayout";
-
 import PopularProducts from "@/blocks/popularProducts";
 import Usps from "@/blocks/usps";
 import SearchMerged from "@/blocks/searchMerged";
@@ -13,12 +12,9 @@ export default function Home() {
   const [query, setQuery] = useState<FilterProps>({});
 
   useEffect(() => {
-    const currentStep = localStorage.getItem("currentStep");
-
-    if (currentStep !== "1") {
-      localStorage.clear();
-
-      localStorage.setItem("currentStep", "1");
+    const storedOccasions = localStorage.getItem("occasions");
+    if (storedOccasions) {
+      setQuery({ occasions: JSON.parse(storedOccasions) });
     }
   }, []);
 
@@ -37,7 +33,10 @@ export default function Home() {
       </SectionLayout>
 
       <SectionLayout bgColor="white">
-        <PopularProducts occasions={query.occasions} />
+        <PopularProducts
+          occasions={query.occasions}
+          occasion={query?.occasions?.[0]}
+        />
       </SectionLayout>
     </main>
   );

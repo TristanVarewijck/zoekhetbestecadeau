@@ -5,22 +5,6 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// store selected occasions in local storage and redirect to finder page (util)
-export const nextStepHandler = (
-  currentStep: number,
-  showResults: boolean
-): number | "redirect" => {
-  // store the current step in local storage
-  localStorage.setItem("currentStep", (currentStep + 1).toString());
-  // if current window is not the finder page, redirect to finder page
-  if (!showResults) {
-    return "redirect";
-  } else {
-    const newCurrentStep = currentStep + 1;
-    return newCurrentStep;
-  }
-};
-
 export const saveOptionsToLocalStorage = (
   selectedOptions: string[],
   localStorageKey: string
@@ -49,8 +33,6 @@ export function getValuesByKeyName(obj: any, keyName: string) {
 }
 
 export const pdfDownload = (folderRoute: string, fileName: string): void => {
-  console.log("folderRoute", folderRoute);
-  console.log("fileName", fileName);
   // Create a new anchor element
   const link = document.createElement("a");
   link.href = `/${folderRoute}/${fileName}.pdf`;

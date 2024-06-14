@@ -3,6 +3,7 @@
 import { ProductProps } from "@/app/types";
 import { NextRequest, NextResponse } from "next/server";
 
+// products are always max price of 150,-
 const allProducts: ProductProps[] = [
   {
     id: "1",
@@ -13,7 +14,7 @@ const allProducts: ProductProps[] = [
     price: 59.99,
     occasions: ["verjaardag", "jubileum"],
     interests: ["muziek", "tech"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "2",
@@ -24,7 +25,7 @@ const allProducts: ProductProps[] = [
     price: 29.99,
     occasions: ["housewarming", "verjaardag"],
     interests: ["sport", "natuur"],
-    gender: ["vrouwelijk"],
+    forWho: ["vrouwelijk"],
   },
   {
     id: "3",
@@ -35,7 +36,7 @@ const allProducts: ProductProps[] = [
     price: 199.99,
     occasions: ["verjaardag", "bedankje"],
     interests: ["sport", "tech"],
-    gender: ["mannelijk"],
+    forWho: ["mannelijk"],
   },
   {
     id: "4",
@@ -46,7 +47,7 @@ const allProducts: ProductProps[] = [
     price: 24.99,
     occasions: ["housewarming", "verjaardag"],
     interests: ["koken", "lezen"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "5",
@@ -57,7 +58,7 @@ const allProducts: ProductProps[] = [
     price: 49.99,
     occasions: ["verjaardag", "feesten"],
     interests: ["muziek", "tech"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "6",
@@ -68,7 +69,7 @@ const allProducts: ProductProps[] = [
     price: 19.99,
     occasions: ["verjaardag", "jubileum"],
     interests: ["fashion", "interieur"],
-    gender: ["vrouwelijk"],
+    forWho: ["vrouwelijk"],
   },
   {
     id: "7",
@@ -79,7 +80,7 @@ const allProducts: ProductProps[] = [
     price: 79.99,
     occasions: ["housewarming", "verjaardag"],
     interests: ["reizen", "natuur"],
-    gender: ["mannelijk"],
+    forWho: ["mannelijk"],
   },
   {
     id: "8",
@@ -90,7 +91,7 @@ const allProducts: ProductProps[] = [
     price: 99.99,
     occasions: ["verjaardag", "diploma"],
     interests: ["lezen", "tech"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "9",
@@ -101,7 +102,7 @@ const allProducts: ProductProps[] = [
     price: 15.99,
     occasions: ["housewarming", "bedankje"],
     interests: ["interieur", "natuur"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "10",
@@ -112,7 +113,7 @@ const allProducts: ProductProps[] = [
     price: 34.99,
     occasions: ["verjaardag", "housewarming"],
     interests: ["feesten", "interieur"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "11",
@@ -123,7 +124,7 @@ const allProducts: ProductProps[] = [
     price: 89.99,
     occasions: ["verjaardag", "bedankje"],
     interests: ["sport", "fashion"],
-    gender: ["mannelijk"],
+    forWho: ["mannelijk"],
   },
   {
     id: "12",
@@ -134,7 +135,7 @@ const allProducts: ProductProps[] = [
     price: 39.99,
     occasions: ["diploma", "pensioen"],
     interests: ["tech", "interieur"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "13",
@@ -145,7 +146,7 @@ const allProducts: ProductProps[] = [
     price: 24.99,
     occasions: ["verjaardag", "jubileum"],
     interests: ["koken", "feesten"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "14",
@@ -156,7 +157,7 @@ const allProducts: ProductProps[] = [
     price: 49.99,
     occasions: ["verjaardag", "housewarming"],
     interests: ["tech", "interieur"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "15",
@@ -167,7 +168,7 @@ const allProducts: ProductProps[] = [
     price: 29.99,
     occasions: ["verjaardag", "housewarming"],
     interests: ["feesten", "lezen"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "16",
@@ -178,7 +179,7 @@ const allProducts: ProductProps[] = [
     price: 29.99,
     occasions: ["diploma", "bedankje"],
     interests: ["tech", "interieur"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "17",
@@ -189,7 +190,7 @@ const allProducts: ProductProps[] = [
     price: 69.99,
     occasions: ["verjaardag", "jubileum"],
     interests: ["fashion", "interieur"],
-    gender: ["vrouwelijk"],
+    forWho: ["vrouwelijk"],
   },
   {
     id: "18",
@@ -200,7 +201,7 @@ const allProducts: ProductProps[] = [
     price: 39.99,
     occasions: ["housewarming", "verjaardag"],
     interests: ["koken", "tech"],
-    gender: ["mannelijk"],
+    forWho: ["mannelijk"],
   },
   {
     id: "19",
@@ -211,7 +212,7 @@ const allProducts: ProductProps[] = [
     price: 79.99,
     occasions: ["verjaardag", "sportdag"],
     interests: ["sport", "tech"],
-    gender: ["vrouwelijk"],
+    forWho: ["vrouwelijk"],
   },
   {
     id: "20",
@@ -222,7 +223,7 @@ const allProducts: ProductProps[] = [
     price: 19.99,
     occasions: ["verjaardag", "jubileum"],
     interests: ["interieur"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "21",
@@ -233,7 +234,7 @@ const allProducts: ProductProps[] = [
     price: 79.99,
     occasions: ["verjaardag", "bedankje"],
     interests: ["muziek", "tech"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "22",
@@ -244,7 +245,7 @@ const allProducts: ProductProps[] = [
     price: 99.99,
     occasions: ["housewarming", "jubileum"],
     interests: ["koken", "tech"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "23",
@@ -255,7 +256,7 @@ const allProducts: ProductProps[] = [
     price: 59.99,
     occasions: ["verjaardag", "jubileum"],
     interests: ["muziek", "tech"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "24",
@@ -266,7 +267,7 @@ const allProducts: ProductProps[] = [
     price: 29.99,
     occasions: ["housewarming", "verjaardag"],
     interests: ["sport", "natuur"],
-    gender: ["vrouwelijk"],
+    forWho: ["vrouwelijk"],
   },
   {
     id: "25",
@@ -277,7 +278,7 @@ const allProducts: ProductProps[] = [
     price: 149.99,
     occasions: ["verjaardag", "bedankje"],
     interests: ["sport", "tech"],
-    gender: ["mannelijk"],
+    forWho: ["mannelijk"],
   },
   {
     id: "26",
@@ -288,7 +289,7 @@ const allProducts: ProductProps[] = [
     price: 24.99,
     occasions: ["housewarming", "verjaardag"],
     interests: ["koken", "lezen"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "27",
@@ -299,7 +300,7 @@ const allProducts: ProductProps[] = [
     price: 49.99,
     occasions: ["verjaardag", "feesten"],
     interests: ["muziek", "tech"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "28",
@@ -310,7 +311,7 @@ const allProducts: ProductProps[] = [
     price: 19.99,
     occasions: ["verjaardag", "jubileum"],
     interests: ["fashion", "interieur"],
-    gender: ["vrouwelijk"],
+    forWho: ["vrouwelijk"],
   },
   {
     id: "29",
@@ -321,7 +322,7 @@ const allProducts: ProductProps[] = [
     price: 79.99,
     occasions: ["housewarming", "verjaardag"],
     interests: ["reizen", "natuur"],
-    gender: ["mannelijk"],
+    forWho: ["mannelijk"],
   },
   {
     id: "30",
@@ -332,7 +333,7 @@ const allProducts: ProductProps[] = [
     price: 99.99,
     occasions: ["verjaardag", "diploma"],
     interests: ["lezen", "tech"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "31",
@@ -343,7 +344,7 @@ const allProducts: ProductProps[] = [
     price: 15.99,
     occasions: ["housewarming", "bedankje"],
     interests: ["interieur", "natuur"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "32",
@@ -354,7 +355,7 @@ const allProducts: ProductProps[] = [
     price: 34.99,
     occasions: ["verjaardag", "housewarming"],
     interests: ["feesten", "interieur"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "33",
@@ -365,7 +366,7 @@ const allProducts: ProductProps[] = [
     price: 89.99,
     occasions: ["verjaardag", "bedankje"],
     interests: ["sport", "fashion"],
-    gender: ["mannelijk"],
+    forWho: ["mannelijk"],
   },
   {
     id: "34",
@@ -376,7 +377,7 @@ const allProducts: ProductProps[] = [
     price: 39.99,
     occasions: ["diploma", "pensioen"],
     interests: ["tech", "interieur"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "35",
@@ -387,7 +388,7 @@ const allProducts: ProductProps[] = [
     price: 24.99,
     occasions: ["verjaardag", "jubileum"],
     interests: ["koken", "feesten"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "36",
@@ -398,7 +399,7 @@ const allProducts: ProductProps[] = [
     price: 49.99,
     occasions: ["verjaardag", "housewarming"],
     interests: ["tech", "interieur"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "37",
@@ -409,7 +410,7 @@ const allProducts: ProductProps[] = [
     price: 29.99,
     occasions: ["verjaardag", "housewarming"],
     interests: ["feesten", "lezen"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "38",
@@ -420,7 +421,7 @@ const allProducts: ProductProps[] = [
     price: 29.99,
     occasions: ["diploma", "bedankje"],
     interests: ["tech", "interieur"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "39",
@@ -431,7 +432,7 @@ const allProducts: ProductProps[] = [
     price: 69.99,
     occasions: ["verjaardag", "jubileum"],
     interests: ["fashion", "interieur"],
-    gender: ["vrouwelijk"],
+    forWho: ["vrouwelijk"],
   },
   {
     id: "40",
@@ -442,7 +443,7 @@ const allProducts: ProductProps[] = [
     price: 39.99,
     occasions: ["housewarming", "verjaardag"],
     interests: ["koken", "tech"],
-    gender: ["mannelijk"],
+    forWho: ["mannelijk"],
   },
   {
     id: "41",
@@ -453,7 +454,7 @@ const allProducts: ProductProps[] = [
     price: 79.99,
     occasions: ["verjaardag", "sportdag"],
     interests: ["sport", "tech"],
-    gender: ["vrouwelijk"],
+    forWho: ["vrouwelijk"],
   },
   {
     id: "42",
@@ -464,7 +465,7 @@ const allProducts: ProductProps[] = [
     price: 19.99,
     occasions: ["verjaardag", "jubileum"],
     interests: ["interieur"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "43",
@@ -475,7 +476,7 @@ const allProducts: ProductProps[] = [
     price: 49.99,
     occasions: ["diploma", "housewarming"],
     interests: ["tech", "interieur"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "44",
@@ -486,7 +487,7 @@ const allProducts: ProductProps[] = [
     price: 49.99,
     occasions: ["verjaardag", "diploma"],
     interests: ["tech", "fashion"],
-    gender: ["mannelijk"],
+    forWho: ["mannelijk"],
   },
   {
     id: "45",
@@ -497,7 +498,7 @@ const allProducts: ProductProps[] = [
     price: 149.99,
     occasions: ["jubileum", "bruiloft"],
     interests: ["fashion", "tech"],
-    gender: ["vrouwelijk"],
+    forWho: ["vrouwelijk"],
   },
   {
     id: "46",
@@ -508,7 +509,7 @@ const allProducts: ProductProps[] = [
     price: 79.99,
     occasions: ["verjaardag", "housewarming"],
     interests: ["interieur", "tech"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "47",
@@ -519,7 +520,7 @@ const allProducts: ProductProps[] = [
     price: 29.99,
     occasions: ["housewarming", "jubileum"],
     interests: ["tech", "interieur"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "48",
@@ -530,7 +531,7 @@ const allProducts: ProductProps[] = [
     price: 49.99,
     occasions: ["verjaardag", "bedankje"],
     interests: ["fashion", "interieur"],
-    gender: ["mannelijk"],
+    forWho: ["mannelijk"],
   },
   {
     id: "49",
@@ -541,7 +542,7 @@ const allProducts: ProductProps[] = [
     price: 149.99,
     occasions: ["verjaardag", "diploma"],
     interests: ["tech", "reizen"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "50",
@@ -552,7 +553,7 @@ const allProducts: ProductProps[] = [
     price: 79.99,
     occasions: ["housewarming", "verjaardag"],
     interests: ["koken", "natuur"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "51",
@@ -563,7 +564,7 @@ const allProducts: ProductProps[] = [
     price: 129.99,
     occasions: ["housewarming", "diploma"],
     interests: ["tech", "interieur"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "52",
@@ -574,7 +575,7 @@ const allProducts: ProductProps[] = [
     price: 99.99,
     occasions: ["housewarming", "diploma"],
     interests: ["tech", "interieur"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "53",
@@ -585,7 +586,7 @@ const allProducts: ProductProps[] = [
     price: 89.99,
     occasions: ["verjaardag", "jubileum"],
     interests: ["muziek", "tech"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "54",
@@ -596,7 +597,7 @@ const allProducts: ProductProps[] = [
     price: 39.99,
     occasions: ["housewarming", "jubileum"],
     interests: ["koken", "feesten"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "55",
@@ -607,7 +608,7 @@ const allProducts: ProductProps[] = [
     price: 29.99,
     occasions: ["verjaardag", "sportdag"],
     interests: ["sport", "natuur"],
-    gender: ["vrouwelijk"],
+    forWho: ["vrouwelijk"],
   },
   {
     id: "56",
@@ -618,7 +619,7 @@ const allProducts: ProductProps[] = [
     price: 149.99,
     occasions: ["verjaardag", "bedankje"],
     interests: ["muziek", "tech"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "57",
@@ -629,7 +630,7 @@ const allProducts: ProductProps[] = [
     price: 49.99,
     occasions: ["housewarming", "diploma"],
     interests: ["tech", "interieur"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "58",
@@ -640,7 +641,7 @@ const allProducts: ProductProps[] = [
     price: 39.99,
     occasions: ["diploma", "bedankje"],
     interests: ["tech", "reizen"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "59",
@@ -651,7 +652,7 @@ const allProducts: ProductProps[] = [
     price: 99.99,
     occasions: ["housewarming", "verjaardag"],
     interests: ["tech", "interieur"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "60",
@@ -662,7 +663,7 @@ const allProducts: ProductProps[] = [
     price: 49.99,
     occasions: ["diploma", "housewarming"],
     interests: ["tech", "interieur"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "61",
@@ -673,7 +674,7 @@ const allProducts: ProductProps[] = [
     price: 129.99,
     occasions: ["verjaardag", "jubileum"],
     interests: ["tech", "reizen"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "62",
@@ -684,7 +685,7 @@ const allProducts: ProductProps[] = [
     price: 39.99,
     occasions: ["verjaardag", "jubileum"],
     interests: ["fashion", "reizen"],
-    gender: ["vrouwelijk"],
+    forWho: ["vrouwelijk"],
   },
   {
     id: "63",
@@ -695,7 +696,7 @@ const allProducts: ProductProps[] = [
     price: 59.99,
     occasions: ["verjaardag", "feesten"],
     interests: ["muziek", "reizen"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "64",
@@ -706,7 +707,7 @@ const allProducts: ProductProps[] = [
     price: 49.99,
     occasions: ["housewarming", "verjaardag"],
     interests: ["koken", "interieur"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
   {
     id: "65",
@@ -717,7 +718,7 @@ const allProducts: ProductProps[] = [
     price: 29.99,
     occasions: ["verjaardag", "bedankje"],
     interests: ["lezen", "reizen"],
-    gender: ["unisex"],
+    forWho: ["unisex"],
   },
 ];
 
@@ -750,15 +751,15 @@ export async function POST(request: NextRequest) {
           query.interests.includes(interest)
         )
       : true;
-    const matchesGender = query.gender
-      ? product.gender?.some((g) => query.gender.includes(g))
+    const matchesforWho = query.forWho
+      ? product.forWho?.some((g) => query.forWho.includes(g))
       : true;
     const matchesPrice = query.price
       ? product.price >= 5 && product.price <= parseFloat(query.price[0])
       : true;
 
     return (
-      matchesOccasions && matchesInterests && matchesGender && matchesPrice
+      matchesOccasions && matchesInterests && matchesforWho && matchesPrice
     );
   });
 

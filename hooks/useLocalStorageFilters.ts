@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 interface FilterProps {
   occasions?: string[];
   interests?: string[];
-  gender?: string[];
+  forWho?: string[];
   price?: number[];
 }
 
@@ -24,11 +24,9 @@ export const useLocalStorageFilters = (
     };
 
     const filters = getFiltersFromLocalStorage();
-
-    console.log(filters);
     setFilters(filters);
 
-    //
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return filters;

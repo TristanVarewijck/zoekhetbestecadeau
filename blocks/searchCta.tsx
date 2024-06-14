@@ -7,7 +7,6 @@ import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import H3Heading from "@/components/custom/heading/h3Heading";
 import { useRouter } from "next/navigation";
 import RangeSlider from "@/components/custom/rangeSlider";
-import { nextStepHandler } from "@/lib/utils";
 import { FilterProps } from "@/app/types";
 
 // promotional occasions (e.g. Christmas, Valentine's Day)
@@ -146,21 +145,21 @@ const interests = [
   },
 ];
 
-const gender = [
+const forWho = [
   {
     icon: "🚺",
-    name: "Vrouwelijk",
-    id: "vrouwelijk",
+    name: "Voor haar",
+    id: "voor_haar",
   },
   {
     icon: "🚹",
-    name: "Mannelijk",
-    id: "mannelijk",
+    name: "Voor hem",
+    id: "voor_hem",
   },
   {
     icon: "🚻",
-    name: "Unisex",
-    id: "unisex",
+    name: "Voor iedereen",
+    id: "voor_iedereen",
   },
 ];
 
@@ -171,22 +170,23 @@ const content = [
     subtitle: "Wat is de gelegenheid waarvoor je een cadeau zoekt?",
   },
   {
+    label: "Prijs",
+    title: "Wat is het budget voor het cadeau?",
+    subtitle: "Selecteer je budget voor het cadeau.",
+  },
+  {
     label: "Interesses",
     title: "Wat zijn de interesses?",
     subtitle:
       "Wat zijn de interesses van de persoon voor wie je een cadeau zoekt?",
   },
   {
-    label: "Geslacht",
-    title: "Wat voor soort cadeau zoek je?",
+    label: "Voor wie",
+    title: "Voor wie is het cadeau?",
     subtitle:
-      "Wat is het geslacht van de persoon voor wie je een cadeau zoekt?",
+      "Voor wie zoek je een cadeau? Selecteer hieronder het geslacht van de persoon voor wie je een cadeau zoekt.",
   },
-  {
-    label: "Prijs",
-    title: "Wat is het budget voor het cadeau?",
-    subtitle: "Selecteer je budget voor het cadeau.",
-  },
+
   {
     label: "Resultaten",
     title: "Dit zijn de cadeaus die bij de persoon passen!",
@@ -197,14 +197,16 @@ const content = [
 
 const SearchCta = ({
   setData,
+  setCurrentStep,
+  currentStep,
   showResults,
 }: {
   setData?: Dispatch<SetStateAction<FilterProps | {}>>;
+  setCurrentStep: Dispatch<SetStateAction<number>>;
+  currentStep: number;
   showResults: boolean;
 }) => {
   const router = useRouter();
-  const [currentStep, setCurrentStep] = useState(1);
-
   // render content based on the current step
   const filterInput = useMemo(() => {
     switch (currentStep) {
@@ -213,48 +215,43 @@ const SearchCta = ({
           // GELEGENHEDEN
           <CheckboxTabs
             checkBoxDataSet={specialOccasions}
-            setCurrentStep={setCurrentStep}
             setData={setData}
-            currentStep={1}
             localStorageKey="occasions"
-            showResults={showResults}
           />
         );
+
       case 2:
-        // INTERESSES
-        return (
-          <CheckboxTabs
-            checkBoxDataSet={interests}
-            setCurrentStep={setCurrentStep}
-            setData={setData}
-            currentStep={2}
-            localStorageKey="interests"
-            showResults={showResults}
-          />
-        );
-      case 3:
-        // GESLACHT
-        return (
-          <CheckboxTabs
-            checkBoxDataSet={gender}
-            setCurrentStep={setCurrentStep}
-            setData={setData}
-            currentStep={3}
-            localStorageKey="gender"
-            showResults={showResults}
-          />
-        );
-      case 4:
         // PRIJS
         return (
           <RangeSlider
             min={5}
-            max={100}
-            defaultValue={"25"}
+            max={150}
             localStorageKey="price"
             setData={setData}
           />
         );
+
+      case 3:
+        // INTERESSES
+        return (
+          <CheckboxTabs
+            checkBoxDataSet={interests}
+            setData={setData}
+            localStorageKey="interests"
+            multiple
+          />
+        );
+
+      case 4:
+        // GESLACHT
+        return (
+          <CheckboxTabs
+            checkBoxDataSet={forWho}
+            setData={setData}
+            localStorageKey="forWho"
+          />
+        );
+
       // RESULTATEN
       default:
         return (
@@ -283,7 +280,7 @@ const SearchCta = ({
           </div>
         );
     }
-  }, [currentStep, setData, showResults]);
+  }, [currentStep, setData, setCurrentStep]);
 
   // get the current step from local storage
   useEffect(() => {
@@ -296,13 +293,15 @@ const SearchCta = ({
         setCurrentStep(step);
       }
     }
-  }, []);
+  }, [setCurrentStep]);
 
   return (
-    <div className="relative flex justify-center flex-col mb-10 mt-5 lg:md:w-2/3 md:mx-auto rounded-2xl bg-white border-2 gap-4 h-auto p-6 lg:p-10 shadow-md">
+    <div
+      className={`relative overflow-hidden flex justify-start flex-col mb-10 mt-5 lg:md:w-2/3 md:mx-auto rounded-2xl bg-white border-2 gap-4 p-10 shadow-md`}
+    >
       {/* navigation */}
       {showResults && (
-        <div className="flex items-center mb-4">
+        <div className="flex items-center">
           {currentStep > 1 && (
             <Button
               className="mr-auto"
@@ -313,11 +312,7 @@ const SearchCta = ({
                   (currentStep - 1).toString()
                 );
 
-                if (currentStep === 2) {
-                  router.push("/");
-                } else {
-                  setCurrentStep((prevState) => prevState - 1);
-                }
+                setCurrentStep((prevState) => prevState - 1);
               }}
             >
               <ArrowLeft size={16} className="mr-1" />
@@ -337,7 +332,7 @@ const SearchCta = ({
                 );
               }}
             >
-              Volgende
+              {content[currentStep].label}
               <ArrowRight size={16} className="ml-1" />
             </Button>
           )}
@@ -350,7 +345,6 @@ const SearchCta = ({
         centered
       />
 
-      {/* dynamically based on input */}
       {filterInput}
 
       {currentStep !== 5 && (
@@ -358,8 +352,10 @@ const SearchCta = ({
           variant={"default"}
           className="flex items-center justify-center gap-2"
           onClick={() => {
-            const nextStep = nextStepHandler(currentStep, showResults);
-            if (nextStep === "redirect") {
+            const nextStep = currentStep + 1;
+            localStorage.setItem("currentStep", nextStep.toString());
+
+            if (!showResults) {
               router.push("/finder");
             } else {
               setCurrentStep(nextStep);
