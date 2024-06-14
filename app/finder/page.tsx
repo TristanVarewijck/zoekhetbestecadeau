@@ -12,7 +12,7 @@ export default function Finder() {
   useEffect(() => {
     const storedOccasions = localStorage.getItem("occasions");
     const storedInterests = localStorage.getItem("interests");
-    const storedGender = localStorage.getItem("gender");
+    const storedForWho = localStorage.getItem("forWho");
     const storedPrice = localStorage.getItem("price");
 
     if (storedOccasions) {
@@ -29,10 +29,10 @@ export default function Finder() {
       }));
     }
 
-    if (storedGender) {
+    if (storedForWho) {
       setQuery((prevState) => ({
         ...prevState,
-        gender: JSON.parse(storedGender),
+        forWho: JSON.parse(storedForWho),
       }));
     }
 
@@ -43,8 +43,6 @@ export default function Finder() {
       }));
     }
   }, []);
-
-  console.log(query);
 
   return (
     <main>

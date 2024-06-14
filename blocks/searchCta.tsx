@@ -7,7 +7,6 @@ import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import H3Heading from "@/components/custom/heading/h3Heading";
 import { useRouter } from "next/navigation";
 import RangeSlider from "@/components/custom/rangeSlider";
-import { nextStepHandler } from "@/lib/utils";
 import { FilterProps } from "@/app/types";
 
 // promotional occasions (e.g. Christmas, Valentine's Day)
@@ -146,21 +145,21 @@ const interests = [
   },
 ];
 
-const gender = [
+const forWho = [
   {
     icon: "🚺",
-    name: "Vrouwelijk",
-    id: "vrouwelijk",
+    name: "Voor haar",
+    id: "voor_haar",
   },
   {
     icon: "🚹",
-    name: "Mannelijk",
-    id: "mannelijk",
+    name: "Voor hem",
+    id: "voor_hem",
   },
   {
     icon: "🚻",
-    name: "Unisex",
-    id: "unisex",
+    name: "Voor iedereen",
+    id: "voor_iedereen",
   },
 ];
 
@@ -182,10 +181,10 @@ const content = [
       "Wat zijn de interesses van de persoon voor wie je een cadeau zoekt?",
   },
   {
-    label: "Geslacht",
-    title: "Wat voor soort cadeau zoek je?",
+    label: "Voor wie",
+    title: "Voor wie is het cadeau?",
     subtitle:
-      "Wat is het geslacht van de persoon voor wie je een cadeau zoekt?",
+      "Voor wie zoek je een cadeau? Selecteer hieronder het geslacht van de persoon voor wie je een cadeau zoekt.",
   },
 
   {
@@ -198,16 +197,16 @@ const content = [
 
 const SearchCta = ({
   setData,
-  data,
+  setCurrentStep,
+  currentStep,
   showResults,
 }: {
   setData?: Dispatch<SetStateAction<FilterProps | {}>>;
-  data?: FilterProps;
+  setCurrentStep: Dispatch<SetStateAction<number>>;
+  currentStep: number;
   showResults: boolean;
 }) => {
   const router = useRouter();
-  const [currentStep, setCurrentStep] = useState(1);
-
   // render content based on the current step
   const filterInput = useMemo(() => {
     switch (currentStep) {
@@ -247,9 +246,9 @@ const SearchCta = ({
         // GESLACHT
         return (
           <CheckboxTabs
-            checkBoxDataSet={gender}
+            checkBoxDataSet={forWho}
             setData={setData}
-            localStorageKey="gender"
+            localStorageKey="forWho"
           />
         );
 
@@ -281,7 +280,7 @@ const SearchCta = ({
           </div>
         );
     }
-  }, [currentStep, setData]);
+  }, [currentStep, setData, setCurrentStep]);
 
   // get the current step from local storage
   useEffect(() => {
@@ -294,7 +293,7 @@ const SearchCta = ({
         setCurrentStep(step);
       }
     }
-  }, []);
+  }, [setCurrentStep]);
 
   return (
     <div
@@ -313,11 +312,7 @@ const SearchCta = ({
                   (currentStep - 1).toString()
                 );
 
-                if (currentStep === 2) {
-                  router.push("/");
-                } else {
-                  setCurrentStep((prevState) => prevState - 1);
-                }
+                setCurrentStep((prevState) => prevState - 1);
               }}
             >
               <ArrowLeft size={16} className="mr-1" />
@@ -350,7 +345,6 @@ const SearchCta = ({
         centered
       />
 
-      {/* dynamically based on input */}
       {filterInput}
 
       {currentStep !== 5 && (
@@ -358,8 +352,10 @@ const SearchCta = ({
           variant={"default"}
           className="flex items-center justify-center gap-2"
           onClick={() => {
-            const nextStep = nextStepHandler(currentStep, showResults);
-            if (nextStep === "redirect") {
+            const nextStep = currentStep + 1;
+            localStorage.setItem("currentStep", nextStep.toString());
+
+            if (!showResults) {
               router.push("/finder");
             } else {
               setCurrentStep(nextStep);

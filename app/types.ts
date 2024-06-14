@@ -15,7 +15,7 @@ export interface ProductProps {
   price: number;
   occasions?: string[];
   interests?: string[];
-  gender?: string[];
+  forWho?: string[];
 }
 
 export interface PopularProductsProps {
@@ -43,6 +43,6 @@ export interface RangeSliderProps {
 export interface FilterProps {
   occasions?: string[];
   interests?: string[];
-  gender?: string[];
+  forWho?: string[];
   price?: number[];
 }
