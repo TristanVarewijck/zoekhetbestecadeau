@@ -8,6 +8,7 @@ import H3Heading from "@/components/custom/heading/h3Heading";
 import { useRouter } from "next/navigation";
 import RangeSlider from "@/components/custom/rangeSlider";
 import { FilterProps } from "@/app/types";
+import Image from "next/image";
 
 // promotional occasions (e.g. Christmas, Valentine's Day)
 // const holidayOccasions = [
@@ -167,7 +168,7 @@ const content = [
   {
     label: "Gelegenheid",
     title: "Kies de gelegenheid",
-    subtitle: "Wat is de gelegenheid waarvoor je een cadeau zoekt?",
+    subtitle: "Selecteer de gelegenheid waarvoor je een cadeau zoekt.",
   },
   {
     label: "Prijs",
@@ -178,20 +179,19 @@ const content = [
     label: "Interesses",
     title: "Wat zijn de interesses?",
     subtitle:
-      "Wat zijn de interesses van de persoon voor wie je een cadeau zoekt?",
+      "Selecteer de interesses van de persoon waarvoor je een cadeau zoekt.",
   },
   {
     label: "Voor wie",
     title: "Voor wie is het cadeau?",
-    subtitle:
-      "Voor wie zoek je een cadeau? Selecteer hieronder het geslacht van de persoon voor wie je een cadeau zoekt.",
+    subtitle: "Selecteer de optie die het beste past.",
   },
 
   {
-    label: "Resultaten",
-    title: "Dit zijn de cadeaus die bij de persoon passen!",
+    label: "Resultaten 🎉",
+    title: "Dit zijn de cadeaus die wij hebben gevonden :(",
     subtitle:
-      "Hieronder vind je de cadeaus die wij gevonden hebben, refresh om nieuwe cadeaus te zien",
+      "Wij hopen dat je een leuk cadeau hebt gevonden. Veel plezier met geven!",
   },
 ];
 
@@ -255,32 +255,25 @@ const SearchCta = ({
       // RESULTATEN
       default:
         return (
-          <div className="flex gap-4 justify-center">
-            <Button
-              variant="default"
-              onClick={() => {
-                localStorage.setItem("currentStep", "1");
-                setCurrentStep(1);
-              }}
-            >
-              Refresh de resultaten
-              <RefreshCw size={16} className="ml-1" />
-            </Button>
+          <div>
+            {/* filters overview clickable to go back to the step */}
+            <div>
+              <div></div>
+              <Image
+                src="/images/woman_and_daughter.svg"
+                alt="Gifts"
+                width={300}
+                height={0}
+                className="mx-auto"
+              />
+            </div>
 
-            <Button
-              variant="outline"
-              onClick={() => {
-                localStorage.setItem("currentStep", "1");
-                setCurrentStep(1);
-              }}
-            >
-              Opnieuw beginnen
-              <Home size={16} className="ml-1" />
-            </Button>
+            {/* scroll down indicator */}
+            <div></div>
           </div>
         );
     }
-  }, [currentStep, setData, setCurrentStep]);
+  }, [currentStep, setData]);
 
   // get the current step from local storage
   useEffect(() => {
@@ -297,7 +290,7 @@ const SearchCta = ({
 
   return (
     <div
-      className={`relative overflow-hidden flex justify-start flex-col mb-10 mt-5 lg:md:w-2/3 md:mx-auto rounded-2xl bg-white border-2 gap-4 p-10 shadow-md`}
+      className={`relative overflow-hidden flex justify-start flex-col mt-3 lg:mt-6 lg:md:w-2/3 md:mx-auto rounded-2xl bg-white border-2 gap-4 p-4 lg:p-6 shadow-md`}
     >
       {/* navigation */}
       {showResults && (
@@ -334,6 +327,19 @@ const SearchCta = ({
             >
               {content[currentStep].label}
               <ArrowRight size={16} className="ml-1" />
+            </Button>
+          )}
+
+          {currentStep === 5 && (
+            <Button
+              variant="secondary"
+              onClick={() => {
+                localStorage.setItem("currentStep", "1");
+                setCurrentStep(1);
+              }}
+            >
+              {content[0].label}
+              <RefreshCw size={16} className="ml-1" />
             </Button>
           )}
         </div>
