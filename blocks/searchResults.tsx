@@ -16,7 +16,7 @@ import {
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-const SearchResults = ({ productsArray }: PopularProductsProps) => {
+const SearchResults = ({ productsArray, loading }: PopularProductsProps) => {
   const productsPerPage = 20;
   const [currentPage, setCurrentPage] = useState(1);
   const [randomizeDisabled, setRandomizeDisabled] = useState(false);
@@ -54,7 +54,7 @@ const SearchResults = ({ productsArray }: PopularProductsProps) => {
     <section>
       <div className="flex md:items-end justify-between flex-col md:flex-row">
         <H3Heading
-          title={`🎁 ${productsArray.length} beste cadeau matches!`}
+          title={`${productsArray.length} beste cadeau matches! 🎁`}
           subtitle="Blijf filteren om betere cadeau's te krijgen 🔎"
         />
 

@@ -181,7 +181,9 @@ const SearchMerged = ({ showResults, query, setQuery }: SearchMergedProps) => {
       </Accordion>
 
       <div className="mt-4 lg:mt-6">
-        {showResults && <SearchResults productsArray={products} />}
+        {showResults && (
+          <SearchResults productsArray={products} loading={loading} />
+        )}
       </div>
     </div>
   );

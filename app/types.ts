@@ -20,6 +20,7 @@ export interface ProductProps {
 
 export interface PopularProductsProps {
   productsArray: ProductProps[];
+  loading: boolean;
 }
 
 export interface CheckboxTabsProps {
