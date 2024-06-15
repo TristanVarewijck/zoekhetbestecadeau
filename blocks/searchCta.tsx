@@ -189,7 +189,7 @@ const content = [
 
   {
     label: "Resultaten 🎉",
-    title: "Dit zijn de cadeaus die wij gevonden hebben",
+    title: "Dit zijn de cadeaus die wij hebben gevonden :(",
     subtitle:
       "Wij hopen dat je een leuk cadeau hebt gevonden. Veel plezier met geven!",
   },

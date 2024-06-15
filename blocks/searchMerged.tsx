@@ -20,7 +20,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight, Check, CircleDashed } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface SearchMergedProps {
@@ -124,8 +124,10 @@ const SearchMerged = ({ showResults, query, setQuery }: SearchMergedProps) => {
                   >
                     <span>{question.questionType}</span>
                     <span>
-                      {queryKeysLength.includes(question.id) && (
-                        <Check className="ml-2" size={16} />
+                      {queryKeysLength.includes(question.id) ? (
+                        <Check className="ml-1" size={16} />
+                      ) : (
+                        <CircleDashed className="ml-1" size={16} />
                       )}
                     </span>
                   </span>
