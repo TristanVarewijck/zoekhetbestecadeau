@@ -6,7 +6,7 @@ import Image from "next/image";
 
 const Navbar = () => {
   return (
-    <div className="flex h-16 shrink-0 items-center mx-auto px-4 md:px-6 max-w-6xl justify-end absolute w-full right-0 left-0 z-50">
+    <div className="flex h-16 shrink-0 items-center mx-auto px-4 md:px-6 max-w-[1440px] justify-end absolute w-full right-0 left-0 z-50">
       <Sheet>
         <SheetTrigger asChild>
           <Button className="lg:hidden" size="icon" variant="outline">
