@@ -88,31 +88,26 @@ const SearchMerged = ({ showResults, query, setQuery }: SearchMergedProps) => {
           }}
         >
           <TabsList>
-            {questions.map(
-              (question) => (
-                console.log(question.questionType),
-                (
-                  <TabsTrigger
-                    key={question.step}
-                    value={question.questionType}
-                    className={`${question.step === 5 && "hidden"}`}
-                  >
-                    <span
-                      className="w-full h-full text-center font-bold
+            {questions.map((question) => (
+              <TabsTrigger
+                key={question.step}
+                value={question.questionType}
+                className={`${question.step === 5 && "hidden"}`}
+              >
+                <span
+                  className="w-full h-full text-center font-bold
                 cursor-pointer flex items-center justify-center gap-1
                 "
-                    >
-                      <span>{question.questionType}</span>
-                      <span>
-                        {queryKeysLength.includes(question.id) && (
-                          <Check className="ml-2" size={16} />
-                        )}
-                      </span>
-                    </span>
-                  </TabsTrigger>
-                )
-              )
-            )}
+                >
+                  <span>{question.questionType}</span>
+                  <span>
+                    {queryKeysLength.includes(question.id) && (
+                      <Check className="ml-2" size={16} />
+                    )}
+                  </span>
+                </span>
+              </TabsTrigger>
+            ))}
           </TabsList>
         </Tabs>
       )}

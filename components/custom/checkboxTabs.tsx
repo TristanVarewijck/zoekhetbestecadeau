@@ -38,15 +38,10 @@ const CheckboxTabs = ({
     const occasionQuery = { [localStorageKey]: updatedOptions };
 
     setData &&
-      setData(
-        (prevState) => (
-          console.log(prevState),
-          {
-            ...prevState,
-            ...occasionQuery,
-          }
-        )
-      );
+      setData((prevState) => ({
+        ...prevState,
+        ...occasionQuery,
+      }));
   };
 
   return (
