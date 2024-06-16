@@ -3,14 +3,7 @@
 import { FilterProps } from "@/app/types";
 import SearchCta from "./searchCta";
 import SearchResults from "./searchResults";
-import {
-  Dispatch,
-  SetStateAction,
-  use,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { useFetchProducts } from "@/hooks/useFetchProducts";
 import { useLocalStorageFilters } from "@/hooks/useLocalStorageFilters";
 import {
@@ -82,9 +75,12 @@ const SearchMerged = ({ showResults, query, setQuery }: SearchMergedProps) => {
   // console.log(loading);
   // console.log(error)
 
+  //
   useEffect(() => {
     if (!showResults) {
+      localStorage.setItem("currentStep", "1");
       setCurrentStep(1);
+
       return;
     }
   }, [showResults]);

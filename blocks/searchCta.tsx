@@ -1,7 +1,15 @@
 "use client";
 
 import { Button } from "../components/ui/button";
-import { ArrowLeft, ArrowRight, Home, RefreshCw } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  BadgeX,
+  Home,
+  ListRestart,
+  RefreshCw,
+  Route,
+} from "lucide-react";
 import CheckboxTabs from "@/components/custom/checkboxTabs";
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import H3Heading from "@/components/custom/heading/h3Heading";
@@ -9,6 +17,18 @@ import { useRouter } from "next/navigation";
 import RangeSlider from "@/components/custom/rangeSlider";
 import { FilterProps } from "@/app/types";
 import Image from "next/image";
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 // promotional occasions (e.g. Christmas, Valentine's Day)
 // const holidayOccasions = [
@@ -189,9 +209,9 @@ const content = [
 
   {
     label: "Resultaten 🎉",
-    title: "Dit zijn de cadeaus die wij hebben gevonden :(",
+    title: "Dit zijn de cadeaus die wij hebben gevonden!",
     subtitle:
-      "Wij hopen dat je een leuk cadeau hebt gevonden. Veel plezier met geven!",
+      "Wij hopen dat je een leuk cadeau hebt gevonden. Veel plezier met geven 🎁",
   },
 ];
 
@@ -267,9 +287,6 @@ const SearchCta = ({
                 className="mx-auto"
               />
             </div>
-
-            {/* scroll down indicator */}
-            <div></div>
           </div>
         );
     }
@@ -356,7 +373,7 @@ const SearchCta = ({
       {currentStep !== 5 && (
         <Button
           variant={"default"}
-          className="flex items-center justify-center gap-2"
+          className="flex items-center justify-center gap-2 mx-auto"
           onClick={() => {
             const nextStep = currentStep + 1;
             localStorage.setItem("currentStep", nextStep.toString());
@@ -375,6 +392,57 @@ const SearchCta = ({
           </span>
           <ArrowRight size={18} />
         </Button>
+      )}
+
+      {currentStep === 5 && (
+        <AlertDialog>
+          <AlertDialogTrigger>
+            <Button variant="outline" className="mx-auto">
+              <ListRestart size={16} className="mr-1" />
+              Filters resetten en opnieuw beginnen
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                Weet je zeker dat je je filters wilt resetten?
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                Door het resetten worden alle geselecteerde filters verwijderd
+                en begin je opnieuw.
+                {/* Ook wordt je wishlist automatisch geleegd. */}
+                Je kunt er ook voor kiezen om zelf terug te gaan naar een vorige
+                stap, met behoud van je huidige filters
+                {/* en wishlist. */}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <div
+                className="flex items-center flex-row-reverse justify-between gap-3"
+                style={{ width: "100%" }}
+              >
+                <AlertDialogAction>
+                  <span className="flex items-center gap-1">
+                    <Route size={16} />
+                    <span>Zelf navigeren</span>
+                  </span>
+                </AlertDialogAction>
+                <AlertDialogCancel
+                  onClick={() => {
+                    // clear local storage and redirect to the start
+                    localStorage.clear();
+                    router.push("/");
+                  }}
+                >
+                  <span className="flex items-center gap-1">
+                    <BadgeX size={16} />
+                    <span>Resetten en opnieuw beginnen</span>
+                  </span>
+                </AlertDialogCancel>
+              </div>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       )}
     </div>
   );
