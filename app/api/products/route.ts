@@ -1,7 +1,9 @@
 // app/api/users/route.js
 
 import { ProductProps } from "@/app/types";
+import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
+import Papa from "papaparse";
 
 // products are always max price of 150,-
 const allProducts: ProductProps[] = [
@@ -722,47 +724,109 @@ const allProducts: ProductProps[] = [
   },
 ];
 
-export async function GET(request: NextRequest) {
-  const users = [
-    { id: 1, name: "John Doe" },
-    { id: 2, name: "Jane Doe" },
-  ];
+// export async function GET(request: NextRequest) {
+//   const users = [
+//     { id: 1, name: "John Doe" },
+//     { id: 2, name: "Jane Doe" },
+//   ];
 
-  return NextResponse.json(users);
-}
+//   return NextResponse.json(users);
+// }
+
+// export async function POST(request: NextRequest) {
+//   const { query } = await request.json();
+
+//   // If query is empty, return everything
+//   if (!query) {
+//     return NextResponse.json(allProducts);
+//   }
+
+//   // Filter products based on the query
+//   const filteredProducts = allProducts.filter((product) => {
+//     const matchesOccasions = query.occasions
+//       ? product.occasions?.some((occasion) =>
+//           query.occasions.includes(occasion)
+//         )
+//       : true;
+//     const matchesInterests = query.interests
+//       ? product.interests?.some((interest) =>
+//           query.interests.includes(interest)
+//         )
+//       : true;
+//     const matchesforWho = query.forWho
+//       ? product.forWho?.some((g) => query.forWho.includes(g))
+//       : true;
+//     const matchesPrice = query.price
+//       ? product.price >= 5 && product.price <= parseFloat(query.price[0])
+//       : true;
+
+//     return (
+//       matchesOccasions && matchesInterests && matchesforWho && matchesPrice
+//     );
+//   });
+
+//   // Return the filtered products
+//   return NextResponse.json(filteredProducts);
+// }
 
 export async function POST(request: NextRequest) {
-  const { query } = await request.json();
-
-  // If query is empty, return everything
-  if (!query) {
-    return NextResponse.json(allProducts);
-  }
-
-  // Filter products based on the query
-  const filteredProducts = allProducts.filter((product) => {
-    const matchesOccasions = query.occasions
-      ? product.occasions?.some((occasion) =>
-          query.occasions.includes(occasion)
-        )
-      : true;
-    const matchesInterests = query.interests
-      ? product.interests?.some((interest) =>
-          query.interests.includes(interest)
-        )
-      : true;
-    const matchesforWho = query.forWho
-      ? product.forWho?.some((g) => query.forWho.includes(g))
-      : true;
-    const matchesPrice = query.price
-      ? product.price >= 5 && product.price <= parseFloat(query.price[0])
-      : true;
-
-    return (
-      matchesOccasions && matchesInterests && matchesforWho && matchesPrice
+  try {
+    const response = await axios.get(
+      "https://api.partnerize.com/user/publisher/1101l356523/feed",
+      {
+        headers: {
+          Authorization: `Basic ${process.env.PARTNERIZE_API_KEY}`,
+          Cookie: "session=4b6s3jh2bcf4on9qqir5ho0gng",
+        },
+      }
     );
-  });
 
-  // Return the filtered products
-  return NextResponse.json(filteredProducts);
+    const campaign = response.data.campaigns[0].campaign;
+
+    console.log(campaign);
+
+    const feed = campaign.feeds.find(
+      (feed: any) => feed.feed.campaign_feeds_id === "1011l1698"
+    );
+
+    if (!feed) {
+      return new NextResponse(JSON.stringify({ error: "Feed not found" }), {
+        status: 404,
+      });
+    }
+
+    console.log(feed);
+
+    const csvUrl = feed.feed.location;
+    // Fetch the CSV data
+    const csvResponse = await axios.get(csvUrl);
+    const csvData = csvResponse.data;
+
+    // Parse the CSV data
+    const parsedData = Papa.parse(csvData, {
+      header: true,
+      dynamicTyping: true,
+    });
+
+    console.log(parsedData.data[0]);
+
+    // Extract and log unique product types (product_type is categoryid)
+    const uniqueProductTypes: any[] = [];
+    parsedData.data.forEach((product: any) => {
+      if (
+        product.product_type &&
+        !uniqueProductTypes.includes(product.product_type)
+      ) {
+        uniqueProductTypes.push(product.product_type);
+      }
+    });
+
+    console.log("Unique product types:", uniqueProductTypes);
+
+    return NextResponse.json(response.data);
+  } catch (error: any) {
+    return new NextResponse(JSON.stringify({ error: "Failed to fetch data" }), {
+      status: error.response?.status || 500,
+    });
+  }
 }
