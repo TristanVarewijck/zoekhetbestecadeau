@@ -3,7 +3,7 @@
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
 import Papa from "papaparse";
-import { productsFilter, productsParser } from "@/lib/utils";
+import { productsParser } from "@/lib/utils";
 
 // this will be the techscraper API (coolblue/partnerize)
 
@@ -53,7 +53,14 @@ export async function POST(request: NextRequest) {
       dynamicTyping: true,
     });
 
-    return NextResponse.json({ data: data });
+    // get the products that are between 0 and 150 euros
+    const products = data.filter((product: any) => product.price <= 150);
+
+    // return 100 random products
+    const randomProducts = products
+      .sort(() => 0.5 - Math.random())
+      .slice(0, 100);
+    return NextResponse.json({ data: randomProducts });
   } catch (error: any) {
     return new NextResponse(JSON.stringify({ error: "Failed to fetch data" }), {
       status: error.response?.status || 500,

@@ -32,6 +32,10 @@ export default function RootLayout({
         <div className="min-h-screen">{children}</div>
         <Footer />
       </body>
+      {/* <script
+        type="text/javascript"
+        src="https://tm.tradetracker.net/tag?t=a&amp;s=474149&amp;chk=5b15b5e41e5508c3e7dcd93a6e6f6d20"
+      ></script> */}
     </html>
   );
 }

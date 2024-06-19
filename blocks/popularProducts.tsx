@@ -8,7 +8,7 @@ import {
 
 import ProductCard from "@/components/custom/productCard";
 import Autoplay from "embla-carousel-autoplay";
-import { ProductProps } from "@/app/types";
+import { CoolblueProductProps, ProductProps } from "@/app/types";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -23,7 +23,7 @@ interface PopularProductsProps {
 }
 
 const PopularProducts = ({ occasions, occasion }: PopularProductsProps) => {
-  const [products, setProducts] = useState<ProductProps[]>([]);
+  const [products, setProducts] = useState<CoolblueProductProps[]>([]);
   const localStoredQuery = useLocalStorageFilters(["occasions"]);
 
   useEffect(() => {
@@ -41,7 +41,7 @@ const PopularProducts = ({ occasions, occasion }: PopularProductsProps) => {
             },
           });
 
-          const popularProducts = response.data.data.slice(100, 150);
+          const popularProducts = response.data.data;
 
           console.log("popularProducts", popularProducts);
 
@@ -100,7 +100,7 @@ const PopularProducts = ({ occasions, occasion }: PopularProductsProps) => {
           <CarouselContent>
             {products.map((product) => (
               <CarouselItem
-                key={product.id}
+                key={product.sku}
                 className="basis-1/1 md:basis-1/2 lg:basis-1/4"
               >
                 <Link href={product.product_url} target="_blank">
