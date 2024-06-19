@@ -1,0 +1,28 @@
+[
+  {
+    "label": "Gelegenheid",
+    "title": "Kies de gelegenheid",
+    "subtitle": "Selecteer de gelegenheid waarvoor je een cadeau zoekt."
+  },
+  {
+    "label": "Prijs",
+    "title": "Wat is het budget voor het cadeau?",
+    "subtitle": "Selecteer je budget voor het cadeau."
+  },
+  {
+    "label": "Interesses",
+    "title": "Wat zijn de interesses?",
+    "subtitle": "Selecteer de interesses van de persoon waarvoor je een cadeau zoekt."
+  },
+  {
+    "label": "Voor wie",
+    "title": "Voor wie is het cadeau?",
+    "subtitle": "Selecteer de optie die het beste past."
+  },
+
+  {
+    "label": "Resultaten 🎉",
+    "title": "Dit zijn de cadeaus die wij hebben gevonden!",
+    "subtitle": "Wij hopen dat je een leuk cadeau hebt gevonden. Veel plezier met geven 🎁"
+  }
+]

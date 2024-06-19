@@ -47,3 +47,10 @@ export interface FilterProps {
   forWho?: string[];
   price?: number[];
 }
+
+export interface CountdownCancelProps {
+  isTimerActive: boolean;
+  setIsTimerActive: (value: boolean) => void;
+  setCancelCounter: (value: number) => void;
+  cancelCounter: number;
+}

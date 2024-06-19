@@ -1,11 +1,7 @@
-"use client";
-
 import { Button } from "../components/ui/button";
 import {
   ArrowLeft,
   ArrowRight,
-  BadgeX,
-  Home,
   ListRestart,
   RefreshCw,
   Route,
@@ -16,12 +12,11 @@ import H3Heading from "@/components/custom/heading/h3Heading";
 import { useRouter } from "next/navigation";
 import RangeSlider from "@/components/custom/rangeSlider";
 import { FilterProps } from "@/app/types";
+import CountdownCancel from "@/components/custom/countdownCancel";
 import Image from "next/image";
-
 import {
   AlertDialog,
   AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
@@ -29,191 +24,10 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-
-// promotional occasions (e.g. Christmas, Valentine's Day)
-// const holidayOccasions = [
-//   { icon: "💕", name: "Valentijn", id: "valentijn" },
-//   {
-//     icon: "🎄",
-//     name: "Kerst",
-//     id: "kerst",
-//   },
-//   {
-//     icon: "🎁",
-//     name: "Sinterklaas",
-//     id: "sinterklaas",
-//   },
-//   {
-//     icon: "🐰",
-//     name: "Pasen",
-//     id: "pasen",
-//   },
-//   {
-//     icon: "🎃",
-//     name: "Halloween",
-//     id: "halloween",
-//   },
-//   {
-//     icon: "🎉",
-//     name: "Oud & Nieuw",
-//     id: "oudnieuw",
-//   },
-// ];
-
-const specialOccasions = [
-  {
-    icon: "🌹",
-    name: "Date",
-    id: "date",
-  },
-  {
-    icon: "🧁",
-    name: "Verjaardag",
-    id: "verjaardag",
-  },
-  {
-    icon: "🙏",
-    name: "Bedankje",
-    id: "bedankje",
-  },
-  {
-    icon: "👋",
-    name: "Vertrek",
-    id: "vertrek",
-  },
-  {
-    icon: "🏡",
-    name: "Housewarming",
-    id: "housewarming",
-  },
-  {
-    icon: "🎓",
-    name: "Diploma",
-    id: "diploma",
-  },
-  {
-    icon: "👶",
-    name: "Geboorte",
-    id: "geboorte",
-  },
-  {
-    icon: "🎓",
-    name: "Pensioen",
-    id: "pensioen",
-  },
-  {
-    icon: "🎊",
-    name: "Jubileum",
-    id: "jubileum",
-  },
-  {
-    icon: "👰",
-    name: "Bruiloft",
-    id: "bruiloft",
-  },
-];
-
-const interests = [
-  {
-    icon: "🏋️",
-    name: "Sport",
-    id: "sport",
-  },
-  {
-    icon: "📚",
-    name: "Lezen",
-    id: "lezen",
-  },
-  {
-    icon: "🧣",
-    name: "Fashion",
-    id: "fashion",
-  },
-  {
-    icon: "🥘",
-    name: "Koken",
-    id: "koken",
-  },
-  {
-    icon: "✈️",
-    name: "Reizen",
-    id: "reizen",
-  },
-  {
-    icon: "💻",
-    name: "Tech",
-    id: "tech",
-  },
-  {
-    icon: "🏡",
-    name: "Interieur",
-    id: "interieur",
-  },
-  {
-    icon: "🎊",
-    name: "Feesten",
-    id: "feesten",
-  },
-  {
-    icon: "🎧",
-    name: "Muziek",
-    id: "muziek",
-  },
-  {
-    icon: "🍀",
-    name: "Natuur",
-    id: "natuur",
-  },
-];
-
-const forWho = [
-  {
-    icon: "🚺",
-    name: "Voor haar",
-    id: "voor_haar",
-  },
-  {
-    icon: "🚹",
-    name: "Voor hem",
-    id: "voor_hem",
-  },
-  {
-    icon: "🚻",
-    name: "Voor iedereen",
-    id: "voor_iedereen",
-  },
-];
-
-const content = [
-  {
-    label: "Gelegenheid",
-    title: "Kies de gelegenheid",
-    subtitle: "Selecteer de gelegenheid waarvoor je een cadeau zoekt.",
-  },
-  {
-    label: "Prijs",
-    title: "Wat is het budget voor het cadeau?",
-    subtitle: "Selecteer je budget voor het cadeau.",
-  },
-  {
-    label: "Interesses",
-    title: "Wat zijn de interesses?",
-    subtitle:
-      "Selecteer de interesses van de persoon waarvoor je een cadeau zoekt.",
-  },
-  {
-    label: "Voor wie",
-    title: "Voor wie is het cadeau?",
-    subtitle: "Selecteer de optie die het beste past.",
-  },
-
-  {
-    label: "Resultaten 🎉",
-    title: "Dit zijn de cadeaus die wij hebben gevonden!",
-    subtitle:
-      "Wij hopen dat je een leuk cadeau hebt gevonden. Veel plezier met geven 🎁",
-  },
-];
+import occasions from "@/json/occasions.json";
+import interests from "@/json/interests.json";
+import forWho from "@/json/forWho.json";
+import content from "@/json/searchCta.json";
 
 const SearchCta = ({
   setData,
@@ -227,6 +41,22 @@ const SearchCta = ({
   showResults: boolean;
 }) => {
   const router = useRouter();
+  const [cancelCounter, setCancelCounter] = useState<number>(3);
+  const [isTimerActive, setIsTimerActive] = useState<boolean>(false);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (isTimerActive && cancelCounter > 0) {
+      timer = setTimeout(() => {
+        setCancelCounter((prev) => prev - 1);
+      }, 1000);
+    } else if (cancelCounter === 0) {
+      localStorage.clear();
+      router.push("/");
+    }
+    return () => clearTimeout(timer);
+  }, [isTimerActive, cancelCounter, router]);
+
   // render content based on the current step
   const filterInput = useMemo(() => {
     switch (currentStep) {
@@ -234,12 +64,11 @@ const SearchCta = ({
         return (
           // GELEGENHEDEN
           <CheckboxTabs
-            checkBoxDataSet={specialOccasions}
+            checkBoxDataSet={occasions}
             setData={setData}
             localStorageKey="occasions"
           />
         );
-
       case 2:
         // PRIJS
         return (
@@ -250,7 +79,6 @@ const SearchCta = ({
             setData={setData}
           />
         );
-
       case 3:
         // INTERESSES
         return (
@@ -271,7 +99,6 @@ const SearchCta = ({
             localStorageKey="forWho"
           />
         );
-
       // RESULTATEN
       default:
         return (
@@ -309,7 +136,6 @@ const SearchCta = ({
     <div
       className={`relative overflow-hidden flex justify-start flex-col mt-3 lg:mt-6 lg:md:w-2/3 md:mx-auto rounded-2xl bg-white border-2 gap-4 p-4 lg:p-6 shadow-md`}
     >
-      {/* navigation */}
       {showResults && (
         <div className="flex items-center">
           {currentStep > 1 && (
@@ -367,9 +193,7 @@ const SearchCta = ({
         subtitle={content[currentStep - 1].subtitle}
         centered
       />
-
       {filterInput}
-
       {currentStep !== 5 && (
         <Button
           variant={"default"}
@@ -427,18 +251,12 @@ const SearchCta = ({
                     <span>Zelf navigeren</span>
                   </span>
                 </AlertDialogAction>
-                <AlertDialogCancel
-                  onClick={() => {
-                    // clear local storage and redirect to the start
-                    localStorage.clear();
-                    router.push("/");
-                  }}
-                >
-                  <span className="flex items-center gap-1">
-                    <BadgeX size={16} />
-                    <span>Resetten en opnieuw beginnen</span>
-                  </span>
-                </AlertDialogCancel>
+                <CountdownCancel
+                  isTimerActive={isTimerActive}
+                  setIsTimerActive={setIsTimerActive}
+                  setCancelCounter={setCancelCounter}
+                  cancelCounter={cancelCounter}
+                />
               </div>
             </AlertDialogFooter>
           </AlertDialogContent>
