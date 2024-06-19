@@ -35,7 +35,7 @@ const PopularProducts = ({ occasions, occasion }: PopularProductsProps) => {
           //   query,
           // });
 
-          const response = await axios.post("/api/products", {
+          const response = await axios.post("/api/products/coolblue", {
             query: {
               occasions,
             },
@@ -46,7 +46,7 @@ const PopularProducts = ({ occasions, occasion }: PopularProductsProps) => {
           console.log("popularProducts", popularProducts);
 
           if (popularProducts.length === 0) {
-            const response = await axios.post("/api/products", {});
+            const response = await axios.post("/api/products/coolblue", {});
             const products = response.data;
             setProducts(products);
           } else {
