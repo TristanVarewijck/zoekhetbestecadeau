@@ -41,7 +41,9 @@ const PopularProducts = ({ occasions, occasion }: PopularProductsProps) => {
             },
           });
 
-          const popularProducts = response.data;
+          const popularProducts = response.data.data.slice(100, 150);
+
+          console.log("popularProducts", popularProducts);
 
           if (popularProducts.length === 0) {
             const response = await axios.post("/api/products", {});
@@ -101,7 +103,7 @@ const PopularProducts = ({ occasions, occasion }: PopularProductsProps) => {
                 key={product.id}
                 className="basis-1/1 md:basis-1/2 lg:basis-1/4"
               >
-                <Link href={product.url} target="_blank">
+                <Link href={product.product_url} target="_blank">
                   <ProductCard {...product} />
                 </Link>
               </CarouselItem>

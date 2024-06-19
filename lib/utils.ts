@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { ProductProps } from "@/app/types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -45,4 +46,12 @@ export const pdfDownload = (folderRoute: string, fileName: string): void => {
 
   // Remove the link after download
   document.body.removeChild(link);
+};
+
+export const productsFilter = (products: any[], filter: any) => {
+  return {};
+};
+
+export const productsParser = (product: any) => {
+  return {};
 };
