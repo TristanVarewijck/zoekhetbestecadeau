@@ -19,23 +19,37 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Head>
-        {/* tradetracker  - verification*/}
+        {/* TradeTracker meta tag */}
         <meta
           name="d8636510c24e825"
           content="52a6550d24090e50b2ddb19a87f344cf"
         />
       </Head>
-
       <body>
         <Analytics />
         <Navbar />
         <div className="min-h-screen">{children}</div>
         <Footer />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              var _TradeTrackerTagOptions = {
+                t: 'a',
+                s: '474149',
+                chk: '5b15b5e41e5508c3e7dcd93a6e6f6d20',
+                overrideOptions: {}
+              };
+              (function() {
+                var tt = document.createElement('script'),
+                    s = document.getElementsByTagName('script')[0];
+                tt.setAttribute('type', 'text/javascript');
+                tt.setAttribute('src', (document.location.protocol == 'https:' ? 'https' : 'http') + '://tm.tradetracker.net/tag?t=' + _TradeTrackerTagOptions.t + '&s=' + _TradeTrackerTagOptions.s + '&chk=' + _TradeTrackerTagOptions.chk);
+                s.parentNode.insertBefore(tt, s);
+              })();
+            `,
+          }}
+        />
       </body>
-      {/* <script
-        type="text/javascript"
-        src="https://tm.tradetracker.net/tag?t=a&amp;s=474149&amp;chk=5b15b5e41e5508c3e7dcd93a6e6f6d20"
-      ></script> */}
     </html>
   );
 }
