@@ -184,7 +184,11 @@ const SearchMerged = ({ showResults, query, setQuery }: SearchMergedProps) => {
             productsArray={products}
             loading={loading}
             error={error}
-            title={`${products.length} beste cadeau matches! 🎁`}
+            title={
+              loading
+                ? "⏳ Even geduld, we zijn de beste cadeau matches aan het ophalen..."
+                : `${products.length} populaire cadeaus gevonden 🎁!`
+            }
             subtitle={"Blijf filteren om betere cadeau's te krijgen 🔎"}
             productsPerPage={25}
           />

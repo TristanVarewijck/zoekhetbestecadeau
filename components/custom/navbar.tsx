@@ -25,7 +25,7 @@ const Navbar = () => {
           <div className="grid gap-2 py-6">
             <Link
               className="flex w-full items-center py-2 text-lg font-semibold"
-              href="/about"
+              href="/"
             >
               Start met zoeken
             </Link>

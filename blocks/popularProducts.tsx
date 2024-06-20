@@ -48,9 +48,17 @@ const PopularProducts = () => {
         productsArray={products.length > 0 ? products : []}
         loading={loading}
         error={error}
-        title={`${products.length} populaire cadeaus gevonden 🎁!`}
-        subtitle="Hieronder vind je de meest populaire cadeaus van dit moment."
-        productsPerPage={75}
+        title={
+          loading
+            ? "⏳ Even geduld, we zijn de populaire cadeaus aan het ophalen..."
+            : `${products.length} populaire cadeaus gevonden 🎁!`
+        }
+        subtitle={
+          !loading
+            ? "Hieronder vind je de meest populaire cadeaus van dit moment."
+            : ""
+        }
+        productsPerPage={50}
       />
     </div>
   );

@@ -15,15 +15,22 @@ import { Skeleton } from "../ui/skeleton";
 
 const ProductCardLoading = () => {
   return (
-    <Card className="bg-white  border p-4 lg:border-none lg-p-0 h-full flex flex-col gap-3 shadow-none">
+    <Card className="bg-white  border p-4 lg:border-none lg:p-0 h-full flex flex-col gap-3 shadow-none">
       <CardHeader className="p-0 h-[150px] md:h-[200px] relative">
         <Skeleton className="w-full h-full" />
       </CardHeader>
       <CardContent className="p-0">
         <div className={`flex flex-col gap-2`}>
-          <div className={`bg-gray-200 text-gray-200 w-1/2 h-4 rounded-md`} />
-          <div className={`bg-gray-200 text-gray-200 w-3/4 h-4 rounded-md`} />
-          <div className={`bg-gray-200 text-gray-200 w-1/2 h-4 rounded-md`} />
+          {/* brand */}
+          <Skeleton className="h-4 w-[75px]" />
+          {/* name */}
+          <Skeleton className="h-4 w-full" />
+          {/* price */}
+          <Skeleton className="h-4 w-[125px]" />
+          {/* rating */}
+          <Skeleton className="h-4 w-full" />
+          {/* shipping */}
+          <Skeleton className="h-4 w-full" />
         </div>
       </CardContent>
     </Card>
