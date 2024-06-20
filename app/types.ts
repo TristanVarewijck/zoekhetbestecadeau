@@ -19,7 +19,7 @@ export interface ProductProps {
 }
 
 export interface PopularProductsProps {
-  productsArray: ProductProps[];
+  productsArray: CoolblueProductProps[];
   loading: boolean;
 }
 

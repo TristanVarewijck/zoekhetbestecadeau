@@ -33,10 +33,7 @@ export default function Home() {
       </SectionLayout>
 
       <SectionLayout bgColor="white">
-        <PopularProducts
-          occasions={query.occasions}
-          occasion={query?.occasions?.[0]}
-        />
+        <PopularProducts />
       </SectionLayout>
     </main>
   );

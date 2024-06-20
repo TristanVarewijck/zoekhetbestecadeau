@@ -1,116 +1,65 @@
 "use client";
 
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel";
-
-import ProductCard from "@/components/custom/productCard";
-import Autoplay from "embla-carousel-autoplay";
-import { CoolblueProductProps, ProductProps } from "@/app/types";
-import Link from "next/link";
+import { CoolblueProductProps } from "@/app/types";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useLocalStorageFilters } from "@/hooks/useLocalStorageFilters";
-import H2Heading from "@/components/custom/heading/h2Heading";
-import { Badge } from "@/components/ui/badge";
+import SearchResults from "./searchResults";
 
-// we can make this broader later on for example get the popular products by interests from the backend
-interface PopularProductsProps {
-  occasions: string[] | undefined;
-  occasion?: string;
-}
-
-const PopularProducts = ({ occasions, occasion }: PopularProductsProps) => {
+const PopularProducts = () => {
   const [products, setProducts] = useState<CoolblueProductProps[]>([]);
-  const localStoredQuery = useLocalStorageFilters(["occasions"]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<null | string>(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
-      if (localStoredQuery) {
-        try {
-          // only occasion should be filtered in populair products
-          // const response = await axios.post("/api/populair-products", {
-          //   query,
-          // });
+      try {
+        // const response = await axios.post("/api/populair-products", {
+        //   query,
+        // });
 
-          const response = await axios.post("/api/products/coolblue", {
-            query: {
-              occasions,
-            },
-          });
+        const response = await axios.post("/api/products", {});
+        const popularProducts = response.data.data;
 
-          const popularProducts = response.data.data;
-
-          console.log("popularProducts", popularProducts);
-
-          if (popularProducts.length === 0) {
-            const response = await axios.post("/api/products/coolblue", {});
-            const products = response.data;
-            setProducts(products);
-          } else {
-            setProducts(popularProducts);
-          }
-        } catch (error) {
-          console.error("Error fetching products:", error);
+        if (popularProducts.length === 0) {
+          setLoading(false);
+          setError(
+            "Wij konden geen populaire producten vinden. Probeer de pagina te herladen."
+          );
+        } else {
+          setProducts(popularProducts);
+          setLoading(false);
+          setError(null);
         }
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setLoading(false);
+        setError(
+          "Er is iets misgegaan bij het ophalen van de populaire producten. Probeer de pagina te herladen."
+        );
       }
     };
 
     fetchProducts();
-  }, [localStoredQuery, occasions]);
+  }, []);
 
   return (
     <div>
-      <Badge variant="default" className="mb-3">
-        {occasion
-          ? `${occasion[0].toUpperCase()}${occasion.slice(1)}: ${
-              products.length
-            } ${products.length === 1 ? "nieuw" : "nieuwe"} ${
-              products.length === 1 ? "cadeau" : "cadeaus"
-            }`
-          : `Populaire cadeaus`}{" "}
-        🔥
-      </Badge>
-      <H2Heading
-        title={`${
-          occasion
-            ? `Populaire cadeaus: "${occasion[0].toUpperCase()}${occasion.slice(
-                1
-              )}"`
-            : `Populaire cadeaus`
-        }`}
+      <SearchResults
+        productsArray={products.length > 0 ? products : []}
+        loading={loading}
+        error={error}
+        title={
+          loading
+            ? "⏳ Even geduld, we zijn de populaire cadeaus aan het ophalen..."
+            : `${products.length} populaire cadeaus gevonden 🎁!`
+        }
+        subtitle={
+          !loading
+            ? "Hieronder vind je de meest populaire cadeaus van dit moment."
+            : ""
+        }
+        productsPerPage={50}
       />
-
-      <Carousel
-        opts={{
-          align: "start",
-          loop: true,
-          direction: "ltr",
-        }}
-        plugins={[
-          Autoplay({
-            delay: 3000,
-          }),
-        ]}
-        className="w-full mt-6"
-      >
-        {products.length > 0 && (
-          <CarouselContent>
-            {products.map((product) => (
-              <CarouselItem
-                key={product.sku}
-                className="basis-1/1 md:basis-1/2 lg:basis-1/4"
-              >
-                <Link href={product.product_url} target="_blank">
-                  <ProductCard {...product} />
-                </Link>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-        )}
-      </Carousel>
     </div>
   );
 };

@@ -1,9 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { PopularProductsProps } from "@/app/types";
+import { CoolblueProductProps, PopularProductsProps } from "@/app/types";
 import H3Heading from "@/components/custom/heading/h3Heading";
-import ProductCard from "@/components/custom/productCard";
+import {
+  ProductCard,
+  ProductCardLoading,
+} from "@/components/custom/productCard";
 import {
   Pagination,
   PaginationContent,
@@ -15,9 +18,26 @@ import {
 } from "@/components/ui/pagination";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
-const SearchResults = ({ productsArray, loading }: PopularProductsProps) => {
-  const productsPerPage = 20;
+interface SearchResultProps {
+  productsArray: CoolblueProductProps[];
+  loading: boolean;
+  error: string | null;
+  title: string;
+  subtitle: string;
+  productsPerPage: number;
+}
+
+const SearchResults = ({
+  productsArray,
+  loading,
+  error,
+  title,
+  subtitle,
+  productsPerPage,
+}: SearchResultProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [randomizeDisabled, setRandomizeDisabled] = useState(false);
   const totalProducts = productsArray.length;
@@ -51,13 +71,9 @@ const SearchResults = ({ productsArray, loading }: PopularProductsProps) => {
   };
 
   return (
-    <section>
-      <div className="flex md:items-end justify-between flex-col md:flex-row">
-        <H3Heading
-          title={`${productsArray.length} beste cadeau matches! 🎁`}
-          subtitle="Blijf filteren om betere cadeau's te krijgen 🔎"
-        />
-
+    <section id="results-list">
+      <div className="flex md:items-end justify-between flex-col md:flex-row lg:mb-8 mb-4 ">
+        <H3Heading title={title} subtitle={subtitle} />
         <Button
           className="mt-3 lg:mt-0"
           variant="outline"
@@ -69,18 +85,32 @@ const SearchResults = ({ productsArray, loading }: PopularProductsProps) => {
         </Button>
       </div>
 
-      <div
-        className="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2 lg:grid-cols-3"
-        id="results-list"
-      >
+      {/* show for laoding cards */}
+      {loading && (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {Array.from({ length: productsPerPage }, (_, i) => (
+            <ProductCardLoading key={i} />
+          ))}
+        </div>
+      )}
+
+      {error && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Fout opgetreden.</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+
+      <div className="grid grid-cols-1 gap-4 lg:gap-8 sm:grid-cols-2 lg:grid-cols-4">
         {paginatedProducts.map((product) => (
-          <Link href={product.url} key={product.id}>
+          <Link href={product.product_url} key={product.sku}>
             <ProductCard {...product} />
           </Link>
         ))}
       </div>
 
-      <Pagination>
+      <Pagination className="mt-3 lg:mt-6">
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious href="#results-list" onClick={handlePrevious} />

@@ -4,7 +4,7 @@ import { FilterProps } from "@/app/types";
 import SearchCta from "./searchCta";
 import SearchResults from "./searchResults";
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
-import { useFetchProducts } from "@/hooks/useFetchProducts";
+import { useFetchFilterProducts } from "@/hooks/useFetchFilterProducts";
 import { useLocalStorageFilters } from "@/hooks/useLocalStorageFilters";
 import {
   Accordion,
@@ -62,7 +62,7 @@ const SearchMerged = ({ showResults, query, setQuery }: SearchMergedProps) => {
 
   const newQuery = query || localStoredQuery;
 
-  const { products, loading, error } = useFetchProducts(newQuery);
+  const { products, loading, error } = useFetchFilterProducts(newQuery);
 
   const queryKeysLength = useMemo(() => {
     return Object.keys(newQuery || {}).filter(
@@ -180,7 +180,18 @@ const SearchMerged = ({ showResults, query, setQuery }: SearchMergedProps) => {
 
       <div className="mt-4 lg:mt-6">
         {showResults && (
-          <SearchResults productsArray={products} loading={loading} />
+          <SearchResults
+            productsArray={products}
+            loading={loading}
+            error={error}
+            title={
+              loading
+                ? "⏳ Even geduld, we zijn de beste cadeau matches aan het ophalen..."
+                : `${products.length} populaire cadeaus gevonden 🎁!`
+            }
+            subtitle={"Blijf filteren om betere cadeau's te krijgen 🔎"}
+            productsPerPage={25}
+          />
         )}
       </div>
     </div>
