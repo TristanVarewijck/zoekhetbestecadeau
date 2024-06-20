@@ -8,34 +8,36 @@ import SearchResults from "./searchResults";
 
 const PopularProducts = () => {
   const [products, setProducts] = useState<CoolblueProductProps[]>([]);
-  const localStoredQuery = useLocalStorageFilters(["occasions"]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<null | string>(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
-      if (localStoredQuery) {
-        try {
-          // only occasion should be filtered in populair products
-          // const response = await axios.post("/api/populair-products", {
-          //   query,
-          // });
-          const response = await axios.post("/api/products", {});
-          const popularProducts = response.data.data;
+      try {
+        // const response = await axios.post("/api/populair-products", {
+        //   query,
+        // });
 
-          if (popularProducts.length === 0) {
-            const response = await axios.post("/api/products", {});
-            const products = response.data;
-            setProducts(products);
-          } else {
-            setProducts(popularProducts);
-          }
-        } catch (error) {
-          console.error("Error fetching products:", error);
+        const response = await axios.post("/api/products", {});
+        const popularProducts = response.data.data;
+
+        if (popularProducts.length === 0) {
+          setLoading(false);
+          setError("No products found");
+        } else {
+          setProducts(popularProducts);
+          setLoading(false);
+          setError(null);
         }
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setLoading(false);
+        setError("Error fetching products");
       }
     };
 
     fetchProducts();
-  }, [localStoredQuery]);
+  }, []);
 
   return (
     <div>

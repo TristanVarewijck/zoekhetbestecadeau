@@ -3,7 +3,6 @@
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
 import Papa from "papaparse";
-import { productsParser } from "@/lib/utils";
 
 // this will be the techscraper API (coolblue/partnerize)
 
