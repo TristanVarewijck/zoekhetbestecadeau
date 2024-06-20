@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { PopularProductsProps } from "@/app/types";
+import { CoolblueProductProps, PopularProductsProps } from "@/app/types";
 import H3Heading from "@/components/custom/heading/h3Heading";
 import ProductCard from "@/components/custom/productCard";
 import {
@@ -16,8 +16,21 @@ import {
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-const SearchResults = ({ productsArray, loading }: PopularProductsProps) => {
-  const productsPerPage = 20;
+interface SearchResultProps {
+  productsArray: CoolblueProductProps[];
+  loading: boolean;
+  title: string;
+  subtitle: string;
+  productsPerPage: number;
+}
+
+const SearchResults = ({
+  productsArray,
+  loading,
+  title,
+  subtitle,
+  productsPerPage,
+}: SearchResultProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [randomizeDisabled, setRandomizeDisabled] = useState(false);
   const totalProducts = productsArray.length;
@@ -51,11 +64,13 @@ const SearchResults = ({ productsArray, loading }: PopularProductsProps) => {
   };
 
   return (
-    <section>
+    <section id="results-list">
       <div className="flex md:items-end justify-between flex-col md:flex-row">
         <H3Heading
-          title={`${productsArray.length} beste cadeau matches! 🎁`}
-          subtitle="Blijf filteren om betere cadeau's te krijgen 🔎"
+          // title={`${productsArray.length} beste cadeau matches! 🎁`}
+          title={title}
+          // subtitle="Blijf filteren om betere cadeau's te krijgen 🔎"
+          subtitle={subtitle}
         />
 
         <Button
@@ -69,18 +84,15 @@ const SearchResults = ({ productsArray, loading }: PopularProductsProps) => {
         </Button>
       </div>
 
-      <div
-        className="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2 lg:grid-cols-3"
-        id="results-list"
-      >
+      <div className="grid grid-cols-1 gap-4 mt-4 sm:grid-cols-2 lg:grid-cols-4">
         {paginatedProducts.map((product) => (
-          <Link href={product.url} key={product.id}>
+          <Link href={product.product_url} key={product.sku}>
             <ProductCard {...product} />
           </Link>
         ))}
       </div>
 
-      <Pagination>
+      <Pagination className="mt-3 lg:mt-6">
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious href="#results-list" onClick={handlePrevious} />
