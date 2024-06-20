@@ -68,13 +68,7 @@ const SearchResults = ({
   return (
     <section id="results-list">
       <div className="flex md:items-end justify-between flex-col md:flex-row">
-        <H3Heading
-          // title={`${productsArray.length} beste cadeau matches! 🎁`}
-          title={title}
-          // subtitle="Blijf filteren om betere cadeau's te krijgen 🔎"
-          subtitle={subtitle}
-        />
-
+        <H3Heading title={title} subtitle={subtitle} />
         <Button
           className="mt-3 lg:mt-0"
           variant="outline"
