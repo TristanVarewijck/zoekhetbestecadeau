@@ -3,7 +3,6 @@
 import { CoolblueProductProps } from "@/app/types";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useLocalStorageFilters } from "@/hooks/useLocalStorageFilters";
 import SearchResults from "./searchResults";
 
 const PopularProducts = () => {
@@ -43,7 +42,8 @@ const PopularProducts = () => {
     <div>
       <SearchResults
         productsArray={products.length > 0 ? products : []}
-        loading={false}
+        loading={loading}
+        error={error}
         title={`${products.length} populaire cadeaus gevonden 🎁!`}
         subtitle="Hieronder vind je de meest populaire cadeaus van dit moment."
         productsPerPage={75}

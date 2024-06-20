@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 interface SearchResultProps {
   productsArray: CoolblueProductProps[];
   loading: boolean;
+  error: string | null;
   title: string;
   subtitle: string;
   productsPerPage: number;
@@ -27,6 +28,7 @@ interface SearchResultProps {
 const SearchResults = ({
   productsArray,
   loading,
+  error,
   title,
   subtitle,
   productsPerPage,
@@ -83,6 +85,10 @@ const SearchResults = ({
           <span className="ml-1 text-lg">🎲</span>
         </Button>
       </div>
+
+      {loading && <p>Loading...</p>}
+
+      {error && <p>{error}</p>}
 
       <div className="grid grid-cols-1 gap-4 mt-4 sm:grid-cols-2 lg:grid-cols-4">
         {paginatedProducts.map((product) => (
