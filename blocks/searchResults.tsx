@@ -3,7 +3,10 @@
 import { useState } from "react";
 import { CoolblueProductProps, PopularProductsProps } from "@/app/types";
 import H3Heading from "@/components/custom/heading/h3Heading";
-import ProductCard from "@/components/custom/productCard";
+import {
+  ProductCard,
+  ProductCardLoading,
+} from "@/components/custom/productCard";
 import {
   Pagination,
   PaginationContent,
@@ -15,6 +18,8 @@ import {
 } from "@/components/ui/pagination";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
 interface SearchResultProps {
   productsArray: CoolblueProductProps[];
@@ -67,7 +72,7 @@ const SearchResults = ({
 
   return (
     <section id="results-list">
-      <div className="flex md:items-end justify-between flex-col md:flex-row">
+      <div className="flex md:items-end justify-between flex-col md:flex-row lg:mb-8 mb-4 ">
         <H3Heading title={title} subtitle={subtitle} />
         <Button
           className="mt-3 lg:mt-0"
@@ -80,11 +85,24 @@ const SearchResults = ({
         </Button>
       </div>
 
-      {loading && <p>Loading...</p>}
+      {/* show for laoding cards */}
+      {loading && (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {Array.from({ length: productsPerPage }, (_, i) => (
+            <ProductCardLoading key={i} />
+          ))}
+        </div>
+      )}
 
-      {error && <p>{error}</p>}
+      {error && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Fout opgetreden.</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
 
-      <div className="grid grid-cols-1 gap-4 mt-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 lg:gap-8 sm:grid-cols-2 lg:grid-cols-4">
         {paginatedProducts.map((product) => (
           <Link href={product.product_url} key={product.sku}>
             <ProductCard {...product} />

@@ -3,10 +3,36 @@ import { Card, CardHeader, CardContent } from "../ui/card";
 import Image from "next/image";
 import getSymbolFromCurrency from "currency-symbol-map";
 import { ImageOff, Star } from "lucide-react";
+import { Skeleton } from "../ui/skeleton";
+
+<div className="flex flex-col space-y-3">
+  <Skeleton className="h-[125px] w-[250px] rounded-xl" />
+  <div className="space-y-2">
+    <Skeleton className="h-4 w-[250px]" />
+    <Skeleton className="h-4 w-[200px]" />
+  </div>
+</div>;
+
+const ProductCardLoading = () => {
+  return (
+    <Card className="bg-white  border p-4 lg:border-none lg-p-0 h-full flex flex-col gap-3 shadow-none">
+      <CardHeader className="p-0 h-[150px] md:h-[200px] relative">
+        <Skeleton className="w-full h-full" />
+      </CardHeader>
+      <CardContent className="p-0">
+        <div className={`flex flex-col gap-2`}>
+          <div className={`bg-gray-200 text-gray-200 w-1/2 h-4 rounded-md`} />
+          <div className={`bg-gray-200 text-gray-200 w-3/4 h-4 rounded-md`} />
+          <div className={`bg-gray-200 text-gray-200 w-1/2 h-4 rounded-md`} />
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
 
 const ProductCard = (product: CoolblueProductProps) => {
   return (
-    <Card className="bg-white  border p-4 lg:border-none lg-p-0 h-full flex flex-col gap-3 shadow-none">
+    <Card className="bg-white border p-4 lg:border-none lg:p-0 h-full flex flex-col gap-3 shadow-none">
       <CardHeader className="p-0 h-[150px] md:h-[200px] relative">
         {/* image */}
         {product.image_url ? (
@@ -115,4 +141,4 @@ const ProductCard = (product: CoolblueProductProps) => {
   );
 };
 
-export default ProductCard;
+export { ProductCard, ProductCardLoading };

@@ -22,7 +22,9 @@ const PopularProducts = () => {
 
         if (popularProducts.length === 0) {
           setLoading(false);
-          setError("No products found");
+          setError(
+            "Wij konden geen populaire producten vinden. Probeer de pagina te herladen."
+          );
         } else {
           setProducts(popularProducts);
           setLoading(false);
@@ -31,7 +33,9 @@ const PopularProducts = () => {
       } catch (error) {
         console.error("Error fetching products:", error);
         setLoading(false);
-        setError("Error fetching products");
+        setError(
+          "Er is iets misgegaan bij het ophalen van de populaire producten. Probeer de pagina te herladen."
+        );
       }
     };
 
