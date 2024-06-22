@@ -80,7 +80,7 @@ const SearchMerged = ({ showResults, query, setQuery }: SearchMergedProps) => {
   }, [showResults]);
 
   return (
-    <div className="flex flex-col items-center gap-1 w-full ">
+    <div className="flex flex-col items-center gap-1 w-full mt-8 lg:mt-10">
       {showResults && (
         <div className="flex items-center gap-2 mb-3">
           <Tabs
@@ -148,7 +148,7 @@ const SearchMerged = ({ showResults, query, setQuery }: SearchMergedProps) => {
         type="single"
         collapsible={!showResults ? false : true}
         defaultValue="item-1"
-        className="w-full"
+        className="w-full lg:w-2/3 md:w-3/4"
       >
         <AccordionItem value="item-1" className={`border-none`}>
           <AccordionTrigger
@@ -156,7 +156,7 @@ const SearchMerged = ({ showResults, query, setQuery }: SearchMergedProps) => {
               !showResults ? "hidden" : ""
             }  border-gray-200 border px-6 rounded-[6px] shadow-sm h-[50px]`}
           >
-            <span className="w-full text-center font-bold">
+            <span className="text-center font-bold">
               Stappen voltooid: {queryKeysLength.length}/{questions.length - 1}
             </span>
           </AccordionTrigger>
@@ -171,7 +171,7 @@ const SearchMerged = ({ showResults, query, setQuery }: SearchMergedProps) => {
         </AccordionItem>
       </Accordion>
 
-      <div className="mt-4 lg:mt-6">
+      <div className="mt-4 lg:mt-6 w-full">
         {showResults && (
           <SearchResults
             productsArray={products}
@@ -180,7 +180,7 @@ const SearchMerged = ({ showResults, query, setQuery }: SearchMergedProps) => {
             title={
               loading
                 ? "⏳ Even geduld, we zijn de beste cadeau matches aan het ophalen..."
-                : `${products.length} populaire cadeaus gevonden 🎁!`
+                : `Dit zijn de ${products.length} beste cadeau matches! 🎉`
             }
             subtitle={"Blijf filteren om betere cadeau's te krijgen 🔎"}
             productsPerPage={25}

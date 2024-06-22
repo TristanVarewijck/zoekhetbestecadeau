@@ -13,7 +13,7 @@ export const useFetchFilterProducts = (query: FilterProps) => {
         setLoading(true);
         try {
           const response = await axios.post("/api/products", query);
-          const products = response.data;
+          const products = response.data.data;
           setProducts(products);
         } catch (error) {
           console.error("Error fetching products:", error);

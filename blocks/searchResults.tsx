@@ -109,13 +109,15 @@ const SearchResults = ({
         </Alert>
       )}
 
-      <div className="grid grid-cols-1 gap-4 lg:gap-8 sm:grid-cols-2 lg:grid-cols-4">
-        {paginatedProducts.map((product) => (
-          <Link href={product.product_url} key={product.sku}>
-            <ProductCard {...product} />
-          </Link>
-        ))}
-      </div>
+      {!loading && paginatedProducts.length > 0 && (
+        <div className="grid grid-cols-1 gap-4 lg:gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {paginatedProducts.map((product) => (
+            <Link href={product.product_url} key={product.sku}>
+              <ProductCard {...product} />
+            </Link>
+          ))}
+        </div>
+      )}
 
       <Pagination className="mt-3 lg:mt-6">
         <PaginationContent>
