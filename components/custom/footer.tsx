@@ -30,13 +30,13 @@ const Footer = () => {
 
         <div className="flex justify-between items-center md:items-baseline flex-col-reverse gap-4 md:gap-0 md:flex-row">
           <div className="flex items-center flex-col md:flex-row gap-2 text-xs">
-            <p>© {currentYear} zoekhetbestecadeau. All rights reserved.</p>
             <Link href="/conditions">Algemene voorwaarden.</Link>
             <Link href="/disclaimer">Disclaimer.</Link>
             <Link href="/privacy-policy">Privacybeleid.</Link>
             <Link href={`mailto:${process.env.NEXT_PUBLIC_APP_MAIL}`}>
               zoekhetbestecadeau@gmail.nl
             </Link>
+            <p>© {currentYear} zoekhetbestecadeau. All rights reserved.</p>
           </div>
 
           <div className="flex space-x-2 items-center gap-3">

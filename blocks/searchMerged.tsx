@@ -71,16 +71,10 @@ const SearchMerged = ({ showResults, query, setQuery }: SearchMergedProps) => {
     );
   }, [newQuery]);
 
-  // STATES <-- uncomment to see the values
-  // console.log(loading);
-  // console.log(error)
-
-  //
   useEffect(() => {
     if (!showResults) {
       localStorage.setItem("currentStep", "1");
       setCurrentStep(1);
-
       return;
     }
   }, [showResults]);
@@ -97,7 +91,6 @@ const SearchMerged = ({ showResults, query, setQuery }: SearchMergedProps) => {
                 (question) => question.questionType === value
               );
 
-              // in loxal storage
               localStorage.setItem(
                 "currentStep",
                 currentStep?.step.toString() || "1"

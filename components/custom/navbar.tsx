@@ -16,7 +16,7 @@ const Navbar = () => {
         <SheetContent side="right">
           <Link className="mr-6" href="/">
             <Image
-              src="/branding/logo.svg"
+              src="/branding/logo-black.svg"
               alt="zoekhetbestecadeau logo"
               width={175}
               height={0}
@@ -43,7 +43,7 @@ const Navbar = () => {
       <nav className="ml-auto hidden lg:flex gap-6 items-center justify-between w-full">
         <Link className="mr-6" href="/">
           <Image
-            src="/branding/logo.svg"
+            src="/branding/logo-black.svg"
             alt="zoekhetbestecadeau logo"
             width={225}
             height={0}

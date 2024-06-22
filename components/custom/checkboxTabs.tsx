@@ -49,7 +49,7 @@ const CheckboxTabs = ({
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
         {checkBoxDataSet.map((data) => (
           <div
-            className={`flex gap-1 w-full items-center flex-row-reverse justify-between p-2 shadow-sm border-2 cursor-pointer ease-in-out duration-150 rounded-lg ${
+            className={`flex gap-1 w-full items-center flex-col sm:flex-row-reverse justify-between p-2 shadow-sm border-2 cursor-pointer ease-in-out duration-150 rounded-lg ${
               selectedOptions.includes(data.id)
                 ? "bg-primary text-white"
                 : "bg-white"

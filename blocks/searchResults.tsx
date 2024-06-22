@@ -20,6 +20,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+import H2Heading from "@/components/custom/heading/h2Heading";
 
 interface SearchResultProps {
   productsArray: CoolblueProductProps[];
@@ -72,8 +73,14 @@ const SearchResults = ({
 
   return (
     <section id="results-list">
-      <div className="flex md:items-end justify-between flex-col md:flex-row lg:mb-8 mb-4 ">
-        <H3Heading title={title} subtitle={subtitle} />
+      <div className="flex md:items-end justify-between flex-col md:flex-row lg:mb-8 mb-4">
+        <div
+          className="flex flex-col justify-center"
+          style={{ maxWidth: "750px" }}
+        >
+          <H2Heading title={title} subtitle={subtitle} />
+        </div>
+
         <Button
           className="mt-3 lg:mt-0"
           variant="outline"

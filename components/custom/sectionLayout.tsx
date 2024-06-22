@@ -24,10 +24,8 @@ const SectionLayout = ({
       style={bgColor === "gray" ? backgroundStyle : {}}
     >
       <div
-        className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 md:min-h-screen ${
-          centered
-            ? `flex flex-col justify-center md:-translate-y-${position}`
-            : "py-20"
+        className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 ${
+          centered && `flex flex-col justify-center md:-translate-y-${position}`
         }`}
       >
         {children}

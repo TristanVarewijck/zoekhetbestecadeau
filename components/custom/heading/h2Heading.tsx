@@ -13,7 +13,7 @@ const H2Heading = ({ title, subtitle, centered }: HeadingProps) => {
 
       {subtitle && (
         <p
-          className={`leading-7 [&:not(:first-child)]:mt-3 ${
+          className={`leading-7 [&:not(:first-child)]:mt-2 lg:[&:not(:first-child)]:mt-3 ${
             centered ? "text-center" : ""
           } `}
         >

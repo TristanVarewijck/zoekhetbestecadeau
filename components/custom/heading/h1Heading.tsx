@@ -2,7 +2,7 @@ import { HeadingProps } from "@/app/types";
 
 const H1Heading = ({ title, subtitle, centered }: HeadingProps) => {
   return (
-    <div>
+    <div className="mt-8 lg:mt-10">
       <h1
         className={`scroll-m-20 text-4xl md:text-5xl font-semibold tracking-tight leading-[125%]
           ${centered ? "text-center" : ""}`}
@@ -11,7 +11,7 @@ const H1Heading = ({ title, subtitle, centered }: HeadingProps) => {
       </h1>
       {subtitle && (
         <p
-          className={`leading-7 [&:not(:first-child)]:mt-6 font-medium
+          className={`leading-7 [&:not(:first-child)]:mt-3 lg:[&:not(:first-child)]:mt-6 font-medium
         ${centered ? "text-center" : ""}    
       `}
         >
