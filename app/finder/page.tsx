@@ -45,7 +45,10 @@ export default function Finder() {
   }, []);
 
   return (
-    <main>
+    <main
+      // hide scrollbar
+      style={{ overflow: "hidden" }}
+    >
       <SectionLayout bgColor="white">
         <SearchMerged showResults={true} query={query} setQuery={setQuery} />
       </SectionLayout>

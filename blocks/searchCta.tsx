@@ -220,7 +220,7 @@ const SearchCta = ({
 
       {currentStep === 5 && (
         <AlertDialog>
-          <AlertDialogTrigger>
+          <AlertDialogTrigger asChild>
             <Button variant="outline" className="mx-auto">
               <ListRestart size={16} className="mr-1" />
               Filters resetten en opnieuw beginnen
@@ -240,24 +240,24 @@ const SearchCta = ({
                 {/* en wishlist. */}
               </AlertDialogDescription>
             </AlertDialogHeader>
-            <AlertDialogFooter>
-              <div
-                className="flex items-center flex-row-reverse justify-between gap-3"
-                style={{ width: "100%" }}
-              >
-                <AlertDialogAction>
-                  <span className="flex items-center gap-1">
-                    <Route size={16} />
-                    <span>Zelf navigeren</span>
-                  </span>
-                </AlertDialogAction>
-                <CountdownCancel
-                  isTimerActive={isTimerActive}
-                  setIsTimerActive={setIsTimerActive}
-                  setCancelCounter={setCancelCounter}
-                  cancelCounter={cancelCounter}
-                />
-              </div>
+            <AlertDialogFooter
+              className="flex flex-col-reverse items-center md:flex-row  justify-start gap-2"
+              style={{
+                justifyContent: "space-between",
+              }}
+            >
+              <CountdownCancel
+                isTimerActive={isTimerActive}
+                setIsTimerActive={setIsTimerActive}
+                setCancelCounter={setCancelCounter}
+                cancelCounter={cancelCounter}
+              />
+              <AlertDialogAction>
+                <span className="flex items-center gap-1">
+                  <Route size={16} />
+                  <span>Zelf navigeren!</span>
+                </span>
+              </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>

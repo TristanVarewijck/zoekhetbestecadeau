@@ -110,18 +110,18 @@ const RangeSlider = ({
                 }));
               maxValRef.current = value;
             }}
-            className="thumb thumb--right absolute  w-[300px] xs:w-[350px] md:w-[500px] h-0 outline-none"
+            className="thumb thumb--right absolute w-[275px] xs:w-[350px] md:w-[500px] h-0 outline-none"
           />
-          <div className="relative  w-[300px] xs:w-[350px] md:w-[500px]">
+          <div className="relative  w-[275px] xs:w-[350px] md:w-[500px]">
             <div className="absolute w-full h-[12px] bg-gray-300 rounded z-[1]" />
             <div
               ref={range}
               className="absolute h-[12px] bg-[hsl(var(--primary))] rounded z-[2]"
             />
-            <div className="absolute left-0 mt-[16px] font-semibold">
+            <div className="absolute left-0 mt-[16px] font-semibold text-lg">
               <span>€{min} 💵</span>
             </div>
-            <div className="absolute right-0 mt-[16px] font-semibold ">
+            <div className="absolute right-0 mt-[16px] font-semibold text-lg ">
               <span>€{max} 💰</span>
             </div>
           </div>

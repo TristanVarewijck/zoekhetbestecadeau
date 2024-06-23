@@ -99,29 +99,33 @@ const SearchMerged = ({ showResults, query, setQuery }: SearchMergedProps) => {
               setCurrentStep(currentStep?.step || 1);
             }}
           >
-            <TabsList>
-              {questions.map((question) => (
-                <TabsTrigger
-                  key={question.step}
-                  value={question.questionType}
-                  className={`${question.step === 5 && "hidden"}`}
-                >
-                  <span
-                    className="w-full h-full text-center font-bold
+            <TabsList className={`w-full h-auto overflow-auto`}>
+              <div className={`grid grid-cols-2 gap-2 md:flex md:flex-row`}>
+                {questions.map((question) => (
+                  <TabsTrigger
+                    key={question.step}
+                    value={question.questionType}
+                    className={` flex items-start justify-center w-full h-full ${
+                      question.step === 5 && "hidden"
+                    }`}
+                  >
+                    <span
+                      className="w-full h-full text-center font-bold
                 cursor-pointer flex items-center justify-center gap-1
                 "
-                  >
-                    <span>{question.questionType}</span>
-                    <span>
-                      {queryKeysLength.includes(question.id) ? (
-                        <Check className="ml-1" size={16} />
-                      ) : (
-                        <CircleDashed className="ml-1" size={16} />
-                      )}
+                    >
+                      <span>{question.questionType}</span>
+                      <span>
+                        {queryKeysLength.includes(question.id) ? (
+                          <Check className="ml-1" size={16} />
+                        ) : (
+                          <CircleDashed className="ml-1" size={16} />
+                        )}
+                      </span>
                     </span>
-                  </span>
-                </TabsTrigger>
-              ))}
+                  </TabsTrigger>
+                ))}
+              </div>
             </TabsList>
           </Tabs>
 
