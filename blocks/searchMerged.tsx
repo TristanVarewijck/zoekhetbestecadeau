@@ -82,7 +82,7 @@ const SearchMerged = ({ showResults, query, setQuery }: SearchMergedProps) => {
   return (
     <div className="flex flex-col items-center gap-1 w-full mt-8 lg:mt-10">
       {showResults && (
-        <div className="flex items-center gap-2 mb-3">
+        <div className="flex-col flex md:flex-row items-end md:items-center gap-2 mb-3">
           <Tabs
             value={questions[currentStep - 1].questionType}
             className={`flex justify-center`}
@@ -148,13 +148,14 @@ const SearchMerged = ({ showResults, query, setQuery }: SearchMergedProps) => {
         type="single"
         collapsible={!showResults ? false : true}
         defaultValue="item-1"
-        className="w-full lg:w-2/3 md:w-3/4"
+        value={currentStep === 5 ? "item-1" : undefined}
+        className="w-full lg:w-2/3"
       >
         <AccordionItem value="item-1" className={`border-none`}>
           <AccordionTrigger
             className={`${
               !showResults ? "hidden" : ""
-            }  border-gray-200 border px-6 rounded-[6px] shadow-sm h-[50px]`}
+            }  border-gray-200 border-t-2 border-l-2 border-r-2 border-b-2 px-6 rounded-t-[6px] shadow-sm h-[50px]`}
           >
             <span className="text-center font-bold">
               Stappen voltooid: {queryKeysLength.length}/{questions.length - 1}
