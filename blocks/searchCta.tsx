@@ -7,6 +7,7 @@ import {
   Route,
 } from "lucide-react";
 import CheckboxTabs from "@/components/custom/checkboxTabs";
+import Summarize from "@/components/custom/summarize";
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import H3Heading from "@/components/custom/heading/h3Heading";
 import { useRouter } from "next/navigation";
@@ -103,9 +104,14 @@ const SearchCta = ({
       default:
         return (
           <div>
-            {/* filters overview clickable to go back to the step */}
-            <div>
-              <div></div>
+            <div
+              className="flex items-center gap-1"
+              onClick={() => {
+                localStorage.setItem("currentStep", "1");
+                setCurrentStep(1);
+              }}
+            >
+              <Summarize setCurrentStep={setCurrentStep} />
               <Image
                 src="/images/woman_and_daughter.svg"
                 alt="Gifts"
