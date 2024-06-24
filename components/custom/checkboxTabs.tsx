@@ -23,11 +23,13 @@ const CheckboxTabs = ({
   const handleOptionClick = (id: string) => {
     let updatedOptions: SetStateAction<string[]>;
 
-    if (multiple) {
+    if (multiple && multiple > 1) {
       if (selectedOptions.includes(id)) {
         updatedOptions = selectedOptions.filter((option) => option !== id);
-      } else {
+      } else if (selectedOptions.length < multiple) {
         updatedOptions = [...selectedOptions, id];
+      } else {
+        updatedOptions = selectedOptions;
       }
     } else {
       updatedOptions = selectedOptions.includes(id) ? [] : [id];

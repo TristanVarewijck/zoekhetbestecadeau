@@ -1,5 +1,6 @@
 import content from "@/json/searchCta.json";
 import { Badge } from "@/components/ui/badge";
+import { ArrowRight } from "lucide-react";
 
 const Summarize = ({
   setCurrentStep,
@@ -14,9 +15,9 @@ const Summarize = ({
     const queryStep = step.step;
 
     const storedQuery = localStorage.getItem(localStorageKey as string);
+    const value = JSON.parse(storedQuery as string);
 
-    if (storedQuery) {
-      const value = JSON.parse(storedQuery);
+    if (storedQuery && value.length > 0) {
       return { label, value, step: queryStep, localStorageKey };
     } else {
       return {
@@ -28,10 +29,8 @@ const Summarize = ({
     }
   });
 
-  console.log(summarizeContent);
-
   return (
-    <div className="text-sm text-gray-500 border p-4 cursor-pointer flex flex-col gap-2">
+    <div className="text-sm text-gray-500 border p-4 cursor-pointer flex flex-col justify-between gap-4 rounded-md">
       {summarizeContent.map((content) => (
         <div
           key={content.label}
@@ -40,18 +39,34 @@ const Summarize = ({
             localStorage.setItem("currentStep", content.step.toString());
           }}
         >
-          <div className="flex justify-between items-center gap-2">
-            <span className="text-primary font-bold cursor-pointer">
+          <div className="flex flex-col gap-2 md:flex-row">
+            <span className="text-primary font-bold cursor-pointer col-span-1">
               {content.label}:
             </span>
 
-            {content.localStorageKey === "interests" ? (
-              content.value.map((occasion: string) => (
-                <Badge key={occasion}>{occasion}</Badge>
-              ))
-            ) : (
-              <Badge>{content.value}</Badge>
-            )}
+            <div className="flex flex-wrap gap-1 items-center cursor-pointer col-span-2">
+              {content.value === "Niet geselecteerd" ? (
+                <p>
+                  <span className="text-gray-500 flex items-center gap-1 underline ">
+                    Niet geselecteerd <ArrowRight size={16} />
+                  </span>
+                </p>
+              ) : content.localStorageKey === "interests" ? (
+                content.value.map((occasion: string) => (
+                  <Badge key={occasion}>{occasion}</Badge>
+                ))
+              ) : (
+                <div>
+                  <Badge>
+                    {content.localStorageKey === "price"
+                      ? `€${content.value.join(" - ")}`
+                      : content.localStorageKey === "forWho"
+                      ? content.value[0].replace(/_/g, " ")
+                      : content.value}
+                  </Badge>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       ))}

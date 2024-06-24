@@ -87,7 +87,7 @@ const SearchCta = ({
             checkBoxDataSet={interests}
             setData={setData}
             localStorageKey="interests"
-            multiple
+            multiple={3}
           />
         );
 
@@ -104,21 +104,15 @@ const SearchCta = ({
       default:
         return (
           <div>
-            <div
-              className="flex items-center gap-1"
-              onClick={() => {
-                localStorage.setItem("currentStep", "1");
-                setCurrentStep(1);
-              }}
-            >
+            <div className="flex flex-col items-center ">
               <Summarize setCurrentStep={setCurrentStep} />
-              <Image
+              {/* <Image
                 src="/images/woman_and_daughter.svg"
                 alt="Gifts"
                 width={300}
                 height={0}
-                className="mx-auto"
-              />
+                className="hidden lg:block"
+              /> */}
             </div>
           </div>
         );

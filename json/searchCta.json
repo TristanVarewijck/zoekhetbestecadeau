@@ -18,7 +18,7 @@
     "step": 3,
     "localStorageKey": "interests",
     "title": "Wat zijn de interesses?",
-    "subtitle": "Selecteer de interesses van de persoon waarvoor je een cadeau zoekt."
+    "subtitle": "Selecteer maximaal 3 interesses van de persoon waarvoor je een cadeau zoekt."
   },
   {
     "label": "Voor wie",
