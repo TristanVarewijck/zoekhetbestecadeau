@@ -13,7 +13,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowRight, Check, CircleDashed } from "lucide-react";
+import { ArrowRight, ArrowUp, Check, CircleDashed } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface SearchMergedProps {
@@ -129,7 +129,7 @@ const SearchMerged = ({ showResults, query, setQuery }: SearchMergedProps) => {
             </TabsList>
           </Tabs>
 
-          {queryKeysLength.length === 4 && (
+          {queryKeysLength.length === 4 && currentStep !== 4 && (
             <Button
               onClick={() => {
                 localStorage.setItem("currentStep", "5");
@@ -192,6 +192,18 @@ const SearchMerged = ({ showResults, query, setQuery }: SearchMergedProps) => {
           />
         )}
       </div>
+
+      {/* floating button that scrolls back to top */}
+      {showResults && (
+        <Button
+          className="fixed bottom-4 left-6 z-10 border lg:hidden"
+          variant="default"
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        >
+          Terug naar boven
+          <ArrowUp className="ml-1" size={16} />
+        </Button>
+      )}
     </div>
   );
 };

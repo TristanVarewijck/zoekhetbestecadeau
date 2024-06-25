@@ -211,7 +211,7 @@ const SearchCta = ({
             }
           }}
         >
-          <span>
+          <span className="font-bold">
             {currentStep === 1 && !showResults
               ? "Start met zoeken"
               : content[currentStep].label}
