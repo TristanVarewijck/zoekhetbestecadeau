@@ -134,7 +134,9 @@ const SearchCta = ({
 
   return (
     <div
-      className={`relative overflow-hidden flex justify-start flex-col w-full rounded-b-2xl bg-white border-l-2 border-r-2 border-b-2 gap-4 p-4 lg:p-6 shadow-md border-t-none`}
+      className={`relative overflow-hidden flex justify-start flex-col w-full rounded-b-2xl bg-white ${
+        !showResults && "border-t-2 rounded-t-2xl"
+      } border-l-2 border-r-2 border-b-2 gap-4 p-4 lg:p-6 shadow-md border-t-none`}
     >
       {showResults && (
         <div className="flex items-center">

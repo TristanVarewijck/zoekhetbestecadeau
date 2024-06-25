@@ -58,6 +58,20 @@ const RangeSlider = ({
     }
   }, [minVal, maxVal, getPercent]);
 
+  const handleSave = () => {
+    saveOptionsToLocalStorage(
+      [minVal.toString(), maxVal.toString()],
+      localStorageKey
+    );
+    setData &&
+      setData((prevState) => ({
+        ...prevState,
+        [localStorageKey]: [minVal, maxVal],
+      }));
+    minValRef.current = minVal;
+    maxValRef.current = maxVal;
+  };
+
   return (
     <div className="flex justify-center flex-col items-center gap-4 pb-5 mb-5">
       <div className="flex gap-1 font-bold p-2 rounded-md border text-lg min-w-[125px] justify-center">
@@ -75,20 +89,10 @@ const RangeSlider = ({
             value={minVal}
             onChange={(event) => {
               const value = Math.min(Number(event.target.value), maxVal - 1);
-
               setMinVal(value);
-              saveOptionsToLocalStorage(
-                [value.toString(), maxVal.toString()],
-                localStorageKey
-              );
-              setData &&
-                setData((prevState) => ({
-                  ...prevState,
-                  [localStorageKey]: [value, maxVal],
-                }));
-
-              minValRef.current = value;
             }}
+            onMouseUp={handleSave}
+            onTouchEnd={handleSave}
             className="thumb thumb--left absolute w-[300px] xs:w-[350px] md:w-[500px] h-0 outline-none"
           />
           <input
@@ -99,17 +103,9 @@ const RangeSlider = ({
             onChange={(event) => {
               const value = Math.max(Number(event.target.value), minVal + 1);
               setMaxVal(value);
-              saveOptionsToLocalStorage(
-                [minVal.toString(), value.toString()],
-                localStorageKey
-              );
-              setData &&
-                setData((prevState) => ({
-                  ...prevState,
-                  [localStorageKey]: [minVal, value],
-                }));
-              maxValRef.current = value;
             }}
+            onMouseUp={handleSave}
+            onTouchEnd={handleSave}
             className="thumb thumb--right absolute w-[275px] xs:w-[350px] md:w-[500px] h-0 outline-none"
           />
           <div className="relative  w-[275px] xs:w-[350px] md:w-[500px]">
