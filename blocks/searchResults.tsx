@@ -73,7 +73,7 @@ const SearchResults = ({
   };
 
   return (
-    <section id="results-list">
+    <section id="results-list" className="product-result">
       <div className="flex md:items-end justify-between flex-col md:flex-row lg:mb-8 mb-4">
         <div
           className="flex flex-col justify-center"
@@ -112,7 +112,7 @@ const SearchResults = ({
 
       {!loading && paginatedProducts.length > 0 && (
         <div className="grid grid-cols-1 gap-4 lg:gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {paginatedProducts.map((product) => (
+          {paginatedProducts.map((product, index) => (
             <Link href={product.product_url} key={product.sku}>
               <ProductCard {...product} />
             </Link>

@@ -15,6 +15,7 @@ import {
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowRight, ArrowUp, Check, CircleDashed } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import ScrollToTopButton from "@/components/custom/scrollToTopButton";
 
 interface SearchMergedProps {
   showResults: boolean;
@@ -176,7 +177,7 @@ const SearchMerged = ({ showResults, query, setQuery }: SearchMergedProps) => {
         </AccordionItem>
       </Accordion>
 
-      <div className="mt-4 lg:mt-6 w-full">
+      <div className="mt-4 lg:mt-6 w-full results">
         {showResults && (
           <SearchResults
             productsArray={products}
@@ -193,17 +194,9 @@ const SearchMerged = ({ showResults, query, setQuery }: SearchMergedProps) => {
         )}
       </div>
 
-      {/* floating button that scrolls back to top */}
-      {showResults && (
-        <Button
-          className="fixed bottom-4 left-6 z-10 border lg:hidden"
-          variant="default"
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        >
-          Terug naar boven
-          <ArrowUp className="ml-1" size={16} />
-        </Button>
-      )}
+      {/* floating button that scrolls back to top  */}
+      {/* not working properly yet.. :( */}
+      {showResults && <ScrollToTopButton targetClassName="results" />}
     </div>
   );
 };
