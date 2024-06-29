@@ -7,9 +7,7 @@ import Papa from "papaparse";
 // feed ID
 // campaign ID
 // filters
-export async function POST(request: NextRequest) {
-  const { body } = request;
-
+export async function GET(request: NextRequest) {
   try {
     const response = await axios.get(
       `https://api.partnerize.com/user/publisher/${process.env.PUBLISHER_ID}/feed`,
@@ -59,7 +57,7 @@ export async function POST(request: NextRequest) {
     const randomProducts = products
       .sort(() => 0.5 - Math.random())
       .slice(0, 100);
-    return NextResponse.json({ data: randomProducts });
+    return NextResponse.json(randomProducts[0]);
   } catch (error: any) {
     return new NextResponse(JSON.stringify({ error: "Failed to fetch data" }), {
       status: error.response?.status || 500,
