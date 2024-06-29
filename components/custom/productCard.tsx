@@ -1,6 +1,6 @@
 import { CoolblueProductProps } from "@/app/types";
 import { Card, CardHeader, CardContent } from "../ui/card";
-import Image from "next/image";
+
 import getSymbolFromCurrency from "currency-symbol-map";
 import { ImageOff, Star } from "lucide-react";
 import { Skeleton } from "../ui/skeleton";

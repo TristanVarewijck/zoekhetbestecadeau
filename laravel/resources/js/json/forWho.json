@@ -1,0 +1,17 @@
+[
+  {
+    "icon": "🚺",
+    "name": "Voor haar",
+    "id": "voor_haar"
+  },
+  {
+    "icon": "🚹",
+    "name": "Voor hem",
+    "id": "voor_hem"
+  },
+  {
+    "icon": "🚻",
+    "name": "Voor iedereen",
+    "id": "voor_iedereen"
+  }
+]

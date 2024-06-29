@@ -6,7 +6,7 @@ import Image from "next/image";
 export default function About() {
   return (
     <SectionLayout bgColor="white">
-      <div className="mt-10 md:mt-0 w-full flex justify-center">
+      <div className="flex justify-center w-full mt-10 md:mt-0">
         <div className="max-w-[700px] flex flex-col gap-4">
           <H1Heading title="Over ons" />
           <div className="relative h-[325px]">

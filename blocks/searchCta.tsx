@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation";
 import RangeSlider from "@/components/custom/rangeSlider";
 import { FilterProps } from "@/app/types";
 import CountdownCancel from "@/components/custom/countdownCancel";
-import Image from "next/image";
+
 import {
   AlertDialog,
   AlertDialogAction,
