@@ -27,9 +27,10 @@ export default function RootLayout({
       </Head>
       <body>
         <Analytics />
-        <Navbar />
-        <div className="min-h-screen">{children}</div>
-        <Footer />
+        {/* <Navbar /> */}
+        {/* <div className="min-h-screen">{children}</div> */}
+        <div>under construction</div>
+        {/* <Footer /> */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
