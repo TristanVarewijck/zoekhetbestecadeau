@@ -15,12 +15,12 @@ const Navbar = () => {
         </SheetTrigger>
         <SheetContent side="right">
           <Link className="mr-6" href="/">
-            {/* <Image
+            <Image
               src="/branding/logo-black.svg"
               alt="zoekhetbestecadeau logo"
               width={175}
               height={0}
-            /> */}
+            />
           </Link>
           <div className="grid gap-2 py-6">
             <Link
@@ -42,12 +42,12 @@ const Navbar = () => {
 
       <nav className="ml-auto hidden lg:flex gap-6 items-center justify-between w-full">
         <Link className="mr-6" href="/">
-          {/* <Image
+          <Image
             src="/branding/logo-black.svg"
             alt="zoekhetbestecadeau logo"
             width={225}
             height={0}
-          /> */}
+          />
         </Link>
 
         <div className="flex gap-3 items-center">

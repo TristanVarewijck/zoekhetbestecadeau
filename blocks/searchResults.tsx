@@ -19,9 +19,8 @@ import {
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle, ArrowUp } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import H2Heading from "@/components/custom/heading/h2Heading";
-import { Arrow } from "@radix-ui/react-select";
 
 interface SearchResultProps {
   productsArray: CoolblueProductProps[];
@@ -47,6 +46,8 @@ const SearchResults = ({
   const startIndex = (currentPage - 1) * productsPerPage;
   const endIndex = startIndex + productsPerPage;
   const paginatedProducts = productsArray.slice(startIndex, endIndex);
+
+  console.log("productsArray", productsArray);
 
   const handlePrevious = () => {
     setCurrentPage(currentPage > 1 ? currentPage - 1 : 1);

@@ -130,7 +130,7 @@ const ProductCard = (product: CoolblueProductProps) => {
                 </span>
               </div>
               {/* reviews */}
-              <span className="text-sm text-gray-500">
+              <span className="text-sm text-gray-500 underline">
                 ({product.reviewscount} reviews)
               </span>
             </div>
