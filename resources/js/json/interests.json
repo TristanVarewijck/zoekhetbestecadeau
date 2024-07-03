@@ -1,0 +1,52 @@
+[
+    {
+        "icon": "🏋️",
+        "name": "Sport",
+        "id": "sport"
+    },
+    {
+        "icon": "📚",
+        "name": "Lezen",
+        "id": "lezen"
+    },
+    {
+        "icon": "🧣",
+        "name": "Fashion",
+        "id": "fashion"
+    },
+    {
+        "icon": "🥘",
+        "name": "Koken",
+        "id": "koken"
+    },
+    {
+        "icon": "✈️",
+        "name": "Reizen",
+        "id": "reizen"
+    },
+    {
+        "icon": "💻",
+        "name": "Tech",
+        "id": "tech"
+    },
+    {
+        "icon": "🏡",
+        "name": "Interieur",
+        "id": "interieur"
+    },
+    {
+        "icon": "🎊",
+        "name": "Feesten",
+        "id": "feesten"
+    },
+    {
+        "icon": "🧴",
+        "name": "Verzorging",
+        "id": "verzorging"
+    },
+    {
+        "icon": "🍀",
+        "name": "Natuur",
+        "id": "natuur"
+    }
+]

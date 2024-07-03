@@ -1,0 +1,36 @@
+[
+    {
+        "label": "Gelegenheid",
+        "step": 1,
+        "localStorageKey": "occasions",
+        "title": "Kies de gelegenheid",
+        "subtitle": "Selecteer de gelegenheid waarvoor je een cadeau zoekt."
+    },
+    {
+        "label": "Prijs",
+        "step": 2,
+        "localStorageKey": "price",
+        "title": "Wat is het budget voor het cadeau?",
+        "subtitle": "Selecteer een prijsklasse voor het cadeau."
+    },
+    {
+        "label": "Interesses",
+        "step": 3,
+        "localStorageKey": "interests",
+        "title": "Wat zijn de interesses?",
+        "subtitle": "Selecteer maximaal 3 interesses van de persoon waarvoor je een cadeau zoekt."
+    },
+    {
+        "label": "Voor wie",
+        "step": 4,
+        "localStorageKey": "forWho",
+        "title": "Voor wie is het cadeau?",
+        "subtitle": "Selecteer de optie die het beste past."
+    },
+    {
+        "label": "Resultaten 🎉",
+        "step": 5,
+        "title": "Hieronder staan de cadeaus die wij hebben gevonden!",
+        "subtitle": "Wij hopen dat je een leuk cadeau hebt gevonden. Veel plezier met geven 🎁"
+    }
+]

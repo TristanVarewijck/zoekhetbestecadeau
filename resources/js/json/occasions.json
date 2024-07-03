@@ -1,0 +1,52 @@
+[
+  {
+    "icon": "🌹",
+    "name": "Date",
+    "id": "date"
+  },
+  {
+    "icon": "🧁",
+    "name": "Verjaardag",
+    "id": "verjaardag"
+  },
+  {
+    "icon": "🙏",
+    "name": "Bedankje",
+    "id": "bedankje"
+  },
+  {
+    "icon": "👋",
+    "name": "Vertrek",
+    "id": "vertrek"
+  },
+  {
+    "icon": "🏡",
+    "name": "Huis",
+    "id": "huis"
+  },
+  {
+    "icon": "🎓",
+    "name": "Diploma",
+    "id": "diploma"
+  },
+  {
+    "icon": "👶",
+    "name": "Geboorte",
+    "id": "geboorte"
+  },
+  {
+    "icon": "🎓",
+    "name": "Pensioen",
+    "id": "pensioen"
+  },
+  {
+    "icon": "🎊",
+    "name": "Jubileum",
+    "id": "jubileum"
+  },
+  {
+    "icon": "👰",
+    "name": "Bruiloft",
+    "id": "bruiloft"
+  }
+]
