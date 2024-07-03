@@ -51,7 +51,7 @@ const SearchCta = ({
             }, 1000);
         } else if (cancelCounter === 0) {
             localStorage.clear();
-            // router.push("/");
+            window.location.href = "/";
         }
         return () => clearTimeout(timer);
     }, [isTimerActive, cancelCounter]);
