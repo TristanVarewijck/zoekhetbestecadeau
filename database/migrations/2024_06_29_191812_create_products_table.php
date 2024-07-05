@@ -19,8 +19,8 @@ return new class extends Migration
             $table->decimal('price', 10, 2);
             $table->foreignUuid('brand')->constrained('brands');
             $table->foreignUuid('category')->constrained('categories');
-            $table->integer('image_url');
-            $table->integer('affiliate_link');
+            $table->text('image_url');
+            $table->text('affiliate_link');
             $table->timestamps();
         });
     }
