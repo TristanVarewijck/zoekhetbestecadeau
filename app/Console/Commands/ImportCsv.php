@@ -45,7 +45,7 @@ class ImportCsv extends Command
         $processedCategoryIds = [];
         $processedProductIds = [];
 
-        foreach ($fileObject as $index => $row) {
+        foreach ($fileObject as $row) {
             // Skip empty lines
             if (empty($row[0])) {
                 continue;
@@ -58,11 +58,16 @@ class ImportCsv extends Command
             }
 
             // Stop after 100 rows for testing purposes
-            if ($counter >= 100) {
+            if ($counter >= 1000) {
                 break;
             }
 
             $row = array_combine($header, $row);
+
+            // Filter out products with a price lower than 5 or higher than 150
+            if ($row['price'] < 5 || $row['price'] > 150) {
+                continue;
+            }
 
             $brand = $this->processRecord(Brand::class, ['name' => $row['brand']], 'name');
             $category = $this->processRecord(Category::class, ['name' => $row['subcategories']], 'name');
@@ -92,7 +97,8 @@ class ImportCsv extends Command
         $this->deleteUnprocessedRecords(Category::class, $processedCategoryIds);
         $this->deleteUnprocessedRecords(Product::class, $processedProductIds);
 
-        $this->info('CSV file imported successfully.');
+        // Log success message + number of records processed (grouped by model)
+        $this->info("Import completed. Processed {$counter} records.");
     }
 
     private function deleteUnprocessedRecords($model, $processedIds)
