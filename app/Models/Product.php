@@ -15,9 +15,14 @@ class Product extends Model
         'name',
         'description',
         'price',
-        'brand',
-        'category',
+        'brand_id',
+        'category_id',
         'image_url',
         'affiliate_link',
     ];
+
+    public function interests()
+    {
+        return $this->belongsToMany(Interest::class, 'interest_products');
+    }
 }

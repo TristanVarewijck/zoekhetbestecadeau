@@ -14,4 +14,9 @@ class Interest extends Model
         'name',
         'icon',
     ];
+
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'interest_products');
+    }
 }

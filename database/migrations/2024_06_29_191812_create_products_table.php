@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('name');
             $table->text('description');
             $table->decimal('price', 10, 2);
-            $table->foreignUuid('brand')->constrained('brands');
-            $table->foreignUuid('category')->constrained('categories');
+            $table->foreignUuid('brand_id')->constrained('brands');
+            $table->foreignUuid('category_id')->constrained('categories');
             $table->text('image_url');
             $table->text('affiliate_link');
             $table->timestamps();

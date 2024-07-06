@@ -4,6 +4,8 @@ namespace App\Console\Commands;
 
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\Interest;
+use App\Models\InterestProduct;
 use App\Models\Product;
 use Illuminate\Console\Command;
 
@@ -14,7 +16,7 @@ class ImportCsv extends Command
      *
      * @var string
      */
-    protected $signature = 'app:import-csv';
+    protected $signature = 'app:import-csv {interest}';
 
     /**
      * The console command description.
@@ -22,6 +24,13 @@ class ImportCsv extends Command
      * @var string
      */
     protected $description = 'Command to import CSV file to database.';
+
+    /**
+     * Control logging
+     *
+     * @var bool
+     */
+    protected $loggingEnabled = false;
 
     /**
      * Execute the console command.
@@ -41,9 +50,11 @@ class ImportCsv extends Command
 
         $header = null;
         $counter = 0;
-        $processedBrandIds = [];
-        $processedCategoryIds = [];
         $processedProductIds = [];
+
+        // Get the interest from the command argument and add it to the database
+        $interestName = $this->argument('interest');
+        $interest = Interest::firstOrCreate(['name' => $interestName, 'icon' => 'fas fa-home']);
 
         foreach ($fileObject as $row) {
             // Skip empty lines
@@ -57,8 +68,8 @@ class ImportCsv extends Command
                 continue;
             }
 
-            // Stop after 100 rows for testing purposes
-            if ($counter >= 1000) {
+            // Stop after 1000 rows for testing purposes
+            if ($counter >= 300) {
                 break;
             }
 
@@ -77,42 +88,28 @@ class ImportCsv extends Command
                 'name' => $row['name'],
                 'description' => $row['description'],
                 'price' => $row['price'],
-                'brand' => $brand->id,
-                'category' => $category->id,
+                'brand_id' => $brand->id,
+                'category_id' => $category->id,
                 'image_url' => $row['imageURL'],
                 'affiliate_link' => $row['productURL'],
             ];
 
             $product =  $this->processRecord(Product::class, $productData, 'serial_number');
+            $this->processRecord(InterestProduct::class, ['interest_id' => $interest->id, 'product_id' => $product->id], 'product_id');
 
-            $processedBrandIds[] = $brand->id;
-            $processedCategoryIds[] = $category->id;
             $processedProductIds[] = $product->id;
 
             $counter++;
         }
 
-        // Delete records not in the CSV file
-        $this->deleteUnprocessedRecords(Brand::class, $processedBrandIds);
-        $this->deleteUnprocessedRecords(Category::class, $processedCategoryIds);
-        $this->deleteUnprocessedRecords(Product::class, $processedProductIds);
+        // Clean up the database
+        $this->deleteUnprocessedProducts($processedProductIds);
+        // * When product gets deleted it automatically deletes the records everywhere where the product_id is used
+        $this->deleteUnusedBrands();
+        $this->deleteUnusedCategories();
 
-        // Log success message + number of records processed (grouped by model)
+        // Log success message + number of records processed
         $this->info("Import completed. Processed {$counter} records.");
-    }
-
-    private function deleteUnprocessedRecords($model, $processedIds)
-    {
-        // Split the model name and log the actual model name
-        $modelParts = explode('\\', $model);
-        $modelName = end($modelParts);
-
-        $recordsToDelete = $model::whereNotIn('id', $processedIds)->get();
-
-        foreach ($recordsToDelete as $record) {
-            $this->info("{$modelName} with id " . $record->id . " deleted.");
-            $record->delete();
-        }
     }
 
     private function isRecordDataDifferent($existingProduct, $productData)
@@ -138,17 +135,56 @@ class ImportCsv extends Command
             // Check if the record data is different
             if ($this->isRecordDataDifferent($existingRecord, $row)) {
                 $existingRecord->update($row);
-                $this->info("{$modelName} with {$uniqueIdentifier} " . $existingRecord->$uniqueIdentifier . " updated.");
-            } else {
-                $this->info("{$modelName} with {$uniqueIdentifier} " . $existingRecord->$uniqueIdentifier . " is unchanged.");
+                $this->log("{$modelName} with {$uniqueIdentifier} " . $existingRecord->$uniqueIdentifier . " updated.");
             }
 
             return $existingRecord;
         } else {
             $record = $model::create($row);
-            $this->info("Record created: {$record->name}");
+            $this->log("{$modelName} with {$uniqueIdentifier} " . $record->$uniqueIdentifier . " created.");
 
             return $record;
+        }
+    }
+
+    private function deleteUnprocessedProducts($processedIds)
+    {
+        // Split the model name and log the actual model name
+        $modelParts = explode('\\', Product::class);
+        $modelName = end($modelParts);
+
+        $recordsToDelete = Product::whereNotIn('id', $processedIds)->get();
+
+        foreach ($recordsToDelete as $record) {
+            $this->log("{$modelName} with id " . $record->id . " deleted.");
+            $record->delete();
+        }
+    }
+
+    private function deleteUnusedBrands()
+    {
+        $recordsToDelete = Brand::whereDoesntHave('products')->get();
+
+        foreach ($recordsToDelete as $record) {
+            $this->log("Brand with id " . $record->id . " deleted.");
+            $record->delete();
+        }
+    }
+
+    private function deleteUnusedCategories()
+    {
+        $recordsToDelete = Category::whereDoesntHave('products')->get();
+
+        foreach ($recordsToDelete as $record) {
+            $this->log("Category with id " . $record->id . " deleted.");
+            $record->delete();
+        }
+    }
+
+    private function log($message)
+    {
+        if ($this->loggingEnabled) {
+            $this->info($message);
         }
     }
 }
