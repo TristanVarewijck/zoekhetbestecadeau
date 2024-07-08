@@ -11,7 +11,13 @@ class Category extends Model
     use HasFactory, HasUuids;
 
     protected $fillable = [
+        'id',
         'name',
-        'slug',
+        'icon',
     ];
+
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'category_products');
+    }
 }

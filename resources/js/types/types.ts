@@ -8,14 +8,20 @@ export interface HeadingProps {
 
 export interface ProductProps {
     id: string;
-    url: string;
-    image: string;
-    title: string;
+    serial_number: string;
+    name: string;
     description: string;
-    price: number;
-    occasions?: string[];
-    interests?: string[];
-    forWho?: string[];
+    price: string;
+    brand_name: string;
+    brand_id: string;
+    image_url: string;
+    affiliate_link: string;
+    created_at: string;
+    updated_at: string;
+    currency: string;
+    category_path: string;
+    delivery_time: string;
+    stock: number;
 }
 
 export interface PopularProductsProps {
