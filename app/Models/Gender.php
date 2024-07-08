@@ -11,6 +11,7 @@ class Gender extends Model
     use HasFactory, HasUuids;
 
     protected $fillable = [
+        'id',
         'name',
         'icon',
     ];

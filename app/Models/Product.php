@@ -8,21 +8,26 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    use HasFactory, HasUuids;
+        use HasFactory, HasUuids;
 
-    protected $fillable = [
-        'serial_number',
-        'name',
-        'description',
-        'price',
-        'brand_id',
-        'category_id',
-        'image_url',
-        'affiliate_link',
-    ];
+        protected $fillable = [
+                'serial_number',
+                'name',
+                "stock",
+                'description',
+                'currency',
+                'category_path',
+                'delivery_time',
+                'price',
+                'brand_id',
+                'brand_name',
+                'category_id',
+                'image_url',
+                'affiliate_link',
+        ];
 
-    public function interests()
-    {
-        return $this->belongsToMany(Interest::class, 'interest_products');
-    }
+        public function interests()
+        {
+                return $this->belongsToMany(Category::class, 'category_products');
+        }
 }

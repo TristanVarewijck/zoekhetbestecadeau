@@ -3,9 +3,12 @@
 namespace App\Console\Commands;
 
 use App\Models\Brand;
+use App\Models\SubCategory;
+use App\Models\SubCategoryProduct;
 use App\Models\Category;
 use App\Models\Interest;
 use App\Models\InterestProduct;
+use App\Models\CategoryProduct;
 use App\Models\Product;
 use Illuminate\Console\Command;
 
@@ -16,7 +19,7 @@ class ImportCsv extends Command
      *
      * @var string
      */
-    protected $signature = 'app:import-csv {interest}';
+    protected $signature = 'app:import-csv {category}';
 
     /**
      * The console command description.
@@ -37,13 +40,17 @@ class ImportCsv extends Command
      */
     public function handle()
     {
-        $file = storage_path('products/wonen.csv');
+        // Get the category type argument and construct the file path
+        $categoryType = $this->argument('category');
+        $file = storage_path("products/{$categoryType}.csv");
 
+        // Check if the file exists
         if (!file_exists($file)) {
             $this->error("File not found: $file");
             return;
         }
 
+        // Open the CSV file for reading
         $fileObject = new \SplFileObject($file);
         $fileObject->setFlags(\SplFileObject::READ_CSV);
         $fileObject->setCsvControl(';');
@@ -55,6 +62,9 @@ class ImportCsv extends Command
         // Get the interest from the command argument and add it to the database
         $interestName = $this->argument('interest');
         $interest = Interest::firstOrCreate(['name' => $interestName, 'icon' => 'fas fa-home']);
+        // Get the category from the command argument and add it to the database
+        $categoryName = $this->argument('category');
+        $category = Category::firstOrCreate(['name' => $categoryName]);
 
         foreach ($fileObject as $row) {
             // Skip empty lines
@@ -68,11 +78,12 @@ class ImportCsv extends Command
                 continue;
             }
 
-            // Stop after 1000 rows for testing purposes
+            // Stop after 300 rows for testing purposes
             if ($counter >= 300) {
                 break;
             }
 
+            // Map the row data to the header
             $row = array_combine($header, $row);
 
             // Filter out products with a price lower than 5 or higher than 150
@@ -80,31 +91,46 @@ class ImportCsv extends Command
                 continue;
             }
 
+            // Process the brand record
             $brand = $this->processRecord(Brand::class, ['name' => $row['brand']], 'name');
-            $category = $this->processRecord(Category::class, ['name' => $row['subcategories']], 'name');
 
+            // Prepare product data for processing
             $productData = [
                 'serial_number' => $row['product ID'],
                 'name' => $row['name'],
+                'stock' => $row['stock'],
                 'description' => $row['description'],
+                "currency" => $row['currency'],
+                "category_path" => $row['categoryPath'],
+                "delivery_time" => $row['deliveryTime'],
                 'price' => $row['price'],
                 'brand_id' => $brand->id,
                 'category_id' => $category->id,
+                'brand_name' => $brand->name,
                 'image_url' => $row['imageURL'],
                 'affiliate_link' => $row['productURL'],
+                'created_at' => now(),
+                'updated_at' => now(),
             ];
 
-            $product =  $this->processRecord(Product::class, $productData, 'serial_number');
-            $this->processRecord(InterestProduct::class, ['interest_id' => $interest->id, 'product_id' => $product->id], 'product_id');
+            // Process the product record
+            $product = $this->processRecord(Product::class, $productData, 'serial_number');
+
+            // Associate product with category
+            $this->processRecord(CategoryProduct::class, ['category_id' => $category->id, 'product_id' => $product->id], 'product_id');
+
+            // Process the subcategory record
+            $subCategory = $this->processRecord(SubCategory::class, ['name' => $row['subcategories'], 'category_id' => $category->id], 'name');
+
+            // Associate product with subcategory
+            $this->processRecord(SubCategoryProduct::class, ['sub_category_id' => $subCategory->id, 'product_id' => $product->id], 'product_id');
 
             $processedProductIds[] = $product->id;
-
             $counter++;
         }
 
         // Clean up the database
         $this->deleteUnprocessedProducts($processedProductIds);
-        // * When product gets deleted it automatically deletes the records everywhere where the product_id is used
         $this->deleteUnusedBrands();
         $this->deleteUnusedCategories();
 
@@ -114,6 +140,7 @@ class ImportCsv extends Command
 
     private function isRecordDataDifferent($existingProduct, $productData)
     {
+        // Compare existing record data with new data
         foreach ($productData as $key => $value) {
             if ($existingProduct->$key != $value) {
                 return true;
@@ -140,6 +167,7 @@ class ImportCsv extends Command
 
             return $existingRecord;
         } else {
+            // Create a new record
             $record = $model::create($row);
             $this->log("{$modelName} with {$uniqueIdentifier} " . $record->$uniqueIdentifier . " created.");
 
@@ -153,6 +181,7 @@ class ImportCsv extends Command
         $modelParts = explode('\\', Product::class);
         $modelName = end($modelParts);
 
+        // Find and delete unprocessed products
         $recordsToDelete = Product::whereNotIn('id', $processedIds)->get();
 
         foreach ($recordsToDelete as $record) {
@@ -163,6 +192,7 @@ class ImportCsv extends Command
 
     private function deleteUnusedBrands()
     {
+        // Find and delete brands without products
         $recordsToDelete = Brand::whereDoesntHave('products')->get();
 
         foreach ($recordsToDelete as $record) {
@@ -173,6 +203,7 @@ class ImportCsv extends Command
 
     private function deleteUnusedCategories()
     {
+        // Find and delete categories without products
         $recordsToDelete = Category::whereDoesntHave('products')->get();
 
         foreach ($recordsToDelete as $record) {
@@ -181,8 +212,20 @@ class ImportCsv extends Command
         }
     }
 
+    private function deleteUnusedSubCategories()
+    {
+        // Find and delete subcategories without products
+        $recordsToDelete = SubCategory::whereDoesntHave('products')->get();
+
+        foreach ($recordsToDelete as $record) {
+            $this->log("SubCategory with id " . $record->id . " deleted.");
+            $record->delete();
+        }
+    }
+
     private function log($message)
     {
+        // Log messages if logging is enabled
         if ($this->loggingEnabled) {
             $this->info($message);
         }
