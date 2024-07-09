@@ -16,6 +16,12 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import getSymbolFromCurrency from "currency-symbol-map";
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/Components/ui/accordion";
 
 const Product = () => {
     const { id } = usePage().props;
@@ -246,12 +252,28 @@ const Product = () => {
 
                                 {/* more */}
                                 <p
-                                    className={`flex items-center gap-2 pb-2 border-b-2`}
+                                // className={`flex items-center gap-2 pb-2 border-b-2`}
                                 >
-                                    <span>
-                                        <ReceiptText size={16} />
-                                    </span>
-                                    <span>Meer details</span>
+                                    <Accordion
+                                        type="single"
+                                        collapsible
+                                        className="w-full border-none"
+                                    >
+                                        <AccordionItem value="item-1">
+                                            <AccordionTrigger className="border-none py-2">
+                                                <span
+                                                    className={`flex items-center gap-1`}
+                                                >
+                                                    <ReceiptText size={16} />
+                                                    <span>Meer details</span>
+                                                </span>
+                                            </AccordionTrigger>
+                                            <AccordionContent>
+                                                Yes. It adheres to the WAI-ARIA
+                                                design pattern.
+                                            </AccordionContent>
+                                        </AccordionItem>
+                                    </Accordion>
                                 </p>
                             </div>
                         </div>
