@@ -11,6 +11,7 @@ use App\Models\InterestProduct;
 use App\Models\CategoryProduct;
 use App\Models\Product;
 use Illuminate\Console\Command;
+use Kreait\Laravel\Firebase\Facades\Firebase;
 
 class ImportCsv extends Command
 {
@@ -40,54 +41,101 @@ class ImportCsv extends Command
      */
     public function handle()
     {
-        // Get the category type argument and construct the file path
-        $categoryType = $this->argument('category');
-        $file = storage_path("products/{$categoryType}.csv");
+        set_time_limit(0);
+        ini_set('memory_limit', '-1'); // Remove memory limit temporarily
+
+        // Get firebase storage instance
+        $storage = Firebase::storage();
+        // Get the bucket
+        $bucket = $storage->getBucket();
+
+        // Define the path to your CSV file in Firebase Storage
+        $filePath = $this->argument('category') . '.csv';
+
+        // Get the category from the command argument and add it to the database
+        $categoryName = $this->argument('category');
+        $category = Category::firstOrCreate(['name' => $categoryName]);
+
+        // Check if the file exists in the storage bucket
+        if ($bucket->object($filePath)->exists()) {
+            // Get the file object
+            $object = $bucket->object($filePath);
+
+            // Log the file size
+            $fileSize = $object->info()['size'];
+            $this->info('File size: ' . $fileSize . ' bytes');
+
+            // Stream the file content
+            $content = $object->downloadAsStream();
+
+            $csv = $content->getContents();
+
+            // Process the CSV file
+            $this->processCsv($csv, $category);
+        } else {
+            $this->error('File not found in Firebase Storage.');
+            return;
+        }
+    }
+
+    public function processCsv($file, $category)
+    {
+        ini_set('memory_limit', '-1'); // Remove memory limit temporarily
 
         // Check if the file exists
-        if (!file_exists($file)) {
+        if (!$file) {
             $this->error("File not found: $file");
             return;
         }
 
-        // Open the CSV file for reading
-        $fileObject = new \SplFileObject($file);
-        $fileObject->setFlags(\SplFileObject::READ_CSV);
-        $fileObject->setCsvControl(';');
+        // Split the CSV content into lines
+        $lines = explode("\n", $file);
+
+        $this->info('File opened.');
 
         $header = null;
         $counter = 0;
         $processedProductIds = [];
 
-        // Get the interest from the command argument and add it to the database
-        $interestName = $this->argument('interest');
-        $interest = Interest::firstOrCreate(['name' => $interestName, 'icon' => 'fas fa-home']);
-        // Get the category from the command argument and add it to the database
-        $categoryName = $this->argument('category');
-        $category = Category::firstOrCreate(['name' => $categoryName]);
+        // Initialize the progress bar
+        $totalRows = count($lines) - 1; // Minus one for the header row
+        $bar = $this->output->createProgressBar($totalRows);
+        $bar->start();
 
-        foreach ($fileObject as $row) {
+        foreach ($lines as $line) {
             // Skip empty lines
-            if (empty($row[0])) {
+            if (empty(trim($line))) {
+                $bar->advance();
                 continue;
             }
+
+            // Convert the CSV line to an array
+            $row = str_getcsv($line, ';');
 
             // Skip header row
             if (!$header) {
                 $header = $row;
+                $bar->advance();
                 continue;
             }
 
-            // Stop after 300 rows for testing purposes
-            if ($counter >= 300) {
-                break;
+            // Ensure the number of columns match
+            if (count($header) !== count($row)) {
+                $bar->advance();
+                continue;
             }
 
             // Map the row data to the header
             $row = array_combine($header, $row);
 
+            // Stop after 1000 rows for testing purposes
+            if ($counter >= 1000) {
+                break;
+            }
+
             // Filter out products with a price lower than 5 or higher than 150
             if ($row['price'] < 5 || $row['price'] > 150) {
+                $bar->advance();
                 continue;
             }
 
@@ -105,7 +153,6 @@ class ImportCsv extends Command
                 "delivery_time" => $row['deliveryTime'],
                 'price' => $row['price'],
                 'brand_id' => $brand->id,
-                'category_id' => $category->id,
                 'brand_name' => $brand->name,
                 'image_url' => $row['imageURL'],
                 'affiliate_link' => $row['productURL'],
@@ -116,9 +163,6 @@ class ImportCsv extends Command
             // Process the product record
             $product = $this->processRecord(Product::class, $productData, 'serial_number');
 
-            // Associate product with category
-            $this->processRecord(CategoryProduct::class, ['category_id' => $category->id, 'product_id' => $product->id], 'product_id');
-
             // Process the subcategory record
             $subCategory = $this->processRecord(SubCategory::class, ['name' => $row['subcategories'], 'category_id' => $category->id], 'name');
 
@@ -126,13 +170,18 @@ class ImportCsv extends Command
             $this->processRecord(SubCategoryProduct::class, ['sub_category_id' => $subCategory->id, 'product_id' => $product->id], 'product_id');
 
             $processedProductIds[] = $product->id;
+
             $counter++;
+            $bar->advance();
         }
 
         // Clean up the database
         $this->deleteUnprocessedProducts($processedProductIds);
         $this->deleteUnusedBrands();
         $this->deleteUnusedCategories();
+
+        // Finish the progress bar
+        $bar->finish();
 
         // Log success message + number of records processed
         $this->info("Import completed. Processed {$counter} records.");
