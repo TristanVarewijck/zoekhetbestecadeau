@@ -5,14 +5,29 @@ import { Card } from "@/Components/ui/card";
 import { ProductProps } from "@/types/types";
 import { usePage } from "@inertiajs/react";
 import axios from "axios";
-import { DotIcon, ShoppingBag, Truck } from "lucide-react";
+import {
+    Blocks,
+    ChevronDown,
+    ChevronUp,
+    DotIcon,
+    ReceiptText,
+    ShoppingBag,
+    Truck,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import getSymbolFromCurrency from "currency-symbol-map";
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/Components/ui/accordion";
 
 const Product = () => {
     const { id } = usePage().props;
     const [product, setProduct] = useState<ProductProps | null>(null);
     const [loadingProduct, setLoadingProduct] = useState(true);
+    const [showDescription, setShowDescription] = useState(false);
 
     const retrieveProduct = async () => {
         const response = await axios.get(`/api/products/${id}`, {
@@ -22,6 +37,13 @@ const Product = () => {
         });
 
         const { data } = response;
+
+        if (data === "Product not found") {
+            setProduct(null);
+            setLoadingProduct(false);
+            return;
+        }
+
         setProduct(data);
         setLoadingProduct(false);
     };
@@ -50,7 +72,7 @@ const Product = () => {
                             <div className="flex gap-4 items-center">
                                 {/* brand */}
                                 <p>
-                                    <span className="font-bold text-xs text-[hsl(var(--primary))]">
+                                    <span className="font-bold text-[11px] text-[hsl(var(--primary))]">
                                         Merk:
                                     </span>{" "}
                                     <span className="font-bold text-xs">
@@ -60,7 +82,7 @@ const Product = () => {
 
                                 {/* serial number */}
                                 <p>
-                                    <span className="font-bold text-xs text-[hsl(var(--primary))]">
+                                    <span className="font-bold text-[11px] text-[hsl(var(--primary))]">
                                         Serial number:
                                     </span>{" "}
                                     <span className="font-bold text-xs">
@@ -70,23 +92,22 @@ const Product = () => {
                             </div>
                             {/* image */}
                             <a href={product.affiliate_link} target="_blank">
-                                <div
-                                    className="h-[300px] md:h-[400px] relative"
-                                    style={{
-                                        objectFit: "contain",
-                                        objectPosition: "center",
-                                    }}
-                                >
+                                <div className="h-[300px] md:h-[550px] relative">
                                     <img
                                         src={product.image_url}
                                         alt={product.name}
+                                        className="h-full w-full"
+                                        style={{
+                                            objectFit: "contain",
+                                            objectPosition: "center",
+                                        }}
                                     />
                                 </div>
                             </a>
                             {/* productID */}
                             <div>
                                 <p>
-                                    <span className="font-bold text-xs text-[hsl(var(--primary))]">
+                                    <span className="font-bold text-[11px] text-[hsl(var(--primary))]">
                                         Product ID:
                                     </span>{" "}
                                     <span className="font-bold text-xs">
@@ -100,14 +121,32 @@ const Product = () => {
                         <div className={`flex flex-col gap-6`}>
                             <div>
                                 {/* stock */}
-                                <p className="flex items-center font-bold text-xs">
+                                <p className="flex items-center font-bold text-xs gap-1">
                                     <span>
-                                        <DotIcon
-                                            size={30}
+                                        <Blocks
+                                            size={16}
                                             className="text-[hsl(var(--primary))]"
                                         />
                                     </span>
-                                    <span>Op voorraad ({product.stock})</span>{" "}
+                                    <span>
+                                        {product.stock > 0 ? (
+                                            <span>
+                                                {product.stock > 10 ? (
+                                                    "Op voorraad"
+                                                ) : (
+                                                    <span>
+                                                        Nog maar{" "}
+                                                        <span className="text-red-500 font-bold">
+                                                            {product.stock}
+                                                        </span>{" "}
+                                                        op voorraad!
+                                                    </span>
+                                                )}
+                                            </span>
+                                        ) : (
+                                            "Niet op voorraad"
+                                        )}
+                                    </span>
                                 </p>
 
                                 {/* name */}
@@ -118,7 +157,42 @@ const Product = () => {
                                 </h1>
 
                                 {/* description */}
-                                <p className="text-sm">{product.description}</p>
+                                <div>
+                                    <div
+                                        className={`relative h-[85px] ${
+                                            showDescription ? `h-fit` : ""
+                                        } overflow-hidden`}
+                                    >
+                                        <p className="text-sm">
+                                            {product.description}
+                                        </p>
+                                        {!showDescription && (
+                                            <div className="absolute bottom-0 left-0 right-0 h-[50px] bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
+                                        )}
+                                    </div>
+
+                                    <Button
+                                        variant={"link"}
+                                        className="text-sm p-0 m-0"
+                                        onClick={() =>
+                                            setShowDescription(!showDescription)
+                                        }
+                                    >
+                                        <span>
+                                            {showDescription ? (
+                                                <span className="flex items-center gap-1">
+                                                    Minder lezen
+                                                    <ChevronUp size={16} />
+                                                </span>
+                                            ) : (
+                                                <span className="flex items-center gap-1">
+                                                    Meer lezen
+                                                    <ChevronDown size={16} />
+                                                </span>
+                                            )}
+                                        </span>
+                                    </Button>
+                                </div>
                             </div>
 
                             {/* price container */}
@@ -178,20 +252,33 @@ const Product = () => {
 
                                 {/* more */}
                                 <p
-                                    className={`flex items-center gap-2 pb-2 border-b-2`}
+                                // className={`flex items-center gap-2 pb-2 border-b-2`}
                                 >
-                                    <span>Meer details</span>
+                                    <Accordion
+                                        type="single"
+                                        collapsible
+                                        className="w-full border-none"
+                                    >
+                                        <AccordionItem value="item-1">
+                                            <AccordionTrigger className="border-none py-2">
+                                                <span
+                                                    className={`flex items-center gap-1`}
+                                                >
+                                                    <ReceiptText size={16} />
+                                                    <span>Meer details</span>
+                                                </span>
+                                            </AccordionTrigger>
+                                            <AccordionContent>
+                                                Yes. It adheres to the WAI-ARIA
+                                                design pattern.
+                                            </AccordionContent>
+                                        </AccordionItem>
+                                    </Accordion>
                                 </p>
                             </div>
                         </div>
                     </div>
                 )}
-
-                {/* <h1>{product.name}</h1>
-            <p>{product.description}</p>
-            <p>
-                Price: {product.price} {product.currency}
-            </p> */}
             </div>
 
             {/* recommends */}
