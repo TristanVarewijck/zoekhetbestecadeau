@@ -71,7 +71,7 @@ const SearchResults = ({
 
     return (
         <section id="results-list" className="product-result">
-            <div className="flex flex-col justify-between mb-4 md:items-end md:flex-row lg:mb-8">
+            <div className="flex flex-col justify-between mb-4 lg:items-end lg:flex-row lg:mb-8">
                 <div
                     className="flex flex-col justify-center"
                     style={{ maxWidth: "750px" }}

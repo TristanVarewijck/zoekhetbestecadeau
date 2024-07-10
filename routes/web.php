@@ -38,6 +38,11 @@ Route::get('/products/{id}', function ($id) {
     ]);
 })->name('product');
 
+// Define the fallback route
+Route::fallback(function () {
+    return Inertia::render('NotFound');
+});
+
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');

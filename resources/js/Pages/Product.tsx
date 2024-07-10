@@ -13,7 +13,7 @@ import {
     ShoppingBag,
     Truck,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import getSymbolFromCurrency from "currency-symbol-map";
 import {
     Accordion,
@@ -26,6 +26,8 @@ import SearchResults from "@/blocks/searchResults";
 const Product = () => {
     const { id } = usePage().props;
     const [showDescription, setShowDescription] = useState(false);
+    const [showDescriptionButton, setShowDescriptionButton] = useState(false);
+    const descriptionRef = useRef<HTMLDivElement>(null);
 
     // product by ID
     const [product, setProduct] = useState<ProductProps | null>(null);
@@ -46,8 +48,7 @@ const Product = () => {
         const { data } = response;
 
         if (data === "Product not found") {
-            setProduct(null);
-            setLoadingProduct(false);
+            window.location.href = "/404";
             return;
         }
 
@@ -74,6 +75,7 @@ const Product = () => {
             return;
         }
 
+        console.log(data);
         setProducts(data);
         setLoadingProducts(false);
     };
@@ -88,6 +90,15 @@ const Product = () => {
         }
     }, [id, product]);
 
+    useEffect(() => {
+        if (descriptionRef.current) {
+            const descriptionHeight = descriptionRef.current.scrollHeight;
+            if (descriptionHeight > 85) {
+                setShowDescriptionButton(true);
+            }
+        }
+    }, [product]);
+
     return (
         <SectionLayout bgColor="white">
             <div className="mt-8 lg:mt-10 mb-8 lg:mb-10">
@@ -96,7 +107,7 @@ const Product = () => {
 
                 {/* error state */}
                 {loadingProduct === false && !product && (
-                    <p>Product not found</p>
+                    <p>Product not found.</p>
                 )}
 
                 {loadingProduct === false && product && (
@@ -136,7 +147,7 @@ const Product = () => {
                                     className={`flex items-center justify-between mb-2`}
                                 >
                                     {/* stock */}
-                                    <p className="flex items-center font-bold gap-1">
+                                    <p className="flex items-center font-bold gap-1 text-sm">
                                         <span>
                                             <Blocks
                                                 size={16}
@@ -165,7 +176,7 @@ const Product = () => {
                                     </p>
 
                                     {/* brand */}
-                                    <p className="flex items-center gap-1">
+                                    <p className="flex items-center gap-1 text-sm">
                                         <span className="text-[hsl(var(--primary))]">
                                             <Building2 size={16} />
                                         </span>{" "}
@@ -183,8 +194,10 @@ const Product = () => {
                                 </h1>
 
                                 {/* description */}
+                                {/* description */}
                                 <div>
                                     <div
+                                        ref={descriptionRef}
                                         className={`relative h-[85px] ${
                                             showDescription ? `h-fit` : ""
                                         } overflow-hidden`}
@@ -192,32 +205,39 @@ const Product = () => {
                                         <p className="text-sm">
                                             {product.description}
                                         </p>
-                                        {!showDescription && (
-                                            <div className="absolute bottom-0 left-0 right-0 h-[50px] bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
-                                        )}
+                                        {!showDescription &&
+                                            showDescriptionButton && (
+                                                <div className="absolute bottom-0 left-0 right-0 h-[50px] bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
+                                            )}
                                     </div>
 
-                                    <Button
-                                        variant={"link"}
-                                        className="text-sm p-0 m-0"
-                                        onClick={() =>
-                                            setShowDescription(!showDescription)
-                                        }
-                                    >
-                                        <span>
-                                            {showDescription ? (
-                                                <span className="flex items-center gap-1">
-                                                    Minder lezen
-                                                    <ChevronUp size={16} />
-                                                </span>
-                                            ) : (
-                                                <span className="flex items-center gap-1">
-                                                    Meer lezen
-                                                    <ChevronDown size={16} />
-                                                </span>
-                                            )}
-                                        </span>
-                                    </Button>
+                                    {showDescriptionButton && (
+                                        <Button
+                                            variant={"link"}
+                                            className="text-sm p-0 m-0"
+                                            onClick={() =>
+                                                setShowDescription(
+                                                    !showDescription
+                                                )
+                                            }
+                                        >
+                                            <span>
+                                                {showDescription ? (
+                                                    <span className="flex items-center gap-1">
+                                                        Minder lezen
+                                                        <ChevronUp size={16} />
+                                                    </span>
+                                                ) : (
+                                                    <span className="flex items-center gap-1">
+                                                        Meer lezen
+                                                        <ChevronDown
+                                                            size={16}
+                                                        />
+                                                    </span>
+                                                )}
+                                            </span>
+                                        </Button>
+                                    )}
                                 </div>
                             </div>
 
@@ -267,14 +287,17 @@ const Product = () => {
                             {/* details */}
                             <div className="flex flex-col gap-4">
                                 {/* delivery time */}
-                                <p
-                                    className={`flex items-center gap-2 pb-2 border-b-2`}
-                                >
-                                    <span>
-                                        <Truck size={16} />
-                                    </span>
-                                    <span>{product.delivery_time}</span>
-                                </p>
+
+                                {product.delivery_time && (
+                                    <p
+                                        className={`flex items-center gap-2 pb-2 border-b-2`}
+                                    >
+                                        <span>
+                                            <Truck size={16} />
+                                        </span>
+                                        <span>{product.delivery_time}</span>
+                                    </p>
+                                )}
 
                                 {/* more */}
                                 <p>
@@ -322,7 +345,7 @@ const Product = () => {
                         ? "Geen aanbevolen producten gevonden."
                         : ""
                 }
-                title={"Cadeaus die minstens even leuk zijn 🎁!"}
+                title={"Cadeaus die even leuk zijn 🎁!"}
                 productsPerPage={50}
             />
         </SectionLayout>
