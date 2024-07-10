@@ -37,6 +37,13 @@ class ImportCsv extends Command
     protected $loggingEnabled = false;
 
     /**
+     * Counters for created, updated, and deleted records per model.
+     */
+    private $createdCount = [];
+    private $updatedCount = [];
+    private $deletedCount = [];
+
+    /**
      * Execute the console command.
      */
     public function handle()
@@ -72,6 +79,9 @@ class ImportCsv extends Command
 
             // Process the CSV file
             $this->processCsv($csv, $category);
+
+            // Log summary
+            $this->logSummary();
         } else {
             $this->error('File not found in Firebase Storage.');
             return;
@@ -129,7 +139,7 @@ class ImportCsv extends Command
             $row = array_combine($header, $row);
 
             // Stop after 1000 rows for testing purposes
-            if ($counter >= 1000) {
+            if ($counter >= 100) {
                 break;
             }
 
@@ -167,11 +177,8 @@ class ImportCsv extends Command
             // Process the subcategory record
             $subCategory = $this->processRecord(SubCategory::class, ['name' => $row['subcategories'], 'category_id' => $category->id], 'name');
 
-            // update product with subcategory id
+            // Update product with subcategory id
             $product->update(['sub_category_id' => $subCategory->id]);
-
-            // Associate product with subcategory
-            $this->processRecord(SubCategoryProduct::class, ['sub_category_id' => $subCategory->id, 'product_id' => $product->id], 'product_id');
 
             $processedProductIds[] = $product->id;
 
@@ -186,9 +193,6 @@ class ImportCsv extends Command
 
         // Finish the progress bar
         $bar->finish();
-
-        // Log success message + number of records processed
-        $this->info("Import completed. Processed {$counter} records.");
     }
 
     private function isRecordDataDifferent($existingProduct, $productData)
@@ -215,6 +219,7 @@ class ImportCsv extends Command
             // Check if the record data is different
             if ($this->isRecordDataDifferent($existingRecord, $row)) {
                 $existingRecord->update($row);
+                $this->incrementCount($modelName, 'updated');
                 $this->log("{$modelName} with {$uniqueIdentifier} " . $existingRecord->$uniqueIdentifier . " updated.");
             }
 
@@ -222,6 +227,7 @@ class ImportCsv extends Command
         } else {
             // Create a new record
             $record = $model::create($row);
+            $this->incrementCount($modelName, 'created');
             $this->log("{$modelName} with {$uniqueIdentifier} " . $record->$uniqueIdentifier . " created.");
 
             return $record;
@@ -239,40 +245,81 @@ class ImportCsv extends Command
 
         foreach ($recordsToDelete as $record) {
             $this->log("{$modelName} with id " . $record->id . " deleted.");
+            $this->incrementCount($modelName, 'deleted');
             $record->delete();
         }
     }
 
     private function deleteUnusedBrands()
     {
+        // Split the model name and log the actual model name
+        $modelParts = explode('\\', Brand::class);
+        $modelName = end($modelParts);
+
         // Find and delete brands without products
         $recordsToDelete = Brand::whereDoesntHave('products')->get();
 
         foreach ($recordsToDelete as $record) {
             $this->log("Brand with id " . $record->id . " deleted.");
+            $this->incrementCount($modelName, 'deleted');
             $record->delete();
         }
     }
 
     private function deleteUnusedCategories()
     {
+        // Split the model name and log the actual model name
+        $modelParts = explode('\\', Category::class);
+        $modelName = end($modelParts);
+
         // Find and delete categories without products
         $recordsToDelete = Category::whereDoesntHave('products')->get();
 
         foreach ($recordsToDelete as $record) {
             $this->log("Category with id " . $record->id . " deleted.");
+            $this->incrementCount($modelName, 'deleted');
             $record->delete();
         }
     }
 
     private function deleteUnusedSubCategories()
     {
+        // Split the model name and log the actual model name
+        $modelParts = explode('\\', SubCategory::class);
+        $modelName = end($modelParts);
+
         // Find and delete subcategories without products
         $recordsToDelete = SubCategory::whereDoesntHave('products')->get();
 
         foreach ($recordsToDelete as $record) {
             $this->log("SubCategory with id " . $record->id . " deleted.");
+            $this->incrementCount($modelName, 'deleted');
             $record->delete();
+        }
+    }
+
+    private function incrementCount($model, $action)
+    {
+        if (!isset($this->{$action . 'Count'}[$model])) {
+            $this->{$action . 'Count'}[$model] = 0;
+        }
+        $this->{$action . 'Count'}[$model]++;
+    }
+
+    private function logSummary()
+    {
+        $this->info('Summary of operations:');
+        $this->logActionSummary('created');
+        $this->logActionSummary('updated');
+        $this->logActionSummary('deleted');
+    }
+
+    private function logActionSummary($action)
+    {
+        if (isset($this->{$action . 'Count'}) && count($this->{$action . 'Count'}) > 0) {
+            foreach ($this->{$action . 'Count'} as $model => $count) {
+                $this->info("{$count} {$model}(s) {$action}");
+            }
         }
     }
 
