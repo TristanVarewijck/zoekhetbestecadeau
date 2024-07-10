@@ -151,6 +151,7 @@ class ImportCsv extends Command
                 "currency" => $row['currency'],
                 "category_path" => $row['categoryPath'],
                 "delivery_time" => $row['deliveryTime'],
+                'category_id' => $category->id,
                 'price' => $row['price'],
                 'brand_id' => $brand->id,
                 'brand_name' => $brand->name,
@@ -165,6 +166,9 @@ class ImportCsv extends Command
 
             // Process the subcategory record
             $subCategory = $this->processRecord(SubCategory::class, ['name' => $row['subcategories'], 'category_id' => $category->id], 'name');
+
+            // update product with subcategory id
+            $product->update(['sub_category_id' => $subCategory->id]);
 
             // Associate product with subcategory
             $this->processRecord(SubCategoryProduct::class, ['sub_category_id' => $subCategory->id, 'product_id' => $product->id], 'product_id');

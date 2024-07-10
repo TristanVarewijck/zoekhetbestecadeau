@@ -15,6 +15,8 @@ export interface ProductProps {
     brand_name: string;
     brand_id: string;
     image_url: string;
+    category_id: string;
+    sub_category_id: string;
     affiliate_link: string;
     created_at: string;
     updated_at: string;

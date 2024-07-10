@@ -16,17 +16,16 @@ import {
 } from "@/Components/ui/pagination";
 import { Button } from "@/Components/ui/button";
 import { Alert, AlertTitle, AlertDescription } from "@/Components/ui/alert";
-import { AlertCircle, ArrowUp } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import H2Heading from "@/Components/custom/heading/h2Heading";
-import { Arrow } from "@radix-ui/react-select";
-import { CoolblueProductProps } from "@/types/types";
+import { ProductProps } from "@/types/types";
 
 interface SearchResultProps {
-    productsArray: CoolblueProductProps[];
+    productsArray: ProductProps[];
     loading: boolean;
     error: string | null;
     title: string;
-    subtitle: string;
+    subtitle?: string;
     productsPerPage: number;
 }
 
@@ -110,8 +109,11 @@ const SearchResults = ({
 
             {!loading && paginatedProducts.length > 0 && (
                 <div className="grid grid-cols-1 gap-4 lg:gap-8 sm:grid-cols-2 lg:grid-cols-4">
-                    {paginatedProducts.map((product, index) => (
-                        <a href={product.product_url} key={product.sku}>
+                    {paginatedProducts.map((product) => (
+                        <a
+                            href={"/products" + "/" + product.id}
+                            key={product.serial_number}
+                        >
                             <ProductCard {...product} />
                         </a>
                     ))}
