@@ -1,4 +1,4 @@
-import { CoolblueProductProps } from "@/types/types";
+import { ProductProps } from "@/types/types";
 import { Card, CardHeader, CardContent } from "../ui/card";
 
 import getSymbolFromCurrency from "currency-symbol-map";
@@ -37,30 +37,33 @@ const ProductCardLoading = () => {
     );
 };
 
-const ProductCard = (product: CoolblueProductProps) => {
+const ProductCard = (product: ProductProps) => {
     return (
         <Card className="flex flex-col h-full gap-3 p-4 bg-white border shadow-none lg:border-none lg:p-0">
-            <CardHeader className="p-0 h-[150px] md:h-[200px] relative">
+            <CardHeader className="p-0">
                 {/* image */}
-                {product.image_url ? (
-                    <img
-                        src={product.image_url}
-                        alt={product.product_name}
-                        style={{
-                            objectFit: "contain",
-                            objectPosition: "center",
-                        }}
-                    />
-                ) : (
-                    <div className="flex items-center justify-center w-full h-full bg-gray-200 ">
-                        <ImageOff size={64} className="text-gray-500" />
-                    </div>
-                )}
+
+                <div className="h-[150px] md:h-[200px] relative">
+                    {product.image_url ? (
+                        <img
+                            src={product.image_url}
+                            alt={product.name}
+                            className="w-full h-full object-cover"
+                            style={{
+                                objectFit: "contain",
+                                objectPosition: "center",
+                            }}
+                        />
+                    ) : (
+                        <div className="flex items-center justify-center w-full h-full bg-gray-200">
+                            <ImageOff size={64} className="text-gray-500" />
+                        </div>
+                    )}
+                </div>
             </CardHeader>
             <CardContent className="p-0">
                 <div className={`flex flex-col gap-2`}>
-                    {/* dicount percentage */}
-                    {product.beforeprice && (
+                    {/* {product.beforeprice && (
                         <div
                             className={`bg-red-500 text-white text-xs font-semibold rounded-md py-1 px-2 w-fit`}
                         >
@@ -72,23 +75,20 @@ const ProductCard = (product: CoolblueProductProps) => {
                                 ) +
                                 "%"}
                         </div>
-                    )}
+                    )} */}
 
-                    {/* product */}
                     <div>
-                        {/* brand */}
-                        {product.brand && (
+                        {product.brand_name && (
                             <span
                                 className={`text-xs font-semibold text-gray-500 `}
                             >
-                                {product.brand}
+                                {product.brand_name}
                             </span>
                         )}
 
-                        {/* name */}
-                        {product.product_name && (
+                        {product.name && (
                             <h4 className="text-lg font-semibold">
-                                {product.product_name}
+                                {product.name}
                             </h4>
                         )}
                     </div>
@@ -103,24 +103,20 @@ const ProductCard = (product: CoolblueProductProps) => {
                             </span>
                         )}
 
-                        {/* before price */}
-                        {product.beforeprice && (
+                        {/* {product.beforeprice && (
                             <span className={`line-through`}>
                                 {" "}
                                 {getSymbolFromCurrency(product.currency)}
                                 {product.beforeprice},-
                             </span>
-                        )}
+                        )} */}
                     </div>
 
-                    {/* rating  */}
-                    {(product.reviewsaveragescore ||
+                    {/* {(product.reviewsaveragescore ||
                         product.reviewscount !== 0) && (
                         <div className={`flex items-center gap-1`}>
-                            {/* score */}
                             <div className="flex items-center gap-1">
                                 <Star
-                                    // fill="yellow-500"
                                     size={14}
                                     strokeWidth={3}
                                     className="text-yellow-500 fill-yellow-500"
@@ -129,12 +125,11 @@ const ProductCard = (product: CoolblueProductProps) => {
                                     {product.reviewsaveragescore}/10
                                 </span>
                             </div>
-                            {/* reviews */}
                             <span className="text-sm text-gray-500">
                                 ({product.reviewscount} reviews)
                             </span>
                         </div>
-                    )}
+                    )} */}
 
                     {/* shipping */}
                     {product.delivery_time && (

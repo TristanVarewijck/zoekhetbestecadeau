@@ -1,4 +1,3 @@
-import H2Heading from "@/Components/custom/heading/h2Heading";
 import SectionLayout from "@/Components/custom/sectionLayout";
 import { Button } from "@/Components/ui/button";
 import { Card } from "@/Components/ui/card";
@@ -7,9 +6,9 @@ import { usePage } from "@inertiajs/react";
 import axios from "axios";
 import {
     Blocks,
+    Building2,
     ChevronDown,
     ChevronUp,
-    DotIcon,
     ReceiptText,
     ShoppingBag,
     Truck,
@@ -22,13 +21,21 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/Components/ui/accordion";
+import SearchResults from "@/blocks/searchResults";
 
 const Product = () => {
     const { id } = usePage().props;
-    const [product, setProduct] = useState<ProductProps | null>(null);
-    const [loadingProduct, setLoadingProduct] = useState(true);
     const [showDescription, setShowDescription] = useState(false);
 
+    // product by ID
+    const [product, setProduct] = useState<ProductProps | null>(null);
+    const [loadingProduct, setLoadingProduct] = useState(true);
+
+    // products by category & subcategory
+    const [products, setProducts] = useState<ProductProps[]>([]);
+    const [loadingProducts, setLoadingProducts] = useState(true);
+
+    // retrieve product by ID
     const retrieveProduct = async () => {
         const response = await axios.get(`/api/products/${id}`, {
             headers: {
@@ -48,13 +55,42 @@ const Product = () => {
         setLoadingProduct(false);
     };
 
+    // retrieve products by category & subcategory
+    const retrieveProducts = async (category: string, subcategory: string) => {
+        const response = await axios.get(
+            `/api/products/${category}/${subcategory}`,
+            {
+                headers: {
+                    "content-type": "application/json",
+                },
+            }
+        );
+
+        const { data } = response;
+
+        if (data.length === 0) {
+            setProducts([]);
+            setLoadingProducts(false);
+            return;
+        }
+
+        setProducts(data);
+        setLoadingProducts(false);
+    };
+
     useEffect(() => {
-        retrieveProduct();
-    }, [id]);
+        if (!product) {
+            retrieveProduct();
+        }
+
+        if (product && product.category_id && product.sub_category_id) {
+            retrieveProducts(product.category_id, product.sub_category_id);
+        }
+    }, [id, product]);
 
     return (
         <SectionLayout bgColor="white">
-            <div className="mt-8 lg:mt-10">
+            <div className="mt-8 lg:mt-10 mb-8 lg:mb-10">
                 {/* loading state */}
                 {loadingProduct && <p>Loading...</p>}
 
@@ -69,24 +105,11 @@ const Product = () => {
                         {/* image box */}
                         <div className="flex flex-col gap-2 h-full">
                             {/* tags */}
-                            <div className="flex gap-4 items-center">
-                                {/* brand */}
+                            <div>
+                                {/* product route */}
                                 <p>
-                                    <span className="font-bold text-[11px] text-[hsl(var(--primary))]">
-                                        Merk:
-                                    </span>{" "}
-                                    <span className="font-bold text-xs">
-                                        {product.brand_name}
-                                    </span>
-                                </p>
-
-                                {/* serial number */}
-                                <p>
-                                    <span className="font-bold text-[11px] text-[hsl(var(--primary))]">
-                                        Serial number:
-                                    </span>{" "}
-                                    <span className="font-bold text-xs">
-                                        {product.serial_number}
+                                    <span className="font-bold text-xs text-[hsl(var(--primary))]">
+                                        {product.category_path}
                                     </span>
                                 </p>
                             </div>
@@ -104,50 +127,53 @@ const Product = () => {
                                     />
                                 </div>
                             </a>
-                            {/* productID */}
-                            <div>
-                                <p>
-                                    <span className="font-bold text-[11px] text-[hsl(var(--primary))]">
-                                        Product ID:
-                                    </span>{" "}
-                                    <span className="font-bold text-xs">
-                                        {product.id}
-                                    </span>
-                                </p>
-                            </div>
                         </div>
 
                         {/* product details */}
                         <div className={`flex flex-col gap-6`}>
                             <div>
-                                {/* stock */}
-                                <p className="flex items-center font-bold text-xs gap-1">
-                                    <span>
-                                        <Blocks
-                                            size={16}
-                                            className="text-[hsl(var(--primary))]"
-                                        />
-                                    </span>
-                                    <span>
-                                        {product.stock > 0 ? (
-                                            <span>
-                                                {product.stock > 10 ? (
-                                                    "Op voorraad"
-                                                ) : (
-                                                    <span>
-                                                        Nog maar{" "}
-                                                        <span className="text-red-500 font-bold">
-                                                            {product.stock}
-                                                        </span>{" "}
-                                                        op voorraad!
-                                                    </span>
-                                                )}
-                                            </span>
-                                        ) : (
-                                            "Niet op voorraad"
-                                        )}
-                                    </span>
-                                </p>
+                                <div
+                                    className={`flex items-center justify-between mb-2`}
+                                >
+                                    {/* stock */}
+                                    <p className="flex items-center font-bold gap-1">
+                                        <span>
+                                            <Blocks
+                                                size={16}
+                                                className="text-[hsl(var(--primary))]"
+                                            />
+                                        </span>
+                                        <span>
+                                            {product.stock > 0 ? (
+                                                <span>
+                                                    {product.stock > 10 ? (
+                                                        "Op voorraad"
+                                                    ) : (
+                                                        <span>
+                                                            Nog maar{" "}
+                                                            <span className="text-red-500 font-bold">
+                                                                {product.stock}
+                                                            </span>{" "}
+                                                            op voorraad!
+                                                        </span>
+                                                    )}
+                                                </span>
+                                            ) : (
+                                                "Niet op voorraad"
+                                            )}
+                                        </span>
+                                    </p>
+
+                                    {/* brand */}
+                                    <p className="flex items-center gap-1">
+                                        <span className="text-[hsl(var(--primary))]">
+                                            <Building2 size={16} />
+                                        </span>{" "}
+                                        <span className="font-bold">
+                                            {product.brand_name}
+                                        </span>
+                                    </p>
+                                </div>
 
                                 {/* name */}
                                 <h1
@@ -251,9 +277,7 @@ const Product = () => {
                                 </p>
 
                                 {/* more */}
-                                <p
-                                // className={`flex items-center gap-2 pb-2 border-b-2`}
-                                >
+                                <p>
                                     <Accordion
                                         type="single"
                                         collapsible
@@ -269,8 +293,16 @@ const Product = () => {
                                                 </span>
                                             </AccordionTrigger>
                                             <AccordionContent>
-                                                Yes. It adheres to the WAI-ARIA
-                                                design pattern.
+                                                <div className="flex items-center gap-1">
+                                                    <span>
+                                                        <strong>
+                                                            Serial number:
+                                                        </strong>
+                                                    </span>
+                                                    <span>
+                                                        {product.serial_number}
+                                                    </span>
+                                                </div>
                                             </AccordionContent>
                                         </AccordionItem>
                                     </Accordion>
@@ -282,9 +314,17 @@ const Product = () => {
             </div>
 
             {/* recommends */}
-            <div>
-                <H2Heading title="Cadeaus die minstens even leuk zijn 🎁!" />
-            </div>
+            <SearchResults
+                productsArray={products}
+                loading={loadingProducts}
+                error={
+                    loadingProducts === false && products.length === 0
+                        ? "Geen aanbevolen producten gevonden."
+                        : ""
+                }
+                title={"Cadeaus die minstens even leuk zijn 🎁!"}
+                productsPerPage={50}
+            />
         </SectionLayout>
     );
 };

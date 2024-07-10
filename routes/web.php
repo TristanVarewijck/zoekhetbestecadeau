@@ -30,6 +30,7 @@ Route::get('/conditions', function () {
     return Inertia::render('Conditions');
 })->name('conditions');
 
+
 Route::get('/products/{id}', function ($id) {
     logger($id);
     return Inertia::render('Product', [

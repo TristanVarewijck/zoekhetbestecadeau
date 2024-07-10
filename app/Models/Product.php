@@ -22,6 +22,7 @@ class Product extends Model
         'brand_id',
         'brand_name',
         'category_id',
+        "sub_category_id",
         'image_url',
         'affiliate_link',
     ];
