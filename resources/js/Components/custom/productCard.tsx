@@ -1,48 +1,13 @@
 import { ProductProps } from "@/types/types";
 import { Card, CardHeader, CardContent } from "../ui/card";
-
 import getSymbolFromCurrency from "currency-symbol-map";
-import { ImageOff, Star } from "lucide-react";
-import { Skeleton } from "../ui/skeleton";
-
-<div className="flex flex-col space-y-3">
-    <Skeleton className="h-[125px] w-[250px] rounded-xl" />
-    <div className="space-y-2">
-        <Skeleton className="h-4 w-[250px]" />
-        <Skeleton className="h-4 w-[200px]" />
-    </div>
-</div>;
-
-const ProductCardLoading = () => {
-    return (
-        <Card className="flex flex-col h-full gap-3 p-4 bg-white border shadow-none lg:border-none lg:p-0">
-            <CardHeader className="p-0 h-[150px] md:h-[200px] relative">
-                <Skeleton className="w-full h-full" />
-            </CardHeader>
-            <CardContent className="p-0">
-                <div className={`flex flex-col gap-2`}>
-                    {/* brand */}
-                    <Skeleton className="h-4 w-[75px]" />
-                    {/* name */}
-                    <Skeleton className="w-full h-4" />
-                    {/* price */}
-                    <Skeleton className="h-4 w-[125px]" />
-                    {/* rating */}
-                    <Skeleton className="w-full h-4" />
-                    {/* shipping */}
-                    <Skeleton className="w-full h-4" />
-                </div>
-            </CardContent>
-        </Card>
-    );
-};
+import { ImageOff } from "lucide-react";
 
 const ProductCard = (product: ProductProps) => {
     return (
         <Card className="flex flex-col h-full gap-3 p-4 bg-white border shadow-none lg:border-none lg:p-0">
             <CardHeader className="p-0">
                 {/* image */}
-
                 <div className="h-[150px] md:h-[200px] relative">
                     {product.image_url ? (
                         <img
@@ -143,4 +108,4 @@ const ProductCard = (product: ProductProps) => {
     );
 };
 
-export { ProductCard, ProductCardLoading };
+export default ProductCard;

@@ -1,10 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import {
-    ProductCard,
-    ProductCardLoading,
-} from "@/Components/custom/productCard";
+import ProductCard from "@/Components/custom/productCard";
+import ProductCardLoading from "@/Components/custom/loading/productCardLoading";
 import {
     Pagination,
     PaginationContent,

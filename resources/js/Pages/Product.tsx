@@ -22,6 +22,7 @@ import {
     AccordionTrigger,
 } from "@/Components/ui/accordion";
 import SearchResults from "@/blocks/searchResults";
+import ProductLoading from "@/Components/custom/loading/productLoading";
 
 const Product = () => {
     const { id } = usePage().props;
@@ -75,7 +76,6 @@ const Product = () => {
             return;
         }
 
-        console.log(data);
         setProducts(data);
         setLoadingProducts(false);
     };
@@ -102,14 +102,9 @@ const Product = () => {
     return (
         <SectionLayout bgColor="white">
             <div className="mt-8 lg:mt-10 mb-8 lg:mb-10">
-                {/* loading state */}
-                {loadingProduct && <p>Loading...</p>}
-
-                {/* error state */}
-                {loadingProduct === false && !product && (
-                    <p>Product not found.</p>
-                )}
-
+                {/* product loading state */}
+                {loadingProduct && <ProductLoading />}
+                {/* product */}
                 {loadingProduct === false && product && (
                     // container
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 w-full">
@@ -188,12 +183,11 @@ const Product = () => {
 
                                 {/* name */}
                                 <h1
-                                    className={`scroll-m-20 text-3xl md:text-4xl font-bold tracking-tight leading-[125%] font-display mb-3`}
+                                    className={`scroll-m-20 text-3xl md:text-4xl font-bold tracking-tight leading-[125%] font-display mb-3 overflow-x-scroll`}
                                 >
                                     {product.name}
                                 </h1>
 
-                                {/* description */}
                                 {/* description */}
                                 <div>
                                     <div
@@ -246,7 +240,7 @@ const Product = () => {
                                 {/* price */}
                                 <div>
                                     <p
-                                        className={`flex items-center gap-2 font-bold text-5xl`}
+                                        className={`flex items-center justify-center lg:justify-start gap-2 font-bold text-5xl`}
                                     >
                                         <span>
                                             {getSymbolFromCurrency(
@@ -258,8 +252,12 @@ const Product = () => {
                                 </div>
 
                                 {/* affiliate link */}
-                                <div className="flex items-center gap-4">
-                                    <Button asChild variant={"default"}>
+                                <div className="flex items-center flex-col xl:flex-row gap-4">
+                                    <Button
+                                        asChild
+                                        variant={"default"}
+                                        className="w-full lg:w-auto"
+                                    >
                                         <a
                                             href={product.affiliate_link}
                                             target="_blank"
@@ -267,7 +265,11 @@ const Product = () => {
                                             <span>Nu kopen</span>
                                         </a>
                                     </Button>
-                                    <Button asChild variant={"secondary"}>
+                                    <Button
+                                        asChild
+                                        variant={"secondary"}
+                                        className="w-full lg:w-auto"
+                                    >
                                         <a
                                             href={product.affiliate_link}
                                             target="_blank"

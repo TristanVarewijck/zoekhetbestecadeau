@@ -8,16 +8,13 @@ export default function About() {
             <div className="flex justify-center w-full mt-10 md:mt-0">
                 <div className="max-w-[700px] flex flex-col gap-4">
                     <H1Heading title="Over ons" />
-                    <div className="relative h-[325px]">
-                        <img
-                            src="/images/woman_gifts_bringing.png"
-                            alt="About us"
-                            style={{
-                                objectFit: "contain",
-                                objectPosition: "center",
-                            }}
-                        />
-                    </div>
+
+                    <img
+                        src="/images/woman_gifts_bringing.png"
+                        alt="About us"
+                        className="relative w-[350px] h-auto"
+                    />
+
                     <H2Heading title="Wij geloven dat het vinden van het perfecte cadeau een magisch moment creëert! Laat ons je helpen om die bijzondere gelegenheden te vieren met zorgvuldig uitgekozen geschenken die een blijvende indruk achterlaten." />
                 </div>
             </div>
