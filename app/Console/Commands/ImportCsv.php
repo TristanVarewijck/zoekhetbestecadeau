@@ -42,6 +42,7 @@ class ImportCsv extends Command
     private $createdCount = [];
     private $updatedCount = [];
     private $deletedCount = [];
+    private $filteredCount = [];
 
     /**
      * Execute the console command.
@@ -90,6 +91,7 @@ class ImportCsv extends Command
 
     public function processCsv($file, $category)
     {
+        set_time_limit(0);
         ini_set('memory_limit', '-1'); // Remove memory limit temporarily
 
         // Check if the file exists
@@ -139,13 +141,14 @@ class ImportCsv extends Command
             $row = array_combine($header, $row);
 
             // Stop after 1000 rows for testing purposes
-            if ($counter >= 100) {
-                break;
-            }
+            // if ($counter >= 10000) {
+            //     break;
+            // }
 
             // Filter out products with a price lower than 5 or higher than 150
             if ($row['price'] < 5 || $row['price'] > 150) {
                 $bar->advance();
+                $this->incrementCount('Product', 'filtered');
                 continue;
             }
 
@@ -193,6 +196,9 @@ class ImportCsv extends Command
 
         // Finish the progress bar
         $bar->finish();
+
+        // Log the number of processed rows
+        $this->info('Processed ' . $counter . ' rows.');
     }
 
     private function isRecordDataDifferent($existingProduct, $productData)
@@ -308,10 +314,12 @@ class ImportCsv extends Command
 
     private function logSummary()
     {
+        $this->info(''); // Empty line for spacing
         $this->info('Summary of operations:');
         $this->logActionSummary('created');
         $this->logActionSummary('updated');
         $this->logActionSummary('deleted');
+        $this->logActionSummary('filtered');
     }
 
     private function logActionSummary($action)
