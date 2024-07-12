@@ -31,13 +31,17 @@ Route::get('/conditions', function () {
     return Inertia::render('Conditions');
 })->name('conditions');
 
+Route::get('/products/{id}', [ProductController::class, 'show'])->name('product');
 
-Route::get('/products/{id}', function ($id) {
-    logger($id);
-    return Inertia::render('Product', [
-        'id' => $id
-    ]);
-})->name('product');
+// Define the fallback route
+Route::fallback(function () {
+    return Inertia::render('NotFound');
+});
+
+// Application error route
+Route::get('/application-error', function () {
+    return Inertia::render('ApplicationError');
+})->name('application-error');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');

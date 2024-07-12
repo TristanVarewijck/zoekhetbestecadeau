@@ -1,10 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import {
-    ProductCard,
-    ProductCardLoading,
-} from "@/Components/custom/productCard";
+import ProductCard from "@/Components/custom/productCard";
+import ProductCardLoading from "@/Components/custom/loading/productCardLoading";
 import {
     Pagination,
     PaginationContent,
@@ -71,7 +69,7 @@ const SearchResults = ({
 
     return (
         <section id="results-list" className="product-result">
-            <div className="flex flex-col justify-between mb-4 md:items-end md:flex-row lg:mb-8">
+            <div className="flex flex-col justify-between mb-4 lg:items-end lg:flex-row lg:mb-8">
                 <div
                     className="flex flex-col justify-center"
                     style={{ maxWidth: "750px" }}
