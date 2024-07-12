@@ -213,7 +213,7 @@ const Product = ({
                                         <span>
                                             <ShoppingBag size={16} />
                                         </span>
-                                        <span>In winkelmandje plaatsen</span>
+                                        <span>In winkelmandje</span>
                                     </a>
                                 </Button>
                             </div>

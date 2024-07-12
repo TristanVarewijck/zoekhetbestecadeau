@@ -84,7 +84,7 @@ const SearchResults = ({
                     onClick={handleRandomize}
                     disabled={randomizeDisabled}
                 >
-                    Randomize de cadeaus
+                    Randomize
                     <span className="ml-1 text-lg">🎲</span>
                 </Button>
             </div>
