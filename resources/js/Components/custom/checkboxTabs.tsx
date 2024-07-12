@@ -50,16 +50,16 @@ const CheckboxTabs = ({
 
     return (
         <div className="flex flex-col gap-4 p-4">
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
                 {checkBoxDataSet.map((data) => (
                     <div
                         className={`flex gap-1 w-auto items-center flex-col sm:flex-row-reverse justify-between px-4 py-2 shadow-sm border-2 cursor-pointer ease-in-out duration-150 rounded-lg ${
-                            selectedOptions.includes(data.id)
+                            selectedOptions.includes(data.id.toString())
                                 ? "bg-primary text-white"
                                 : "bg-white"
                         }`}
                         key={data.id}
-                        onClick={() => handleOptionClick(data.id)}
+                        onClick={() => handleOptionClick(data.id.toString())}
                     >
                         <span className="text-xl">{data.icon}</span>
                         <span className="text-base">{data.name}</span>

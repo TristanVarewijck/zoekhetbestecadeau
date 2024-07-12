@@ -1,9 +1,15 @@
 import SectionLayout from "@/Components/custom/sectionLayout";
 import SearchMerged from "@/blocks/searchMerged";
 import { useState, useEffect } from "react";
-import { FilterProps } from "@/types/types";
+import { FilterProps, Gender, Interest, Occasion } from "@/types/types";
 
-export default function Finder() {
+interface FinderProps {
+    occasions: Occasion[];
+    interests: Interest[];
+    genders: Gender[];
+}
+
+export default function Finder({ occasions, interests, genders }: FinderProps) {
     const [query, setQuery] = useState<FilterProps>({});
 
     // Load stored filters from local storage on page load
@@ -52,6 +58,9 @@ export default function Finder() {
                     showResults={true}
                     query={query}
                     setQuery={setQuery}
+                    occasions={occasions}
+                    interests={interests}
+                    genders={genders}
                 />
             </SectionLayout>
         </main>

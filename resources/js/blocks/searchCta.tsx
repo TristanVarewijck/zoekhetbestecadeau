@@ -11,7 +11,7 @@ import Summarize from "@/Components/custom/summarize";
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import H3Heading from "@/Components/custom/heading/h3Heading";
 import RangeSlider from "@/Components/custom/rangeSlider";
-import { FilterProps } from "@/types/types";
+import { FilterProps, Gender, Interest, Occasion } from "@/types/types";
 import CountdownCancel from "@/Components/custom/countdownCancel";
 
 import {
@@ -24,22 +24,27 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/Components/ui/alert-dialog";
-import occasions from "@/json/occasions.json";
-import interests from "@/json/interests.json";
-import forWho from "@/json/forWho.json";
 import content from "@/json/searchCta.json";
+
+interface SearchCtaProps {
+    setData?: Dispatch<SetStateAction<FilterProps | {}>>;
+    setCurrentStep: Dispatch<SetStateAction<number>>;
+    currentStep: number;
+    showResults: boolean;
+    occasions: Occasion[];
+    interests: Interest[];
+    genders: Gender[];
+}
 
 const SearchCta = ({
     setData,
     setCurrentStep,
     currentStep,
     showResults,
-}: {
-    setData?: Dispatch<SetStateAction<FilterProps | {}>>;
-    setCurrentStep: Dispatch<SetStateAction<number>>;
-    currentStep: number;
-    showResults: boolean;
-}) => {
+    occasions,
+    interests,
+    genders,
+}: SearchCtaProps) => {
     const [cancelCounter, setCancelCounter] = useState<number>(3);
     const [isTimerActive, setIsTimerActive] = useState<boolean>(false);
 
@@ -93,7 +98,7 @@ const SearchCta = ({
                 // GESLACHT
                 return (
                     <CheckboxTabs
-                        checkBoxDataSet={forWho}
+                        checkBoxDataSet={genders}
                         setData={setData}
                         localStorageKey="forWho"
                     />

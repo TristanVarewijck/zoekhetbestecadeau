@@ -32,11 +32,7 @@ export interface PopularProductsProps {
 }
 
 export interface CheckboxTabsProps {
-    checkBoxDataSet: {
-        icon: string;
-        name: string;
-        id: string;
-    }[];
+    checkBoxDataSet: Interest[] | Occasion[] | Gender[];
     localStorageKey: string;
     setData?: Dispatch<SetStateAction<FilterProps | {}>>;
     multiple?: number;
@@ -88,4 +84,28 @@ export interface CoolblueProductProps {
     categoryid: number;
     languageid: number;
     subsidiaryid: number;
+}
+
+export interface Occasion {
+    id: number;
+    name: string;
+    icon: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface Interest {
+    id: number;
+    name: string;
+    icon: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface Gender {
+    id: number;
+    name: string;
+    icon: string;
+    created_at: string;
+    updated_at: string;
 }
