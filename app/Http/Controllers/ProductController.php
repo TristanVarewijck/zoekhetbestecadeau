@@ -4,29 +4,33 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
+
 
 class ProductController extends Controller
 {
-    // get product by ID
     public function show($product_id)
     {
         try {
             $product = Product::findOrFail($product_id);
-            logger($product);
-            return response()->json($product);
-        } catch (ModelNotFoundException $e) {
-            logger($e);
-            return response()->json('Product not found');
-        }
-    }
 
-    // Retrieve products based on category and subCategory
-    public function byCategory($category_id, $sub_category_id)
-    {
-        $products = Product::where('category_id', $category_id)
-            ->where('sub_category_id', $sub_category_id)
-            ->get();
-        return response()->json($products);
+            $products = Product::where('category_id', $product->category_id)
+                ->where('sub_category_id', $product->sub_category_id)
+                ->get();
+
+            // Render the Inertia page with the product data
+            return Inertia::render('Product', [
+                'product' => $product,
+                'products' => $products->isEmpty() ? [] : $products
+            ]);
+        } catch (ModelNotFoundException $e) {
+            // Redirect to the fallback route for not found
+            return Inertia::render('NotFound');
+        } catch (QueryException $e) {
+            // Redirect to the application error page
+            return Inertia::render('applicationError');
+        }
     }
 }
