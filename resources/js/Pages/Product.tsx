@@ -78,7 +78,7 @@ const Product = ({
                     <div className={`flex flex-col gap-6`}>
                         <div>
                             <div
-                                className={`flex items-center flex-col items-start justify-between mb-2`}
+                                className={`flex items-start gap-2 flex-col md:flex-row md:items-start justify-between mb-2`}
                             >
                                 {/* stock */}
                                 <p className="flex items-center font-bold gap-1 text-sm">

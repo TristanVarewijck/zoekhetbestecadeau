@@ -9,14 +9,13 @@ import {
     PaginationEllipsis,
     PaginationItem,
     PaginationLink,
-    PaginationNext,
-    PaginationPrevious,
 } from "@/Components/ui/pagination";
 import { Button } from "@/Components/ui/button";
 import { Alert, AlertTitle, AlertDescription } from "@/Components/ui/alert";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, ArrowLeft, ArrowRight } from "lucide-react";
 import H2Heading from "@/Components/custom/heading/h2Heading";
 import { ProductProps } from "@/types/types";
+import { scrollToElement } from "@/utils/scrollToElement";
 
 interface SearchResultProps {
     productsArray: ProductProps[];
@@ -45,10 +44,12 @@ const SearchResults = ({
 
     const handlePrevious = () => {
         setCurrentPage(currentPage > 1 ? currentPage - 1 : 1);
+        scrollToElement("results-list");
     };
 
     const handleNext = () => {
         setCurrentPage(currentPage < totalPages ? currentPage + 1 : totalPages);
+        scrollToElement("results-list");
     };
 
     const shuffleArray = (array: any[]) => {
@@ -121,27 +122,60 @@ const SearchResults = ({
             <Pagination className="mt-3 lg:mt-6">
                 <PaginationContent>
                     <PaginationItem>
-                        <PaginationPrevious
-                            href="#results-list"
-                            onClick={handlePrevious}
-                        />
+                        <div
+                            className={`flex items-center gap-1 cursor-pointer max-sm:bg-[hsl(var(--primary))] max-sm:rounded-sm max-sm:px-2 max-sm:py-2`}
+                            onClick={() => {
+                                handlePrevious();
+                            }}
+                        >
+                            <span>
+                                <ArrowLeft
+                                    size={16}
+                                    className="max-sm:text-white"
+                                />
+                            </span>
+                            <span className="hidden sm:block">Vorige</span>
+                        </div>
                     </PaginationItem>
-                    {Array.from({ length: totalPages }, (_, i) => (
-                        <PaginationItem key={i}>
-                            <PaginationLink
-                                href="#results-list"
-                                onClick={() => setCurrentPage(i + 1)}
-                            >
-                                {i + 1}
-                            </PaginationLink>
-                        </PaginationItem>
-                    ))}
-                    {totalPages > 5 && <PaginationEllipsis />}
+
+                    <div className="hidden sm:flex items-center gap-1">
+                        {Array.from({ length: totalPages }, (_, i) => (
+                            <PaginationItem key={i}>
+                                <PaginationLink
+                                    href="#results-list"
+                                    onClick={() => setCurrentPage(i + 1)}
+                                >
+                                    {i + 1}
+                                </PaginationLink>
+                            </PaginationItem>
+                        ))}
+                    </div>
+
+                    <div className="px-4">
+                        <span className="sm:hidden">
+                            {currentPage} / {totalPages}
+                        </span>
+                    </div>
+
+                    <div className="hidden sm:flex items-center gap-1">
+                        {totalPages > 5 && <PaginationEllipsis />}
+                    </div>
+
                     <PaginationItem>
-                        <PaginationNext
-                            href="#results-list"
-                            onClick={handleNext}
-                        />
+                        <div
+                            className={`flex items-center gap-1 cursor-pointer max-sm:bg-[hsl(var(--primary))] max-sm:rounded-sm max-sm:px-2 max-sm:py-2`}
+                            onClick={() => {
+                                handleNext();
+                            }}
+                        >
+                            <span className="hidden sm:block">Volgende</span>
+                            <span>
+                                <ArrowRight
+                                    size={16}
+                                    className="max-sm:text-white"
+                                />
+                            </span>
+                        </div>
                     </PaginationItem>
                 </PaginationContent>
             </Pagination>

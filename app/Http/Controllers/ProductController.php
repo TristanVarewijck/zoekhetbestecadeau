@@ -18,6 +18,7 @@ class ProductController extends Controller
 
             $products = Product::where('category_id', $product->category_id)
                 ->where('sub_category_id', $product->sub_category_id)
+                ->where('id', '!=', $product_id)
                 ->get();
 
             // Render the Inertia page with the product data
