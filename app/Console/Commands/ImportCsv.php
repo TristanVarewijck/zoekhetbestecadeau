@@ -6,9 +6,12 @@ use App\Models\Brand;
 use App\Models\SubCategory;
 use App\Models\SubCategoryProduct;
 use App\Models\Category;
+use App\Models\Interest;
+use App\Models\InterestProduct;
 use App\Models\CategoryProduct;
 use App\Models\Product;
 use Illuminate\Console\Command;
+use Kreait\Laravel\Firebase\Facades\Firebase;
 
 class ImportCsv extends Command
 {
@@ -34,55 +37,118 @@ class ImportCsv extends Command
     protected $loggingEnabled = false;
 
     /**
+     * Counters for created, updated, and deleted records per model.
+     */
+    private $createdCount = [];
+    private $updatedCount = [];
+    private $deletedCount = [];
+    private $filteredCount = [];
+
+    /**
      * Execute the console command.
      */
     public function handle()
     {
-        // Get the category type argument and construct the file path
-        $categoryType = $this->argument('category');
-        $file = storage_path("products/{$categoryType}.csv");
+        set_time_limit(0);
+        ini_set('memory_limit', '-1'); // Remove memory limit temporarily
 
-        // Check if the file exists
-        if (!file_exists($file)) {
-            $this->error("File not found: $file");
-            return;
-        }
+        // Get firebase storage instance
+        $storage = Firebase::storage();
+        // Get the bucket
+        $bucket = $storage->getBucket();
 
-        // Open the CSV file for reading
-        $fileObject = new \SplFileObject($file);
-        $fileObject->setFlags(\SplFileObject::READ_CSV);
-        $fileObject->setCsvControl(';');
-
-        $header = null;
-        $counter = 0;
-        $processedProductIds = [];
+        // Define the path to your CSV file in Firebase Storage
+        $filePath = $this->argument('category') . '.csv';
 
         // Get the category from the command argument and add it to the database
         $categoryName = $this->argument('category');
         $category = Category::firstOrCreate(['name' => $categoryName]);
 
-        foreach ($fileObject as $row) {
+        // Check if the file exists in the storage bucket
+        if ($bucket->object($filePath)->exists()) {
+            // Get the file object
+            $object = $bucket->object($filePath);
+
+            // Log the file size
+            $fileSize = $object->info()['size'];
+            $this->info('File size: ' . $fileSize . ' bytes');
+
+            // Stream the file content
+            $content = $object->downloadAsStream();
+
+            $csv = $content->getContents();
+
+            // Process the CSV file
+            $this->processCsv($csv, $category);
+
+            // Log summary
+            $this->logSummary();
+        } else {
+            $this->error('File not found in Firebase Storage.');
+            return;
+        }
+    }
+
+    public function processCsv($file, $category)
+    {
+        set_time_limit(0);
+        ini_set('memory_limit', '-1'); // Remove memory limit temporarily
+
+        // Check if the file exists
+        if (!$file) {
+            $this->error("File not found: $file");
+            return;
+        }
+
+        // Split the CSV content into lines
+        $lines = explode("\n", $file);
+
+        $this->info('File opened.');
+
+        $header = null;
+        $counter = 0;
+        $processedProductIds = [];
+
+        // Initialize the progress bar
+        $totalRows = count($lines) - 1; // Minus one for the header row
+        $bar = $this->output->createProgressBar($totalRows);
+        $bar->start();
+
+        foreach ($lines as $line) {
             // Skip empty lines
-            if (empty($row[0])) {
+            if (empty(trim($line))) {
+                $bar->advance();
                 continue;
             }
+
+            // Convert the CSV line to an array
+            $row = str_getcsv($line, ';');
 
             // Skip header row
             if (!$header) {
                 $header = $row;
+                $bar->advance();
                 continue;
             }
 
-            // Stop after 300 rows for testing purposes
-            if ($counter >= 300) {
-                break;
+            // Ensure the number of columns match
+            if (count($header) !== count($row)) {
+                $bar->advance();
+                continue;
             }
 
             // Map the row data to the header
             $row = array_combine($header, $row);
 
+            // Stop after 1000 rows for testing purposes
+            // if ($counter >= 10000) {
+            //     break;
+            // }
+
             // Filter out products with a price lower than 5 or higher than 150
             if ($row['price'] < 5 || $row['price'] > 150) {
+                $bar->advance();
+                $this->incrementCount('Product', 'filtered');
                 continue;
             }
 
@@ -100,8 +166,8 @@ class ImportCsv extends Command
                 "delivery_time" => $row['deliveryTime'],
                 'category_id' => $category->id,
                 'price' => $row['price'],
-                'brand_name' => $brand->name,
                 'brand_id' => $brand->id,
+                'brand_name' => $brand->name,
                 'image_url' => $row['imageURL'],
                 'affiliate_link' => $row['productURL'],
                 'created_at' => now(),
@@ -111,20 +177,16 @@ class ImportCsv extends Command
             // Process the product record
             $product = $this->processRecord(Product::class, $productData, 'serial_number');
 
-            // Associate product with category
-            $this->processRecord(CategoryProduct::class, ['category_id' => $category->id, 'product_id' => $product->id], 'product_id');
-
             // Process the subcategory record
             $subCategory = $this->processRecord(SubCategory::class, ['name' => $row['subcategories'], 'category_id' => $category->id], 'name');
 
-            // update product with subcategory id
+            // Update product with subcategory id
             $product->update(['sub_category_id' => $subCategory->id]);
 
-            // Associate product with subcategory
-            $this->processRecord(SubCategoryProduct::class, ['sub_category_id' => $subCategory->id, 'product_id' => $product->id], 'product_id');
-
             $processedProductIds[] = $product->id;
+
             $counter++;
+            $bar->advance();
         }
 
         // Clean up the database
@@ -132,8 +194,11 @@ class ImportCsv extends Command
         $this->deleteUnusedBrands();
         $this->deleteUnusedCategories();
 
-        // Log success message + number of records processed
-        $this->info("Import completed. Processed {$counter} records.");
+        // Finish the progress bar
+        $bar->finish();
+
+        // Log the number of processed rows
+        $this->info('Processed ' . $counter . ' rows.');
     }
 
     private function isRecordDataDifferent($existingProduct, $productData)
@@ -160,6 +225,7 @@ class ImportCsv extends Command
             // Check if the record data is different
             if ($this->isRecordDataDifferent($existingRecord, $row)) {
                 $existingRecord->update($row);
+                $this->incrementCount($modelName, 'updated');
                 $this->log("{$modelName} with {$uniqueIdentifier} " . $existingRecord->$uniqueIdentifier . " updated.");
             }
 
@@ -167,6 +233,7 @@ class ImportCsv extends Command
         } else {
             // Create a new record
             $record = $model::create($row);
+            $this->incrementCount($modelName, 'created');
             $this->log("{$modelName} with {$uniqueIdentifier} " . $record->$uniqueIdentifier . " created.");
 
             return $record;
@@ -184,40 +251,83 @@ class ImportCsv extends Command
 
         foreach ($recordsToDelete as $record) {
             $this->log("{$modelName} with id " . $record->id . " deleted.");
+            $this->incrementCount($modelName, 'deleted');
             $record->delete();
         }
     }
 
     private function deleteUnusedBrands()
     {
+        // Split the model name and log the actual model name
+        $modelParts = explode('\\', Brand::class);
+        $modelName = end($modelParts);
+
         // Find and delete brands without products
         $recordsToDelete = Brand::whereDoesntHave('products')->get();
 
         foreach ($recordsToDelete as $record) {
             $this->log("Brand with id " . $record->id . " deleted.");
+            $this->incrementCount($modelName, 'deleted');
             $record->delete();
         }
     }
 
     private function deleteUnusedCategories()
     {
+        // Split the model name and log the actual model name
+        $modelParts = explode('\\', Category::class);
+        $modelName = end($modelParts);
+
         // Find and delete categories without products
         $recordsToDelete = Category::whereDoesntHave('products')->get();
 
         foreach ($recordsToDelete as $record) {
             $this->log("Category with id " . $record->id . " deleted.");
+            $this->incrementCount($modelName, 'deleted');
             $record->delete();
         }
     }
 
     private function deleteUnusedSubCategories()
     {
+        // Split the model name and log the actual model name
+        $modelParts = explode('\\', SubCategory::class);
+        $modelName = end($modelParts);
+
         // Find and delete subcategories without products
         $recordsToDelete = SubCategory::whereDoesntHave('products')->get();
 
         foreach ($recordsToDelete as $record) {
             $this->log("SubCategory with id " . $record->id . " deleted.");
+            $this->incrementCount($modelName, 'deleted');
             $record->delete();
+        }
+    }
+
+    private function incrementCount($model, $action)
+    {
+        if (!isset($this->{$action . 'Count'}[$model])) {
+            $this->{$action . 'Count'}[$model] = 0;
+        }
+        $this->{$action . 'Count'}[$model]++;
+    }
+
+    private function logSummary()
+    {
+        $this->info(''); // Empty line for spacing
+        $this->info('Summary of operations:');
+        $this->logActionSummary('created');
+        $this->logActionSummary('updated');
+        $this->logActionSummary('deleted');
+        $this->logActionSummary('filtered');
+    }
+
+    private function logActionSummary($action)
+    {
+        if (isset($this->{$action . 'Count'}) && count($this->{$action . 'Count'}) > 0) {
+            foreach ($this->{$action . 'Count'} as $model => $count) {
+                $this->info("{$count} {$model}(s) {$action}");
+            }
         }
     }
 

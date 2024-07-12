@@ -14,7 +14,6 @@ class SubCategory extends Model
         'name',
         'slug',
         'category_id',
-
     ];
 
     public function products()
