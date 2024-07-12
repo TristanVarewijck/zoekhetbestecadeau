@@ -140,10 +140,10 @@ class ImportCsv extends Command
             // Map the row data to the header
             $row = array_combine($header, $row);
 
-            // Stop after 1000 rows for testing purposes
-            // if ($counter >= 10000) {
-            //     break;
-            // }
+            // Stop after 100 rows for testing purposes
+            if ($counter >= 100) {
+                break;
+            }
 
             // Filter out products with a price lower than 5 or higher than 150
             if ($row['price'] < 5 || $row['price'] > 150) {
@@ -159,17 +159,19 @@ class ImportCsv extends Command
             $productData = [
                 'serial_number' => $row['product ID'],
                 'name' => $row['name'],
-                'stock' => $row['stock'],
                 'description' => $row['description'],
+                'price' => $row['price'],
+                'image_url' => $row['imageURL'],
+                'affiliate_link' => $row['productURL'],
                 "currency" => $row['currency'],
                 "category_path" => $row['categoryPath'],
                 "delivery_time" => $row['deliveryTime'],
-                'category_id' => $category->id,
-                'price' => $row['price'],
+                'stock' => $row['stock'],
                 'brand_id' => $brand->id,
-                'brand_name' => $brand->name,
-                'image_url' => $row['imageURL'],
-                'affiliate_link' => $row['productURL'],
+                'category_id' => $category->id,
+                'sub_category_id' => null, // Will be updated later
+                'occasion_id' => null, // Will be updated later
+                'gender_id' => null, // Will be updated later
                 'created_at' => now(),
                 'updated_at' => now(),
             ];

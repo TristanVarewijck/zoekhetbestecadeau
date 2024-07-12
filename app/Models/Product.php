@@ -13,22 +13,18 @@ class Product extends Model
         protected $fillable = [
                 'serial_number',
                 'name',
-                "stock",
                 'description',
+                'price',
+                'image_url',
+                'affiliate_link',
                 'currency',
                 'category_path',
                 'delivery_time',
-                'price',
+                "stock",
                 'brand_id',
-                'brand_name',
                 'category_id',
                 "sub_category_id",
-                'image_url',
-                'affiliate_link',
+                "occasion_id",
+                "gender_id"
         ];
-
-        public function interests()
-        {
-                return $this->belongsToMany(Category::class, 'category_products');
-        }
 }
