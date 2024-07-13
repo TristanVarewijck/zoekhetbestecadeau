@@ -11,6 +11,7 @@ require __DIR__ . '/auth.php';
 Route::get('/', [productController::class, 'renderHome'])->name('home');
 Route::get('/products/{id}', [ProductController::class, 'show'])->name('product');
 Route::get('/finder', [productController::class, 'renderFinder'])->name('finder');
+Route::get('/categories', [ProductController::class, 'renderCategories'])->name('categories');
 
 // Legal routes
 Route::get('/about', function () {
