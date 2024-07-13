@@ -12,7 +12,7 @@ export const useFetchFilterProducts = (query: FilterProps) => {
             if (Object.keys(query).length > 0) {
                 setLoading(true);
                 try {
-                    const response = await axios.post("/api/products", query);
+                    const response = await axios.post("/api/query", query);
                     const products = response.data.data;
                     setProducts(products);
                 } catch (error) {

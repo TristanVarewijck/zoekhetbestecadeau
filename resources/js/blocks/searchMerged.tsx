@@ -13,12 +13,15 @@ import { Tabs, TabsList, TabsTrigger } from "@/Components/ui/tabs";
 import { ArrowRight, Check, CircleDashed } from "lucide-react";
 import { Button } from "@/Components/ui/button";
 import ScrollToTopButton from "@/Components/custom/scrollToTopButton";
-import { FilterProps } from "@/types/types";
+import { FilterProps, Gender, Interest, Occasion } from "@/types/types";
 
 interface SearchMergedProps {
     showResults: boolean;
     query?: FilterProps;
     setQuery?: Dispatch<SetStateAction<FilterProps | {}>>;
+    occasions: Occasion[];
+    interests: Interest[];
+    genders: Gender[];
 }
 
 const questions = [
@@ -49,8 +52,14 @@ const questions = [
     },
 ];
 
-// voor hem, voor haar, voor iedereen
-const SearchMerged = ({ showResults, query, setQuery }: SearchMergedProps) => {
+const SearchMerged = ({
+    showResults,
+    query,
+    setQuery,
+    occasions,
+    interests,
+    genders,
+}: SearchMergedProps) => {
     const [currentStep, setCurrentStep] = useState(1);
     const localStoredQuery = useLocalStorageFilters([
         "occasions",
@@ -177,6 +186,9 @@ const SearchMerged = ({ showResults, query, setQuery }: SearchMergedProps) => {
                             setData={setQuery}
                             setCurrentStep={setCurrentStep}
                             currentStep={currentStep}
+                            occasions={occasions}
+                            interests={interests}
+                            genders={genders}
                         />
                     </AccordionContent>
                 </AccordionItem>

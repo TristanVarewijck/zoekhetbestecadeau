@@ -1,49 +1,32 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import SearchResults from "./searchResults";
-import { CoolblueProductProps } from "@/types/types";
+import { ProductProps } from "@/types/types";
 
-const PopularProducts = () => {
-    const [products, setProducts] = useState<CoolblueProductProps[]>([]);
+interface PopularProductsProps {
+    products: ProductProps[];
+}
+
+const PopularProducts = ({ products }: PopularProductsProps) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<null | string>(null);
 
     useEffect(() => {
-        const fetchProducts = async () => {
-            try {
-                // const response = await axios.post("/api/populair-products", {
-                //   query,
-                // });
+        if (products.length > 0) {
+            setLoading(false);
+        }
 
-                const response = await axios.post("/api/products", {});
-                const popularProducts = response.data.data;
-
-                if (popularProducts.length === 0) {
-                    setLoading(false);
-                    setError(
-                        "Wij konden geen populaire producten vinden. Probeer de pagina te herladen."
-                    );
-                } else {
-                    setProducts(popularProducts);
-                    setLoading(false);
-                    setError(null);
-                }
-            } catch (error) {
-                console.error("Error fetching products:", error);
-                setLoading(false);
-                setError(
-                    "Er is iets misgegaan bij het ophalen van de populaire producten. Probeer de pagina te herladen."
-                );
-            }
-        };
-
-        fetchProducts();
-    }, []);
+        if (products.length === 0) {
+            setError(
+                "Wij konden geen populaire producten vinden. Probeer de pagina te herladen."
+            );
+        }
+    }, [products]);
 
     return (
         <div>
             <SearchResults
-                productsArray={products.length > 0 ? products : []}
+                productsArray={products}
                 loading={loading}
                 error={error}
                 title={
