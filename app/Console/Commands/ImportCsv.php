@@ -34,7 +34,7 @@ class ImportCsv extends Command
      *
      * @var bool
      */
-    protected $loggingEnabled = false;
+    protected $loggingEnabled = true;
 
     /**
      * Counters for created, updated, and deleted records per model.
@@ -62,7 +62,7 @@ class ImportCsv extends Command
 
         // Get the category from the command argument and add it to the database
         $categoryName = $this->argument('category');
-        $category = Category::firstOrCreate(['name' => $categoryName]);
+        $category = Category::firstOrCreate(['name' => $categoryName, "icon" => "fas fa-gift"]);
 
         // Check if the file exists in the storage bucket
         if ($bucket->object($filePath)->exists()) {
@@ -89,7 +89,7 @@ class ImportCsv extends Command
         }
     }
 
-    public function processCsv($file, $category)
+    public function processCsv($file, $category, $splitter = ';')
     {
         set_time_limit(0);
         ini_set('memory_limit', '-1'); // Remove memory limit temporarily
@@ -98,6 +98,10 @@ class ImportCsv extends Command
         if (!$file) {
             $this->error("File not found: $file");
             return;
+        }
+
+        if ($category->name == 'tech') {
+            $splitter = ',';
         }
 
         // Split the CSV content into lines
@@ -122,7 +126,7 @@ class ImportCsv extends Command
             }
 
             // Convert the CSV line to an array
-            $row = str_getcsv($line, ';');
+            $row = str_getcsv($line, $splitter);
 
             // Skip header row
             if (!$header) {
@@ -141,7 +145,7 @@ class ImportCsv extends Command
             $row = array_combine($header, $row);
 
             // Stop after 100 rows for testing purposes
-            if ($counter >= 1000) {
+            if ($counter >= 100) {
                 break;
             }
 
@@ -157,16 +161,16 @@ class ImportCsv extends Command
 
             // Prepare product data for processing
             $productData = [
-                'serial_number' => $row['product ID'],
-                'name' => $row['name'],
-                'description' => $row['description'],
+                'serial_number' => $row['product ID'] ?? $row['sku'],
+                'name' => $row['name'] ?? $row['product_name'],
+                'description' => $row['description'] ?? $row['product_summary'],
                 'price' => $row['price'],
-                'image_url' => $row['imageURL'],
-                'affiliate_link' => $row['productURL'],
+                'image_url' => $row['imageURL'] ?? $row['image_url'],
+                'affiliate_link' => $row['productURL'] ?? $row['product_url'],
                 "currency" => $row['currency'],
-                "category_path" => $row['categoryPath'],
-                "delivery_time" => $row['deliveryTime'],
-                'stock' => $row['stock'],
+                "category_path" => $row['categoryPath'] ?? null,
+                "delivery_time" => $row['deliveryTime'] ?? $row['delivery_time'],
+                'stock' => $row['stock'] ?? $row['product_availability_state_id'],
                 'brand_id' => $brand->id,
                 'category_id' => $category->id,
                 'sub_category_id' => null, // Will be updated later
@@ -180,7 +184,7 @@ class ImportCsv extends Command
             $product = $this->processRecord(Product::class, $productData, 'serial_number');
 
             // Process the subcategory record
-            $subCategory = $this->processRecord(SubCategory::class, ['name' => $row['subcategories'], 'category_id' => $category->id], 'name');
+            $subCategory = $this->processRecord(SubCategory::class, ['name' => $row['subcategories'] ?? $row['categoryid'], 'category_id' => $category->id], 'name');
 
             // Update product with subcategory id
             $product->update(['sub_category_id' => $subCategory->id]);
@@ -192,7 +196,7 @@ class ImportCsv extends Command
         }
 
         // Clean up the database
-        $this->deleteUnprocessedProducts($processedProductIds);
+        $this->deleteUnprocessedProducts($processedProductIds, $category->id);
         $this->deleteUnusedBrands();
         $this->deleteUnusedCategories();
 
@@ -242,14 +246,14 @@ class ImportCsv extends Command
         }
     }
 
-    private function deleteUnprocessedProducts($processedIds)
+    private function deleteUnprocessedProducts($processedIds, $category_id)
     {
         // Split the model name and log the actual model name
         $modelParts = explode('\\', Product::class);
         $modelName = end($modelParts);
 
         // Find and delete unprocessed products
-        $recordsToDelete = Product::whereNotIn('id', $processedIds)->get();
+        $recordsToDelete = Product::where('category_id', $category_id)->whereNotIn('id', $processedIds)->get();
 
         foreach ($recordsToDelete as $record) {
             $this->log("{$modelName} with id " . $record->id . " deleted.");

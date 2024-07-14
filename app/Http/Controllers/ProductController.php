@@ -84,6 +84,13 @@ class ProductController extends Controller
         ]);
     }
 
+    public function renderCategories()
+    {
+        return Inertia::render('Categories', [
+            'categories' => $this->getCategoriesWithSubCategories()
+        ]);
+    }
+
     private function getOccasions()
     {
         $cacheKey = 'occasions';
@@ -107,7 +114,8 @@ class ProductController extends Controller
             return cache($cacheKey);
         }
 
-        $interests = Category::all();
+        // Fetch all categories that have products
+        $interests = Category::whereHas('products')->get();
 
         Cache::put($cacheKey, $interests, now()->addDay());
 
@@ -127,5 +135,70 @@ class ProductController extends Controller
         Cache::put($cacheKey, $genders, now()->addDay());
 
         return $genders;
+    }
+
+    public function getCategoriesWithSubCategories(Request $request = null)
+    {
+        $categories = Category::whereHas('products')->get();
+
+        $categories->each(function ($category) {
+            $category->subCategories = $category->subCategories()->get();
+        });
+
+        if ($request) {
+            return response()->json(['data' => $categories]);
+        }
+
+        return $categories;
+    }
+
+    public function byCategory(Request $request)
+    {
+        $category_id = $request->route('category_id');
+        $sub_category_id = $request->route('sub_category_id');
+
+        if ($category_id && !$sub_category_id) {
+            $products = Product::where('category_id', $category_id)
+                ->inRandomOrder()
+                ->limit(300)
+                ->get();
+
+            return response()->json(['data' => $products]);
+        }
+
+        $products = Product::where('category_id', $category_id)
+            ->where('sub_category_id', $sub_category_id)
+            ->inRandomOrder()
+            ->limit(300)
+            ->get();
+
+        return response()->json($products);
+    }
+
+    // NEW ENDPOINTS
+    public function getProductsByCategory($category_id, $sub_category_id = null)
+    {
+        if ($sub_category_id) {
+            return Product::where('category_id', $category_id)
+                ->where('sub_category_id', $sub_category_id)
+                ->get();
+        }
+
+        return Product::where('category_id', $category_id)->get();
+    }
+
+    public function getProductsBySubCategory($sub_category_id)
+    {
+        return Product::where('sub_category_id', $sub_category_id)->get();
+    }
+
+    public function getProductsByBrand($brand_id)
+    {
+        return Product::where('brand_id', $brand_id)->get();
+    }
+
+    public function getProductsByGender($gender_id)
+    {
+        return Product::where('gender_id', $gender_id)->get();
     }
 }
