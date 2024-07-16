@@ -43,14 +43,6 @@ const ProductCard = (product: ProductProps) => {
                     )} */}
 
                     <div>
-                        {product.brand_name && (
-                            <span
-                                className={`text-xs font-semibold text-gray-500 `}
-                            >
-                                {product.brand_name}
-                            </span>
-                        )}
-
                         {product.name && (
                             <h4 className="text-lg font-semibold">
                                 {product.name}

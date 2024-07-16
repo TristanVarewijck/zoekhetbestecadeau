@@ -145,7 +145,7 @@ class ImportCsv extends Command
             $row = array_combine($header, $row);
 
             // Stop after 100 rows for testing purposes
-            if ($counter >= 100) {
+            if ($counter >= 5000) {
                 break;
             }
 

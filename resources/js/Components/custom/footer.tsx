@@ -100,7 +100,7 @@ const Footer = () => {
                     </p>
                     <p>
                         <a href={`mailto:${import.meta.env.VITE_MAIL}`}>
-                            zoekhetbestecadeau@gmail.nl
+                            {import.meta.env.VITE_MAIL}
                         </a>
                         .
                     </p>

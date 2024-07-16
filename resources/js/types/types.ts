@@ -12,7 +12,7 @@ export interface ProductProps {
     name: string;
     description: string;
     price: string;
-    brand_name: string;
+    brand_name?: string;
     brand_id: string;
     image_url: string;
     category_id: string;
@@ -21,9 +21,28 @@ export interface ProductProps {
     created_at: string;
     updated_at: string;
     currency: string;
-    category_path: string;
+    category_path?: string;
     delivery_time: string;
     stock: number;
+}
+
+export interface SearchCtaProps {
+    setData?: Dispatch<SetStateAction<FilterProps | {}>>;
+    setCurrentStep: Dispatch<SetStateAction<number>>;
+    currentStep: number;
+    showResults: boolean;
+    occasions: Occasion[];
+    interests: Interest[];
+    genders: Gender[];
+}
+
+export interface SearchMergedProps {
+    showResults: boolean;
+    query?: FilterProps;
+    setQuery?: Dispatch<SetStateAction<FilterProps | {}>>;
+    occasions: Occasion[];
+    interests: Interest[];
+    genders: Gender[];
 }
 
 export interface PopularProductsProps {

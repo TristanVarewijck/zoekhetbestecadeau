@@ -32,7 +32,7 @@ const PopularProducts = ({ products }: PopularProductsProps) => {
                 title={
                     loading
                         ? "⏳ Even geduld, we zijn de populaire cadeaus aan het ophalen..."
-                        : `${products.length} populaire cadeaus gevonden 🎁!`
+                        : `+${products.length} populaire cadeaus gevonden 🎁!`
                 }
                 subtitle={
                     !loading

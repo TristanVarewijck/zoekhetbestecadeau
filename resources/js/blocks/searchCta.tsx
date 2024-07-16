@@ -8,12 +8,11 @@ import {
 } from "lucide-react";
 import CheckboxTabs from "@/Components/custom/checkboxTabs";
 import Summarize from "@/Components/custom/summarize";
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import H3Heading from "@/Components/custom/heading/h3Heading";
 import RangeSlider from "@/Components/custom/rangeSlider";
-import { FilterProps, Gender, Interest, Occasion } from "@/types/types";
+import { SearchCtaProps } from "@/types/types";
 import CountdownCancel from "@/Components/custom/countdownCancel";
-
 import {
     AlertDialog,
     AlertDialogAction,
@@ -25,16 +24,6 @@ import {
     AlertDialogTrigger,
 } from "@/Components/ui/alert-dialog";
 import content from "@/json/searchCta.json";
-
-interface SearchCtaProps {
-    setData?: Dispatch<SetStateAction<FilterProps | {}>>;
-    setCurrentStep: Dispatch<SetStateAction<number>>;
-    currentStep: number;
-    showResults: boolean;
-    occasions: Occasion[];
-    interests: Interest[];
-    genders: Gender[];
-}
 
 const SearchCta = ({
     setData,

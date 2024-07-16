@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Gender;
 use App\Models\Occasion;
@@ -25,15 +26,13 @@ class ProductController extends Controller
         $interest = Category::where('id', $interests)->first();
         $gender = Gender::where('id', $genders)->first();
 
-        if (!$occasion || !$interest || !$gender) {
-            return response()->json(['data' => []]);
-        }
+        // if (!$occasion || !$interest || !$gender) {
+        //     return response()->json(['data' => []]);
+        // }
 
         $products = Product::where('category_id', $interest->id)->get();
         // ->where('category_id', $interest->id)
         // ->where('gender_id', $gender->id)->get();
-
-        logger($products);
 
         return response()->json(['data' => $products]);
     }
@@ -42,15 +41,22 @@ class ProductController extends Controller
     {
         try {
             $product = Product::findOrFail($product_id);
+            $productBrand = Brand::where('id', $product->brand_id)->first();
+            $productWithBrandName = array_merge($product->toArray(), [
+                'brand_name' => $productBrand->name
+            ]);
 
             $products = Product::where('category_id', $product->category_id)
                 ->where('sub_category_id', $product->sub_category_id)
                 ->where('id', '!=', $product_id)
+                ->inRandomOrder()
+                ->limit(100)
                 ->get();
 
             // Render the Inertia page with the product data
             return Inertia::render('Product', [
-                'product' => $product,
+                // product with brandName by using the 'brand' relationship 
+                'product' => $productWithBrandName,
                 'products' => $products->isEmpty() ? [] : $products
             ]);
         } catch (ModelNotFoundException $e) {
@@ -62,10 +68,31 @@ class ProductController extends Controller
         }
     }
 
+
     public function renderHome()
     {
-        // Fetch 100 random products
-        $products = Product::inRandomOrder()->limit(100)->get();
+        // Step 1: Retrieve all categories
+        $categories = Category::all();
+        $totalCategories = $categories->count();
+
+        // Step 2: Determine the number of products per category
+        $productsPerCategory = intdiv(100, $totalCategories);
+        $remainder = 100 % $totalCategories;
+
+        $products = collect();
+
+        // Step 3: Retrieve products from each category
+        foreach ($categories as $category) {
+            $limit = $productsPerCategory + ($remainder > 0 ? 1 : 0);
+            $remainder--;
+
+            $categoryProducts = Product::where('category_id', $category->id)
+                ->inRandomOrder()
+                ->limit($limit)
+                ->get();
+
+            $products = $products->merge($categoryProducts)->shuffle();
+        }
 
         return Inertia::render('Home', [
             'products' => $products,

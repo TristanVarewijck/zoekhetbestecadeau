@@ -26,6 +26,7 @@ class Product extends Model
                 'brand_id',
                 'category_id',
                 'sub_category_id',
+                'sub_sub_category_id',
                 'occasion_id',
                 'gender_id',
         ];
