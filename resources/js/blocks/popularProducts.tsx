@@ -39,7 +39,7 @@ const PopularProducts = ({ products }: PopularProductsProps) => {
                         ? "Hieronder vind je de meest populaire cadeaus van dit moment."
                         : ""
                 }
-                productsPerPage={50}
+                productsPerPage={20}
             />
         </div>
     );

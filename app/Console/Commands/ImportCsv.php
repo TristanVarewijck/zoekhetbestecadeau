@@ -143,7 +143,7 @@ class ImportCsv extends Command
             $row = array_combine($header, $row);
 
             // Stop after 100 rows for testing purposes
-            if ($counter >= 5000) {
+            if ($counter >= 500) {
                 break;
             }
 
@@ -186,7 +186,6 @@ class ImportCsv extends Command
                     break;
 
                 case 'tech':
-                    # code...
                     $parsedData = [
                         'serial_number' => $row['product ID'] ?? $row['sku'],
                         'name' => $row['name'] ?? $row['product_name'],
@@ -213,37 +212,23 @@ class ImportCsv extends Command
                     return;
             }
 
-
             // Process the product record
             $product = $this->processRecord(Product::class, $productData, 'serial_number');
-
-
-
-            $subCategory = null;
-            $subSubCategory = null;
-            switch ($category->name) {
-                case 'wonen':
-                    // Process the subcategory and subsubcategory records
-                    $subCategory = $this->processRecord(SubCategory::class, ['name' => $row['subcategories'] ?? $row['categoryid'], 'category_id' => $category->id], 'name');
-                    $subSubCategory = $this->processRecord(SubSubCategory::class, ['name' => $row['subsubcategories'] ?? $row['subcategoryid'], 'sub_category_id' => $category->id], 'name');
-                    break;
-
-                case 'tech':
-
-                    break;
-
-                default;
-                    $this->info('No data for category found!');
-                    return;
-            }
-
+            // Process the subcategory and subsubcategory records
+            $subCategory = $this->processRecord(SubCategory::class, ['name' => $row['subcategories'] ?? $row['categoryid'], 'category_id' => $category->id], 'name');
+            $subSubCategory = $this->processRecord(SubSubCategory::class, ['name' => $row['subsubcategories'] ?? $row['subcategoryid'], 'sub_category_id' => $subCategory->id], 'name');
             // Update product with subcategory id and subsubcategory id
-            $product->update(['sub_category_id' => $subCategory->id]);
-            $product->update(['sub_sub_category_id' => $subSubCategory->id]);
+            $product->update([
+                'sub_category_id' => $subCategory->id,
+                'sub_sub_category_id' => $subSubCategory->id,
+            ]);
 
-            $subCategory->update(['sub_sub_category_id' => $subSubCategory->id]);
 
-            // update the 
+
+            // update the subSubCategory with the category id
+            $subSubCategory->update([
+                'sub_category_id' => $subCategory->id,
+            ]);
 
             $processedProductIds[] = $product->id;
 
@@ -255,6 +240,8 @@ class ImportCsv extends Command
         $this->deleteUnprocessedProducts($processedProductIds, $category->id);
         $this->deleteUnusedBrands();
         $this->deleteUnusedCategories();
+        $this->deleteUnusedSubCategories();
+        $this->deleteUnusedSubSubCategories();
 
         // Finish the progress bar
         $bar->finish();
@@ -380,7 +367,6 @@ class ImportCsv extends Command
             $this->incrementCount($modelName, 'deleted');
             $record->delete();
         }
-
     }
 
     private function incrementCount($model, $action)
