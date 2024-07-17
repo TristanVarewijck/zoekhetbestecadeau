@@ -46,16 +46,43 @@ class ProductController extends Controller
                 'brand_name' => $productBrand->name
             ]);
 
-            $products = Product::where('category_id', $product->category_id)
-                ->where('sub_category_id', $product->sub_category_id)
-                ->where('id', '!=', $product_id)
-                ->inRandomOrder()
-                ->limit(100)
-                ->get();
+            $products = collect();
+
+            // Query products with the same sub_sub_category_id
+            if ($product->sub_sub_category_id) {
+                $products = Product::where('sub_sub_category_id', $product->sub_sub_category_id)
+                    ->where('id', '!=', $product_id)
+                    ->inRandomOrder()
+                    ->limit(72)
+                    ->get();
+            }
+
+            // If less than 72, fill with products from the same sub_category_id
+            if ($products->count() < 72 && $product->sub_category_id) {
+                $additionalProducts = Product::where('sub_category_id', $product->sub_category_id)
+                    ->where('id', '!=', $product_id)
+                    ->whereNotIn('id', $products->pluck('id')->toArray())
+                    ->inRandomOrder()
+                    ->limit(72 - $products->count())
+                    ->get();
+
+                $products = $products->merge($additionalProducts);
+            }
+
+            // If still less than 72, fill with products from the same category_id
+            if ($products->count() < 72) {
+                $additionalProducts = Product::where('category_id', $product->category_id)
+                    ->where('id', '!=', $product_id)
+                    ->whereNotIn('id', $products->pluck('id')->toArray())
+                    ->inRandomOrder()
+                    ->limit(72 - $products->count())
+                    ->get();
+
+                $products = $products->merge($additionalProducts);
+            }
 
             // Render the Inertia page with the product data
             return Inertia::render('Product', [
-                // product with brandName by using the 'brand' relationship 
                 'product' => $productWithBrandName,
                 'products' => $products->isEmpty() ? [] : $products
             ]);
@@ -67,6 +94,8 @@ class ProductController extends Controller
             return Inertia::render('applicationError');
         }
     }
+
+
 
 
     public function renderHome()

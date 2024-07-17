@@ -143,7 +143,7 @@ class ImportCsv extends Command
             $row = array_combine($header, $row);
 
             // Stop after 100 rows for testing purposes
-            if ($counter >= 5000) {
+            if ($counter >= 500) {
                 break;
             }
 
@@ -162,47 +162,37 @@ class ImportCsv extends Command
             switch ($category->name) {
                 case 'wonen':
                     $parsedData = [
-                        'serial_number' => $row['product ID'] ?? $row['sku'],
-                        'name' => $row['name'] ?? $row['product_name'],
-                        'description' => $row['description'] ?? $row['product_summary'],
+                        'serial_number' => $row['product ID'],
+                        'name' => $row['name'],
+                        'description' => $row['description'],
                         'price' => $row['price'],
-                        'image_url' => $row['imageURL'] ?? $row['image_url'],
-                        'affiliate_link' => $row['productURL'] ?? $row['product_url'],
+                        'image_url' => $row['imageURL'],
+                        'affiliate_link' => $row['productURL'],
                         "currency" => $row['currency'],
                         "category_path" => $row['categoryPath'] ?? null,
-                        "delivery_time" => $row['deliveryTime'] ?? $row['delivery_time'],
-                        'stock' => $row['stock'] ?? $row['product_availability_state_id'],
+                        "delivery_time" => $row['deliveryTime'],
+                        'stock' => $row['stock'] ?? $row['product_availability_state_id'] ?? null,
                         'brand_id' => $brand->id,
                         'category_id' => $category->id,
-                        'sub_category_id' => null, // Will be updated later
-                        'sub_sub_category_id' => null, // Will be updated later
-                        'occasion_id' => null, // Will be updated later
-                        'gender_id' => null, // Will be updated later
-                        'created_at' => now(),
-                        'updated_at' => now(),
                     ];
 
                     $productData = array_filter($parsedData);
                     break;
 
                 case 'tech':
-                    # code...
                     $parsedData = [
-                        'serial_number' => $row['product ID'] ?? $row['sku'],
-                        'name' => $row['name'] ?? $row['product_name'],
-                        'description' => $row['description'] ?? $row['product_summary'],
+                        'serial_number' => $row['sku'],
+                        'name' => $row['product_name'],
+                        'description' => $row['product_summary'],
                         'price' => $row['price'],
-                        'image_url' => $row['imageURL'] ?? $row['image_url'],
-                        'affiliate_link' => $row['productURL'] ?? $row['product_url'],
+                        'image_url' => $row['image_url'],
+                        'affiliate_link' => $row['product_url'],
                         "currency" => $row['currency'],
                         "category_path" => $row['categoryPath'] ?? null,
-                        "delivery_time" => $row['deliveryTime'] ?? $row['delivery_time'],
-                        'stock' => $row['stock'] ?? $row['product_availability_state_id'],
+                        "delivery_time" => $row['delivery_time'],
+                        'stock' => $row['product_availability_state_id'] ?? null,
                         'brand_id' => $brand->id,
                         'category_id' => $category->id,
-                        'sub_category_id' => null, // Will be updated later
-                        'sub_sub_category_id' => null, // Will be updated later
-                        'occasion_id' => null, // Will be updated later
                     ];
 
                     $productData = array_filter($parsedData);
@@ -212,38 +202,28 @@ class ImportCsv extends Command
                     $this->info('No data for category found!');
                     return;
             }
-
 
             // Process the product record
             $product = $this->processRecord(Product::class, $productData, 'serial_number');
-
-
-
-            $subCategory = null;
-            $subSubCategory = null;
-            switch ($category->name) {
-                case 'wonen':
-                    // Process the subcategory and subsubcategory records
-                    $subCategory = $this->processRecord(SubCategory::class, ['name' => $row['subcategories'] ?? $row['categoryid'], 'category_id' => $category->id], 'name');
-                    $subSubCategory = $this->processRecord(SubSubCategory::class, ['name' => $row['subsubcategories'] ?? $row['subcategoryid'], 'sub_category_id' => $category->id], 'name');
-                    break;
-
-                case 'tech':
-
-                    break;
-
-                default;
-                    $this->info('No data for category found!');
-                    return;
-            }
-
+            // Process the subcategory and subsubcategory records
+            $subCategory = $this->processRecord(SubCategory::class, ['name' => $row['subcategories'] ?? $row['categoryid'], 'category_id' => $category->id], 'name');
+            $subSubCategory = $this->processRecord(SubSubCategory::class, ['name' => $row['subsubcategories'] ?? $row['subcategoryid'], 'sub_category_id' => $subCategory->id], 'name');
             // Update product with subcategory id and subsubcategory id
-            $product->update(['sub_category_id' => $subCategory->id]);
-            $product->update(['sub_sub_category_id' => $subSubCategory->id]);
+            $product->update([
+                'sub_category_id' => $subCategory->id,
+                'sub_sub_category_id' => $subSubCategory->id,
+                'occasion_id' => null, // Will be updated later
+                'gender_id' => null, // Will be updated later
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
 
-            $subCategory->update(['sub_sub_category_id' => $subSubCategory->id]);
 
-            // update the 
+
+            // update the subSubCategory with the category id
+            $subSubCategory->update([
+                'sub_category_id' => $subCategory->id,
+            ]);
 
             $processedProductIds[] = $product->id;
 
@@ -255,6 +235,8 @@ class ImportCsv extends Command
         $this->deleteUnprocessedProducts($processedProductIds, $category->id);
         $this->deleteUnusedBrands();
         $this->deleteUnusedCategories();
+        $this->deleteUnusedSubCategories();
+        $this->deleteUnusedSubSubCategories();
 
         // Finish the progress bar
         $bar->finish();
@@ -380,7 +362,6 @@ class ImportCsv extends Command
             $this->incrementCount($modelName, 'deleted');
             $record->delete();
         }
-
     }
 
     private function incrementCount($model, $action)
