@@ -95,9 +95,6 @@ class ProductController extends Controller
         }
     }
 
-
-
-
     public function renderHome()
     {
         // Step 1: Retrieve all categories
@@ -120,8 +117,22 @@ class ProductController extends Controller
                 ->limit($limit)
                 ->get();
 
-            $products = $products->merge($categoryProducts)->shuffle();
+            $products = $products->merge($categoryProducts);
         }
+
+        // Step 4: If we have fewer than 100 products, fetch additional products
+        if ($products->count() < 100) {
+            $needed = 100 - $products->count();
+            $additionalProducts = Product::whereNotIn('id', $products->pluck('id')->toArray())
+                ->inRandomOrder()
+                ->limit($needed)
+                ->get();
+
+            $products = $products->merge($additionalProducts);
+        }
+
+        // Step 5: Shuffle the final collection of products to ensure randomness
+        $products = $products->shuffle();
 
         return Inertia::render('Home', [
             'products' => $products,
@@ -130,6 +141,8 @@ class ProductController extends Controller
             'genders' => $this->getGenders()
         ]);
     }
+
+
 
     public function renderFinder()
     {
