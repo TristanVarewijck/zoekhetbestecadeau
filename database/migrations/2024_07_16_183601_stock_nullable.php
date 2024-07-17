@@ -6,12 +6,13 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     /**
-     * Run the migrations.
+     * Run the migrations.xp
      */
     public function up(): void
     {
+        // make delivery_time nullable
         Schema::table('products', function (Blueprint $table) {
-            $table->foreignUuid('sub_sub_category_id')->nullable()->constrained('sub_sub_categories')->onDelete('cascade');
+            $table->integer('stock')->nullable()->change();
         });
     }
 
@@ -21,8 +22,7 @@ return new class extends Migration {
     public function down(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->dropForeign(['sub_sub_category_id']);
-            $table->dropColumn('sub_sub_category_id');
+            $table->integer('stock')->change();
         });
     }
 };

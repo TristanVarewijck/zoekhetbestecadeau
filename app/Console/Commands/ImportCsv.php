@@ -3,12 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Models\Brand;
+use App\Models\SubSubCategory;
 use App\Models\SubCategory;
-use App\Models\SubCategoryProduct;
 use App\Models\Category;
-use App\Models\Interest;
-use App\Models\InterestProduct;
-use App\Models\CategoryProduct;
 use App\Models\Product;
 use Illuminate\Console\Command;
 use Kreait\Laravel\Firebase\Facades\Firebase;
@@ -89,6 +86,7 @@ class ImportCsv extends Command
         }
     }
 
+    // Process the CSV file
     public function processCsv($file, $category, $splitter = ';')
     {
         set_time_limit(0);
@@ -160,34 +158,92 @@ class ImportCsv extends Command
             $brand = $this->processRecord(Brand::class, ['name' => $row['brand']], 'name');
 
             // Prepare product data for processing
-            $productData = [
-                'serial_number' => $row['product ID'] ?? $row['sku'],
-                'name' => $row['name'] ?? $row['product_name'],
-                'description' => $row['description'] ?? $row['product_summary'],
-                'price' => $row['price'],
-                'image_url' => $row['imageURL'] ?? $row['image_url'],
-                'affiliate_link' => $row['productURL'] ?? $row['product_url'],
-                "currency" => $row['currency'],
-                "category_path" => $row['categoryPath'] ?? null,
-                "delivery_time" => $row['deliveryTime'] ?? $row['delivery_time'],
-                'stock' => $row['stock'] ?? $row['product_availability_state_id'],
-                'brand_id' => $brand->id,
-                'category_id' => $category->id,
-                'sub_category_id' => null, // Will be updated later
-                'occasion_id' => null, // Will be updated later
-                'gender_id' => null, // Will be updated later
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
+            $productData = [];
+            switch ($category->name) {
+                case 'wonen':
+                    $parsedData = [
+                        'serial_number' => $row['product ID'] ?? $row['sku'],
+                        'name' => $row['name'] ?? $row['product_name'],
+                        'description' => $row['description'] ?? $row['product_summary'],
+                        'price' => $row['price'],
+                        'image_url' => $row['imageURL'] ?? $row['image_url'],
+                        'affiliate_link' => $row['productURL'] ?? $row['product_url'],
+                        "currency" => $row['currency'],
+                        "category_path" => $row['categoryPath'] ?? null,
+                        "delivery_time" => $row['deliveryTime'] ?? $row['delivery_time'],
+                        'stock' => $row['stock'] ?? $row['product_availability_state_id'],
+                        'brand_id' => $brand->id,
+                        'category_id' => $category->id,
+                        'sub_category_id' => null, // Will be updated later
+                        'sub_sub_category_id' => null, // Will be updated later
+                        'occasion_id' => null, // Will be updated later
+                        'gender_id' => null, // Will be updated later
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+
+                    $productData = array_filter($parsedData);
+                    break;
+
+                case 'tech':
+                    # code...
+                    $parsedData = [
+                        'serial_number' => $row['product ID'] ?? $row['sku'],
+                        'name' => $row['name'] ?? $row['product_name'],
+                        'description' => $row['description'] ?? $row['product_summary'],
+                        'price' => $row['price'],
+                        'image_url' => $row['imageURL'] ?? $row['image_url'],
+                        'affiliate_link' => $row['productURL'] ?? $row['product_url'],
+                        "currency" => $row['currency'],
+                        "category_path" => $row['categoryPath'] ?? null,
+                        "delivery_time" => $row['deliveryTime'] ?? $row['delivery_time'],
+                        'stock' => $row['stock'] ?? $row['product_availability_state_id'],
+                        'brand_id' => $brand->id,
+                        'category_id' => $category->id,
+                        'sub_category_id' => null, // Will be updated later
+                        'sub_sub_category_id' => null, // Will be updated later
+                        'occasion_id' => null, // Will be updated later
+                    ];
+
+                    $productData = array_filter($parsedData);
+                    break;
+
+                default;
+                    $this->info('No data for category found!');
+                    return;
+            }
+
 
             // Process the product record
             $product = $this->processRecord(Product::class, $productData, 'serial_number');
 
-            // Process the subcategory record
-            $subCategory = $this->processRecord(SubCategory::class, ['name' => $row['subcategories'] ?? $row['categoryid'], 'category_id' => $category->id], 'name');
 
-            // Update product with subcategory id
+
+            $subCategory = null;
+            $subSubCategory = null;
+            switch ($category->name) {
+                case 'wonen':
+                    // Process the subcategory and subsubcategory records
+                    $subCategory = $this->processRecord(SubCategory::class, ['name' => $row['subcategories'] ?? $row['categoryid'], 'category_id' => $category->id], 'name');
+                    $subSubCategory = $this->processRecord(SubSubCategory::class, ['name' => $row['subsubcategories'] ?? $row['subcategoryid'], 'sub_category_id' => $category->id], 'name');
+                    break;
+
+                case 'tech':
+
+                    break;
+
+                default;
+                    $this->info('No data for category found!');
+                    return;
+            }
+
+            // Update product with subcategory id and subsubcategory id
             $product->update(['sub_category_id' => $subCategory->id]);
+            $product->update(['sub_sub_category_id' => $subSubCategory->id]);
+
+            $subCategory->update(['sub_sub_category_id' => $subSubCategory->id]);
+
+            // update the 
 
             $processedProductIds[] = $product->id;
 
@@ -308,6 +364,23 @@ class ImportCsv extends Command
             $this->incrementCount($modelName, 'deleted');
             $record->delete();
         }
+    }
+
+    private function deleteUnusedSubSubCategories()
+    {
+        // Split the model name and log the actual model name
+        $modelParts = explode('\\', SubSubCategory::class);
+        $modelName = end($modelParts);
+
+        // Find and delete subcategories without products
+        $recordsToDelete = SubSubCategory::whereDoesntHave('products')->get();
+
+        foreach ($recordsToDelete as $record) {
+            $this->log("SubSubCategory with id " . $record->id . " deleted.");
+            $this->incrementCount($modelName, 'deleted');
+            $record->delete();
+        }
+
     }
 
     private function incrementCount($model, $action)

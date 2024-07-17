@@ -35,18 +35,8 @@
         "id": "wonen"
     },
     {
-        "icon": "🎊",
-        "name": "Feesten",
-        "id": "feesten"
-    },
-    {
         "icon": "🧴",
         "name": "Verzorging",
         "id": "verzorging"
-    },
-    {
-        "icon": "🍀",
-        "name": "Natuur",
-        "id": "natuur"
     }
 ]
