@@ -6,15 +6,13 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     /**
-     * Run the migrations.
+     * Run the migrations.xp
      */
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->string('name');
-            $table->string('icon');
-            $table->timestamps();
+        // make image_url nullable
+        Schema::table('products', function (Blueprint $table) {
+            $table->text('image_url')->nullable()->change();
         });
     }
 
@@ -23,6 +21,8 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('inetersts');
+        Schema::table('products', function (Blueprint $table) {
+            $table->text('image_url')->change();
+        });
     }
 };
