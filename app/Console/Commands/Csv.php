@@ -17,7 +17,7 @@ class Csv extends Command
      *
      * @var string
      */
-    protected $signature = 'import:csv {category}';
+    protected $signature = 'import:csv {categories*}';
 
     /**
      * The console command description.
@@ -42,9 +42,18 @@ class Csv extends Command
 
         $storage = Firebase::storage();
         $bucket = $storage->getBucket();
-        $categoryName = $this->argument('category');
+        $categories = $this->argument('categories');
+
+        foreach ($categories as $category) {
+            $this->processCategory($bucket, $category);
+        }
+    }
+
+    public function processCategory($bucket, $categoryName)
+    {
         $category = Category::firstOrCreate(['name' => $categoryName, "icon" => "fas fa-gift"]);
         $filePath = $categoryName . '.csv';
+        $processedRecords = 0;
 
         if ($bucket->object($filePath)->exists()) {
             $object = $bucket->object($filePath);
@@ -57,16 +66,18 @@ class Csv extends Command
 
             switch ($categoryName) {
                 case 'tech':
-                    $this->processCsv($csv, $category, 'tech');
+                    $processedRecords = $this->processCsv($csv, $category, 'tech');
                     break;
                 default:
-                    $this->processCsv($csv, $category, 'default');
+                    $processedRecords = $this->processCsv($csv, $category, 'default');
                     break;
             }
         } else {
             $this->error('File not found');
             return;
         }
+
+        $this->info("{$processedRecords} records processed for category {$categoryName}");
     }
 
     public function processCsv($csv, $category, $configKey)
@@ -95,7 +106,7 @@ class Csv extends Command
 
             $row = array_combine($header, $row);
 
-            if ($counter >= 500) {
+            if ($counter >= 200) {
                 break;
             }
 
@@ -129,27 +140,33 @@ class Csv extends Command
             }
 
             $product->update([
-                'sub_category_id' => $subCategory->id,
-                'sub_sub_category_id' => $subSubCategory->id,
+                'sub_category_id' => $subCategory ? $subCategory->id : null,
+                'sub_sub_category_id' => $subSubCategory ? $subSubCategory->id : null,
                 'category_path' => $newCategoryPath,
                 'occasion_id' => null, // Will be updated later
                 'gender_id' => null, // Will be updated later
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
+
             $subSubCategory->update([
-                'sub_category_id' => $subCategory->id,
+                'sub_category_id' => $subCategory->id ? $subCategory->id : null,
             ]);
 
             $processedProductIds[] = $product->id;
             $counter++;
         }
+
+        $this->deleteUnprocessedProducts($processedProductIds, $category->id);
+        $this->deleteUnusedBrands();
+        $this->deleteUnusedSubCategories();
+        $this->deleteUnusedSubSubCategories();
+
+        return $counter;
     }
 
     private function processRecord($model, $row, $uniqueIdentifier)
     {
-        logger($row);
-
         // Split the model name and log the actual model name
         $modelParts = explode('\\', $model);
         $modelName = end($modelParts);
@@ -171,6 +188,54 @@ class Csv extends Command
             $this->log("{$modelName} with {$uniqueIdentifier} " . $record->$uniqueIdentifier . " created.");
 
             return $record;
+        }
+    }
+
+    private function deleteUnprocessedProducts($processedIds, $category_id)
+    {
+        // Split the model name and log the actual model name
+        $modelParts = explode('\\', Product::class);
+        $modelName = end($modelParts);
+
+        // Find and delete unprocessed products
+        $recordsToDelete = Product::where('category_id', $category_id)->whereNotIn('id', $processedIds)->get();
+
+        foreach ($recordsToDelete as $record) {
+            $this->log("{$modelName} with id " . $record->id . " deleted.");
+            $record->delete();
+        }
+    }
+
+    private function deleteUnusedBrands()
+    {
+        // Find and delete brands without products
+        $recordsToDelete = Brand::whereDoesntHave('products')->get();
+
+        foreach ($recordsToDelete as $record) {
+            $this->log("Brand with id " . $record->id . " deleted.");
+            $record->delete();
+        }
+    }
+
+    private function deleteUnusedSubCategories()
+    {
+        // Find and delete subcategories without products
+        $recordsToDelete = SubCategory::whereDoesntHave('products')->get();
+
+        foreach ($recordsToDelete as $record) {
+            $this->log("SubCategory with id " . $record->id . " deleted.");
+            $record->delete();
+        }
+    }
+
+    private function deleteUnusedSubSubCategories()
+    {
+        // Find and delete subcategories without products
+        $recordsToDelete = SubSubCategory::whereDoesntHave('products')->get();
+
+        foreach ($recordsToDelete as $record) {
+            $this->log("SubSubCategory with id " . $record->id . " deleted.");
+            $record->delete();
         }
     }
 
