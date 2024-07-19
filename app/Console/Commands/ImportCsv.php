@@ -210,18 +210,30 @@ class ImportCsv extends Command
             // Prepare subcategory and subsubcategory data for processing
             $subCategory = null;
             $subSubCategory = null;
-            $categoryPath = null;
+            $categoryPath = $category->name;
             switch ($category->id) {
                 case 'wonen':
-                    $subCategory = $this->processRecord(SubCategory::class, ['name' => $row['subcategories'], 'category_id' => $category->id], 'name');
-                    $subSubCategory = $this->processRecord(SubSubCategory::class, ['name' => $row['subsubcategories'], 'sub_category_id' => $subCategory->id], 'name');
-                    $categoryPath = $category->name . ' > ' . $subCategory->name . ' > ' . $subSubCategory->name;
+                    if (!empty($row['subcategories'])) {
+                        $subCategory = $this->processRecord(SubCategory::class, ['name' => ucfirst($row['subcategories']), 'category_id' => $category->id], 'name');
+                        $categoryPath .= ' > ' . $subCategory->name;
+
+                        if (!empty($row['subsubcategories'])) {
+                            $subSubCategory = $this->processRecord(SubSubCategory::class, ['name' => ucfirst($row['subsubcategories']), 'sub_category_id' => $subCategory->id], 'name');
+                            $categoryPath .= ' > ' . $subSubCategory->name;
+                        }
+                    }
                     break;
 
                 case 'tech':
-                    $subCategory = $this->processRecord(SubCategory::class, ['name' => ucfirst($row['product_type']), 'category_id' => $category->id], 'name');
-                    $subSubCategory = $this->processRecord(SubSubCategory::class, ['name' => $row['subproducttypename'], 'sub_category_id' => $subCategory->id], 'name');
-                    $categoryPath = $category->name . ' > ' . $subCategory->name . ' > ' . $subSubCategory->name;
+                    if (!empty($row['product_type'])) {
+                        $subCategory = $this->processRecord(SubCategory::class, ['name' => ucfirst($row['product_type']), 'category_id' => $category->id], 'name');
+                        $categoryPath .= ' > ' . $subCategory->name;
+
+                        if (!empty($row['subproducttypename'])) {
+                            $subSubCategory = $this->processRecord(SubSubCategory::class, ['name' => ucfirst($row['subproducttypename']), 'sub_category_id' => $subCategory->id], 'name');
+                            $categoryPath .= ' > ' . $subSubCategory->name;
+                        }
+                    }
                     break;
 
                 default;
@@ -231,8 +243,8 @@ class ImportCsv extends Command
 
             // Update product with subcategory id and subsubcategory id
             $product->update([
-                'sub_category_id' => $subCategory->id,
-                'sub_sub_category_id' => $subSubCategory->id,
+                'sub_category_id' => $subCategory ? $subCategory->id : null,
+                'sub_sub_category_id' => $subSubCategory ? $subSubCategory->id : null,
                 'category_path' => $categoryPath,
                 'occasion_id' => null, // Will be updated later
                 'gender_id' => null, // Will be updated later
@@ -241,11 +253,11 @@ class ImportCsv extends Command
             ]);
 
 
-
-            // update the subSubCategory with the category id
-            $subSubCategory->update([
-                'sub_category_id' => $subCategory->id,
-            ]);
+            if ($subSubCategory) {
+                $subSubCategory->update([
+                    'sub_category_id' => $subCategory ? $subCategory->id : null,
+                ]);
+            }
 
             $processedProductIds[] = $product->id;
 
@@ -256,7 +268,6 @@ class ImportCsv extends Command
         // Clean up the database
         $this->deleteUnprocessedProducts($processedProductIds, $category->id);
         $this->deleteUnusedBrands();
-        $this->deleteUnusedCategories();
         $this->deleteUnusedSubCategories();
         $this->deleteUnusedSubSubCategories();
 
@@ -333,22 +344,6 @@ class ImportCsv extends Command
 
         foreach ($recordsToDelete as $record) {
             $this->log("Brand with id " . $record->id . " deleted.");
-            $this->incrementCount($modelName, 'deleted');
-            $record->delete();
-        }
-    }
-
-    private function deleteUnusedCategories()
-    {
-        // Split the model name and log the actual model name
-        $modelParts = explode('\\', Category::class);
-        $modelName = end($modelParts);
-
-        // Find and delete categories without products
-        $recordsToDelete = Category::whereDoesntHave('products')->get();
-
-        foreach ($recordsToDelete as $record) {
-            $this->log("Category with id " . $record->id . " deleted.");
             $this->incrementCount($modelName, 'deleted');
             $record->delete();
         }
