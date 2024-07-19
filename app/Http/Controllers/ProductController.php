@@ -17,22 +17,30 @@ class ProductController extends Controller
 {
     public function query(Request $request)
     {
-        $occasions = $request->input('occasions');
-        $price = $request->input('price');
-        $interests = $request->input('interests');
-        $genders = $request->input('forWho');
+        $occasions = $request->input('occasions', []);
+        $priceRange = $request->input('price', []);
+        $interests = $request->input('interests', []);
+        $genders = $request->input('genders', []);
 
-        $occasion = Occasion::where('id', $occasions)->first();
-        $interest = Category::where('id', $interests)->first();
-        $gender = Gender::where('id', $genders)->first();
+        $query = Product::query();
 
-        // if (!$occasion || !$interest || !$gender) {
-        //     return response()->json(['data' => []]);
-        // }
+        if (!empty($occasions)) {
+            $query->whereIn('occasion_id', $occasions);
+        }
 
-        $products = Product::where('category_id', $interest->id)->get();
-        // ->where('category_id', $interest->id)
-        // ->where('gender_id', $gender->id)->get();
+        if (!empty($priceRange)) {
+            $query->whereBetween('price', [$priceRange[0], $priceRange[1]]);
+        }
+
+        if (!empty($interests)) {
+            $query->whereIn('category_id', $interests);
+        }
+
+        if (!empty($genders)) {
+            $query->whereIn('gender_id', $genders);
+        }
+
+        $products = $query->get();
 
         return response()->json(['data' => $products]);
     }
