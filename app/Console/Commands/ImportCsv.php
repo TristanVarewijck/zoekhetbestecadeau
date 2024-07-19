@@ -59,7 +59,10 @@ class ImportCsv extends Command
 
         // Get the category from the command argument and add it to the database
         $categoryName = $this->argument('category');
-        $category = Category::firstOrCreate(['name' => $categoryName, "icon" => "fas fa-gift"]);
+        logger($categoryName);
+        // create / get the category
+        $category = Category::firstOrCreate(['name' => $categoryName]);
+
 
         // Check if the file exists in the storage bucket
         if ($bucket->object($filePath)->exists()) {
@@ -98,7 +101,7 @@ class ImportCsv extends Command
             return;
         }
 
-        if ($category->name == 'tech') {
+        if ($category->id == 'tech') {
             $splitter = ',';
         }
 
@@ -159,17 +162,16 @@ class ImportCsv extends Command
 
             // Prepare product data for processing
             $productData = [];
-            switch ($category->name) {
+            switch ($category->id) {
                 case 'wonen':
                     $parsedData = [
                         'serial_number' => $row['product ID'],
                         'name' => $row['name'],
                         'description' => $row['description'],
                         'price' => $row['price'],
-                        'image_url' => $row['imageURL'],
+                        'image_url' => $row['imageURL'] ?? null,
                         'affiliate_link' => $row['productURL'],
                         "currency" => $row['currency'],
-                        "category_path" => $row['categoryPath'] ?? null,
                         "delivery_time" => $row['deliveryTime'],
                         'stock' => $row['stock'] ?? $row['product_availability_state_id'] ?? null,
                         'brand_id' => $brand->id,
@@ -185,10 +187,9 @@ class ImportCsv extends Command
                         'name' => $row['product_name'],
                         'description' => $row['product_summary'],
                         'price' => $row['price'],
-                        'image_url' => $row['image_url'],
+                        'image_url' => $row['image_url'] ?? null,
                         'affiliate_link' => $row['product_url'],
                         "currency" => $row['currency'],
-                        "category_path" => $row['categoryPath'] ?? null,
                         "delivery_time" => $row['delivery_time'],
                         'stock' => $row['product_availability_state_id'] ?? null,
                         'brand_id' => $brand->id,
@@ -205,13 +206,34 @@ class ImportCsv extends Command
 
             // Process the product record
             $product = $this->processRecord(Product::class, $productData, 'serial_number');
-            // Process the subcategory and subsubcategory records
-            $subCategory = $this->processRecord(SubCategory::class, ['name' => $row['subcategories'] ?? $row['categoryid'], 'category_id' => $category->id], 'name');
-            $subSubCategory = $this->processRecord(SubSubCategory::class, ['name' => $row['subsubcategories'] ?? $row['subcategoryid'], 'sub_category_id' => $subCategory->id], 'name');
+
+            // Prepare subcategory and subsubcategory data for processing
+            $subCategory = null;
+            $subSubCategory = null;
+            $categoryPath = null;
+            switch ($category->id) {
+                case 'wonen':
+                    $subCategory = $this->processRecord(SubCategory::class, ['name' => $row['subcategories'], 'category_id' => $category->id], 'name');
+                    $subSubCategory = $this->processRecord(SubSubCategory::class, ['name' => $row['subsubcategories'], 'sub_category_id' => $subCategory->id], 'name');
+                    $categoryPath = $category->name . ' > ' . $subCategory->name . ' > ' . $subSubCategory->name;
+                    break;
+
+                case 'tech':
+                    $subCategory = $this->processRecord(SubCategory::class, ['name' => ucfirst($row['product_type']), 'category_id' => $category->id], 'name');
+                    $subSubCategory = $this->processRecord(SubSubCategory::class, ['name' => $row['subproducttypename'], 'sub_category_id' => $subCategory->id], 'name');
+                    $categoryPath = $category->name . ' > ' . $subCategory->name . ' > ' . $subSubCategory->name;
+                    break;
+
+                default;
+                    $this->info('No data for category found!');
+                    return;
+            }
+
             // Update product with subcategory id and subsubcategory id
             $product->update([
                 'sub_category_id' => $subCategory->id,
                 'sub_sub_category_id' => $subSubCategory->id,
+                'category_path' => $categoryPath,
                 'occasion_id' => null, // Will be updated later
                 'gender_id' => null, // Will be updated later
                 'created_at' => now(),
