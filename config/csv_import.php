@@ -1,0 +1,36 @@
+<?php
+
+return [
+    'default' => [
+        'serial_number' => 'product ID',
+        'name' => 'name',
+        'description' => 'description',
+        'price' => 'price',
+        'image_url' => 'imageURL',
+        'affiliate_link' => 'productURL',
+        'currency' => 'currency',
+        'category_path' => 'categoryPath',
+        'delivery_time' => 'deliveryTime',
+        'stock' => 'stock',
+        'brand' => 'brand',
+        'sub_category' => 'subcategories',
+        'sub_sub_category' => 'subsubcategories',
+        'delimiter' => ';',
+    ],
+    'tech' => [
+        'serial_number' => 'sku',
+        'name' => 'product_name',
+        'description' => 'product_summary',
+        'price' => 'price',
+        'image_url' => 'image_url',
+        'affiliate_link' => 'product_url',
+        'currency' => 'currency',
+        'category_path' => 'category_path',
+        'delivery_time' => 'delivery_time',
+        'stock' => 'product_availability_state_id',
+        'brand' => 'brand',
+        'sub_category' => 'product_type',
+        'sub_sub_category' => 'subproducttypename',
+        'delimiter' => ',',
+    ],
+];
