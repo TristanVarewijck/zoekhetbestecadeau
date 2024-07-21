@@ -4,28 +4,18 @@ import SectionLayout from "@/Components/custom/sectionLayout";
 import Usps from "@/blocks/usps";
 import SearchMerged from "@/blocks/searchMerged";
 import PopularProducts from "@/blocks/popularProducts";
-import {
-    FilterProps,
-    Gender,
-    Interest,
-    Occasion,
-    ProductProps,
-} from "@/types/types";
-
-interface HomeProps {
-    products: ProductProps[];
-    occasions: Occasion[];
-    interests: Interest[];
-    genders: Gender[];
-}
+import { FilterProps, HomeProps } from "@/types/types";
 
 export default function Home({
     products,
     occasions,
     interests,
-    genders,
+    delivery,
 }: HomeProps) {
     const [query, setQuery] = useState<FilterProps>({});
+
+    console.log("query", query);
+    console.log(delivery);
 
     useEffect(() => {
         const storedOccasions = localStorage.getItem("occasions");
@@ -50,7 +40,6 @@ export default function Home({
                         setQuery={setQuery}
                         occasions={occasions}
                         interests={interests}
-                        genders={genders}
                     />
                     <Usps />
                 </div>

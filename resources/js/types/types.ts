@@ -14,15 +14,16 @@ export interface ProductProps {
     price: string;
     brand_name?: string;
     brand_id: string;
-    image_url: string;
+    image_url?: string;
     category_id: string;
-    sub_category_id: string;
+    sub_category_id?: string;
+    sub_sub_category_id?: string;
     affiliate_link: string;
     created_at: string;
     updated_at: string;
     currency: string;
-    category_path?: string;
-    delivery_time: string;
+    category_path: string;
+    delivery_time?: string;
     stock: number;
 }
 
@@ -33,7 +34,6 @@ export interface SearchCtaProps {
     showResults: boolean;
     occasions: Occasion[];
     interests: Interest[];
-    genders: Gender[];
 }
 
 export interface SearchMergedProps {
@@ -42,12 +42,18 @@ export interface SearchMergedProps {
     setQuery?: Dispatch<SetStateAction<FilterProps | {}>>;
     occasions: Occasion[];
     interests: Interest[];
-    genders: Gender[];
 }
 
 export interface PopularProductsProps {
     productsArray: CoolblueProductProps[];
     loading: boolean;
+}
+
+export interface HomeProps {
+    products: ProductProps[];
+    occasions: Occasion[];
+    interests: Interest[];
+    delivery: string[];
 }
 
 export interface CheckboxTabsProps {
@@ -64,10 +70,15 @@ export interface RangeSliderProps {
     localStorageKey: string;
 }
 
+export interface DatePickerProps {
+    setData?: Dispatch<SetStateAction<FilterProps | {}>>;
+    localStorageKey: string;
+}
+
 export interface FilterProps {
     occasions?: string[];
     interests?: string[];
-    forWho?: string[];
+    delivery?: string[];
     price?: number[];
 }
 

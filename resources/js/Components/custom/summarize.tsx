@@ -68,7 +68,7 @@ const Summarize = ({
                                                       " - "
                                                   )}`
                                                 : content.localStorageKey ===
-                                                  "forWho"
+                                                  "delivery"
                                                 ? content.value[0].replace(
                                                       /_/g,
                                                       " "

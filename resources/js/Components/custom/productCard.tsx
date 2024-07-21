@@ -44,7 +44,7 @@ const ProductCard = (product: ProductProps) => {
 
                     <div>
                         {product.name && (
-                            <h4 className="text-lg font-semibold">
+                            <h4 className="text-lg font-bold font-display">
                                 {product.name}
                             </h4>
                         )}
@@ -54,7 +54,7 @@ const ProductCard = (product: ProductProps) => {
                     <div className="flex items-baseline gap-2">
                         {/* price */}
                         {product.price && (
-                            <span className="text-2xl font-bold">
+                            <span className="text-2xl font-bold font-display">
                                 {getSymbolFromCurrency(product.currency)}
                                 {product.price},-
                             </span>

@@ -10,11 +10,9 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->string('name');
-            $table->string('icon');
-            $table->timestamps();
+        // make delivery_time nullable
+        Schema::table('categories', function (Blueprint $table) {
+            $table->string('icon')->nullable()->change();
         });
     }
 
@@ -23,6 +21,9 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('inetersts');
+        Schema::table('categories', function (Blueprint $table) {
+            $table->string('icon')->change();
+        });
     }
 };
+

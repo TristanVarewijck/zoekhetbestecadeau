@@ -17,28 +17,50 @@ class ProductController extends Controller
 {
     public function query(Request $request)
     {
-        $occasions = $request->input('occasions');
-        $price = $request->input('price');
-        $interests = $request->input('interests');
-        $genders = $request->input('forWho');
+        $cacheKey = "products_" . md5(json_encode($request->all()));
 
-        $occasion = Occasion::where('id', $occasions)->first();
-        $interest = Category::where('id', $interests)->first();
-        $gender = Gender::where('id', $genders)->first();
+        if (Cache::has($cacheKey)) {
+            return Cache::get($cacheKey);
+        }
 
-        // if (!$occasion || !$interest || !$gender) {
-        //     return response()->json(['data' => []]);
-        // }
+        $occasions = $request->input('occasions', []);
+        $priceRange = $request->input('price', []);
+        $interests = $request->input('interests', []);
+        $genders = $request->input('genders', []);
 
-        $products = Product::where('category_id', $interest->id)->get();
-        // ->where('category_id', $interest->id)
-        // ->where('gender_id', $gender->id)->get();
+        $query = Product::query();
+
+        if (!empty($occasions)) {
+            $query->whereIn('occasion_id', $occasions);
+        }
+
+        if (!empty($priceRange)) {
+            $query->whereBetween('price', [$priceRange[0], $priceRange[1]]);
+        }
+
+        if (!empty($interests)) {
+            $query->whereIn('category_id', $interests);
+        }
+
+        if (!empty($genders)) {
+            $query->whereIn('gender_id', $genders);
+        }
+
+        $products = $query->get();
+
+        Cache::put($cacheKey, $products, now()->addDay());
 
         return response()->json(['data' => $products]);
     }
 
     public function show($product_id)
     {
+        $cacheKey = "product_show_" . $product_id;
+
+        if (Cache::has($cacheKey)) {
+            return Cache::get($cacheKey);
+        }
+
         try {
             $product = Product::findOrFail($product_id);
             $productBrand = Brand::where('id', $product->brand_id)->first();
@@ -80,6 +102,8 @@ class ProductController extends Controller
 
                 $products = $products->merge($additionalProducts);
             }
+
+            Cache::put($cacheKey, $productWithBrandName, now()->addDay());
 
             // Render the Inertia page with the product data
             return Inertia::render('Product', [

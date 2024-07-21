@@ -175,7 +175,7 @@ const Product = ({
                             {/* price */}
                             <div>
                                 <p
-                                    className={`flex items-center justify-center lg:justify-start gap-2 font-bold text-5xl`}
+                                    className={`flex items-center justify-center lg:justify-start gap-2 font-bold text-4xl font-display`}
                                 >
                                     <span>
                                         {getSymbolFromCurrency(
@@ -222,15 +222,14 @@ const Product = ({
                         {/* details */}
                         <div className="flex flex-col gap-4">
                             {/* delivery time */}
-
                             {product.delivery_time && (
                                 <p
                                     className={`flex items-center gap-2 pb-2 border-b-2`}
                                 >
-                                    <span>
-                                        <Truck size={16} />
+                                    <Truck size={16} />
+                                    <span className="font-medium">
+                                        {product.delivery_time}
                                     </span>
-                                    <span>{product.delivery_time}</span>
                                 </p>
                             )}
 
@@ -247,7 +246,9 @@ const Product = ({
                                                 className={`flex items-center gap-1`}
                                             >
                                                 <ReceiptText size={16} />
-                                                <span>Meer details</span>
+                                                <span className="font-medium">
+                                                    Meer details
+                                                </span>
                                             </span>
                                         </AccordionTrigger>
                                         <AccordionContent>
@@ -280,6 +281,9 @@ const Product = ({
                         : ""
                 }
                 title={"Cadeaus die even leuk zijn 🎁!"}
+                subtitle={
+                    "Vind hier cadeaus die even leuk zijn als degene hierboven!"
+                }
                 productsPerPage={24}
             />
         </SectionLayout>

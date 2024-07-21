@@ -13,7 +13,7 @@ const H3Heading = ({ title, subtitle, centered }: HeadingProps) => {
 
             {subtitle && (
                 <p
-                    className={`leading-7 text-sm md:text-base [&:not(:first-child)]:mt-1 lg:[&:not(:first-child)]:mt-3
+                    className={`leading-7 text-sm md:text-base [&:not(:first-child)]:mt-1 lg:[&:not(:first-child)] font-medium
           ${centered ? "text-center" : ""}
         `}
                 >

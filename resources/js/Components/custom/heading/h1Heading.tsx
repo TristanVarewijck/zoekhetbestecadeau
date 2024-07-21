@@ -11,7 +11,7 @@ const H1Heading = ({ title, subtitle, centered }: HeadingProps) => {
             </h1>
             {subtitle && (
                 <p
-                    className={`leading-7 [&:not(:first-child)]:mt-3 lg:[&:not(:first-child)]:mt-6  text-lg 
+                    className={`leading-7 [&:not(:first-child)]:mt-3 lg:[&:not(:first-child)]:mt-4 text-lg font-semibold 
         ${centered ? "text-center" : ""}
       `}
                 >

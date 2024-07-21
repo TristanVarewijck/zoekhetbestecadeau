@@ -21,7 +21,7 @@ export default function About() {
             <div className="flex justify-center w-full mt-3">
                 <div className="max-w-[700px] w-full flex flex-col md:flex-row justify-between gap-4">
                     <p>
-                        <b>zoekhetbestecadeau</b> is jouw ultieme gids in de
+                        <b>Zoekhetbestecadeau</b> is jouw ultieme gids in de
                         wereld van geschenken, waar we je helpen om de perfecte
                         verrassing te vinden voor je dierbaren. We begrijpen dat
                         het soms lastig kan zijn om het juiste cadeau te vinden,
