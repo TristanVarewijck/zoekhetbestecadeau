@@ -84,7 +84,7 @@ const SearchCta = ({
                 );
 
             case 4:
-                // GESLACHT
+                // LEVERTIJD
                 return (
                     <CheckboxTabs
                         checkBoxDataSet={genders}

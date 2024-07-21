@@ -62,7 +62,9 @@ const CheckboxTabs = ({
                         onClick={() => handleOptionClick(data.id.toString())}
                     >
                         <span className="text-xl">{data.icon}</span>
-                        <span className="text-base">{data.name}</span>
+                        <span className="text-base font-semibold">
+                            {data.name}
+                        </span>
                     </div>
                 ))}
             </div>
