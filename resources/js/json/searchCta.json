@@ -21,11 +21,11 @@
         "subtitle": "Selecteer maximaal 3 interesses van de persoon waarvoor je een cadeau zoekt:"
     },
     {
-        "label": "Voor wie",
+        "label": "Levering",
         "step": 4,
-        "localStorageKey": "forWho",
-        "title": "Voor wie is het cadeau?",
-        "subtitle": "Selecteer de optie die het beste past:"
+        "localStorageKey": "delivery",
+        "title": "Voor wanneer heb je het cadeau nodig?",
+        "subtitle": "Selecteer de gewenste leverdatum van het cadeau:"
     },
     {
         "label": "Resultaten 🎉",

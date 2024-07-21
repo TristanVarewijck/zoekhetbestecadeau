@@ -34,7 +34,6 @@ export interface SearchCtaProps {
     showResults: boolean;
     occasions: Occasion[];
     interests: Interest[];
-    genders: Gender[];
 }
 
 export interface SearchMergedProps {
@@ -43,12 +42,18 @@ export interface SearchMergedProps {
     setQuery?: Dispatch<SetStateAction<FilterProps | {}>>;
     occasions: Occasion[];
     interests: Interest[];
-    genders: Gender[];
 }
 
 export interface PopularProductsProps {
     productsArray: CoolblueProductProps[];
     loading: boolean;
+}
+
+export interface HomeProps {
+    products: ProductProps[];
+    occasions: Occasion[];
+    interests: Interest[];
+    delivery: string[];
 }
 
 export interface CheckboxTabsProps {
@@ -65,10 +70,15 @@ export interface RangeSliderProps {
     localStorageKey: string;
 }
 
+export interface DatePickerProps {
+    setData?: Dispatch<SetStateAction<FilterProps | {}>>;
+    localStorageKey: string;
+}
+
 export interface FilterProps {
     occasions?: string[];
     interests?: string[];
-    forWho?: string[];
+    delivery?: string[];
     price?: number[];
 }
 

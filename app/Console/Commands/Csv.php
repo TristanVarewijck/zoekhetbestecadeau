@@ -51,7 +51,7 @@ class Csv extends Command
 
     public function processCategory($bucket, $categoryName)
     {
-        $category = Category::firstOrCreate(['name' => $categoryName, "icon" => "fas fa-gift"]);
+        $category = Category::firstOrCreate(['id' => $categoryName]);
         $filePath = $categoryName . '.csv';
         $processedRecords = 0;
 
@@ -106,9 +106,10 @@ class Csv extends Command
 
             $row = array_combine($header, $row);
 
-            // if ($counter >= 25000) { <- Uncomment this line to limit the number of records processed
-            //     break;
-            // }
+            // <- Uncomment this line to limit the number of records processed
+            if ($counter >= 100) {
+                break;
+            }
 
             // Filter out products with a price lower than 5 or higher than 150
             if ($row[$config['price']] < 5 || $row[$config['price']] > 150) {

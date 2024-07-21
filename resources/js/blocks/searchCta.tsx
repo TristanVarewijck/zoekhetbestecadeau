@@ -24,6 +24,7 @@ import {
     AlertDialogTrigger,
 } from "@/Components/ui/alert-dialog";
 import content from "@/json/searchCta.json";
+import { Datepicker } from "@/Components/custom/datepicker";
 
 const SearchCta = ({
     setData,
@@ -32,7 +33,6 @@ const SearchCta = ({
     showResults,
     occasions,
     interests,
-    genders,
 }: SearchCtaProps) => {
     const [cancelCounter, setCancelCounter] = useState<number>(3);
     const [isTimerActive, setIsTimerActive] = useState<boolean>(false);
@@ -86,11 +86,7 @@ const SearchCta = ({
             case 4:
                 // LEVERTIJD
                 return (
-                    <CheckboxTabs
-                        checkBoxDataSet={genders}
-                        setData={setData}
-                        localStorageKey="forWho"
-                    />
+                    <Datepicker setData={setData} localStorageKey="delivery" />
                 );
             // RESULTATEN
             default:
