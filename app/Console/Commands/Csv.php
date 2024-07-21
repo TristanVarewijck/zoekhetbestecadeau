@@ -31,7 +31,7 @@ class Csv extends Command
      *
      * @var bool
      */
-    protected $loggingEnabled = true;
+    protected $loggingEnabled = true; // Set to false to disable logging
 
     /**
      * Execute the console command.
@@ -40,29 +40,25 @@ class Csv extends Command
     {
         ini_set('memory_limit', '-1');
 
-        $storage = Firebase::storage();
-        $bucket = $storage->getBucket();
         $categories = $this->argument('categories');
 
         foreach ($categories as $category) {
-            $this->processCategory($bucket, $category);
+            $this->processCategory($category);
         }
     }
 
-    public function processCategory($bucket, $categoryName)
+    public function processCategory($categoryName)
     {
+     
         $category = Category::firstOrCreate(['id' => $categoryName]);
-        $filePath = $categoryName . '.csv';
+        $filePath = storage_path('imports/' . $categoryName . '.csv');
         $processedRecords = 0;
 
-        if ($bucket->object($filePath)->exists()) {
-            $object = $bucket->object($filePath);
-
-            $fileSize = $object->info()['size'];
+        if (file_exists($filePath)) {
+            $fileSize = filesize($filePath);
             $this->log('File size: ' . $fileSize . ' bytes');
 
-            $content = $object->downloadAsStream();
-            $csv = $content->getContents();
+            $csv = file_get_contents($filePath);
 
             switch ($categoryName) {
                 case 'tech':
@@ -72,7 +68,6 @@ class Csv extends Command
                     $processedRecords = $this->processCsv($csv, $category, 'default');
                     break;
             }
-
         } else {
             $this->error('File not found');
             return;
@@ -106,7 +101,6 @@ class Csv extends Command
 
             $row = array_combine($header, $row);
 
-            // <- Uncomment this line to limit the number of records processed
             if ($counter >= 100) {
                 break;
             }
@@ -117,6 +111,7 @@ class Csv extends Command
                 continue;
             }
 
+            // Filter out products with a non-numeric serial number
             if ($configKey === 'tech' && !is_numeric($row[$config['serial_number']])) {
                 $this->log("Skipping product due to non-numeric serial number: Serial Number: {$row[$config['serial_number']]}");
                 continue;
@@ -133,7 +128,7 @@ class Csv extends Command
                 'affiliate_link' => $row[$config['affiliate_link']],
                 'currency' => $row[$config['currency']],
                 'category_path' => $category->name,
-                'delivery_time' => $row[$config['delivery_time']],
+                'delivery_time' => $row[$config['delivery_time']] ?? null,
                 'stock' => $row[$config['stock']] ?? null,
                 'brand_id' => $brand->id,
                 'category_id' => $category->id,
@@ -141,8 +136,8 @@ class Csv extends Command
 
             $product = $this->processRecord(Product::class, $productData, 'serial_number');
             $newCategoryPath = $category->name;
-            $subCategoryName = $row[$config['sub_category']];
-            $subSubCategoryName = $row[$config['sub_sub_category']];
+            $subCategoryName = $row[$config['sub_category']] ?? null;
+            $subSubCategoryName = $row[$config['sub_sub_category']] ?? null;
             $subCategory = null;
             $subSubCategory = null;
 
@@ -193,8 +188,8 @@ class Csv extends Command
     private function processRecord($model, $row, $uniqueIdentifier)
     {
         // Split the model name and log the actual model name
-        // $modelParts = explode('\\', $model);
-        // $modelName = end($modelParts);
+        $modelParts = explode('\\', $model);
+        $modelName = end($modelParts);
 
         // Check if record already exists
         $existingRecord = $model::where($uniqueIdentifier, $row[$uniqueIdentifier])->first();
@@ -203,14 +198,14 @@ class Csv extends Command
             // Check if the record data is different
             if ($this->isRecordDataDifferent($existingRecord, $row)) {
                 $existingRecord->update($row);
-                // $this->log("{$modelName} with {$uniqueIdentifier} " . $existingRecord->$uniqueIdentifier . " updated.");
+                $this->log("{$modelName} with {$uniqueIdentifier} " . $existingRecord->$uniqueIdentifier . " updated.");
             }
 
             return $existingRecord;
         } else {
             // Create a new record
             $record = $model::create($row);
-            // $this->log("{$modelName} with {$uniqueIdentifier} " . $record->$uniqueIdentifier . " created.");
+            $this->log("{$modelName} with {$uniqueIdentifier} " . $record->$uniqueIdentifier . " created.");
             return $record;
         }
     }

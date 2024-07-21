@@ -17,6 +17,12 @@ class ProductController extends Controller
 {
     public function query(Request $request)
     {
+        $cacheKey = "products_" . md5(json_encode($request->all()));
+
+        if (Cache::has($cacheKey)) {
+            return Cache::get($cacheKey);
+        }
+
         $occasions = $request->input('occasions', []);
         $priceRange = $request->input('price', []);
         $interests = $request->input('interests', []);
@@ -42,11 +48,19 @@ class ProductController extends Controller
 
         $products = $query->get();
 
+        Cache::put($cacheKey, $products, now()->addDay());
+
         return response()->json(['data' => $products]);
     }
 
     public function show($product_id)
     {
+        $cacheKey = "product_show_" . $product_id;
+
+        if (Cache::has($cacheKey)) {
+            return Cache::get($cacheKey);
+        }
+
         try {
             $product = Product::findOrFail($product_id);
             $productBrand = Brand::where('id', $product->brand_id)->first();
@@ -88,6 +102,8 @@ class ProductController extends Controller
 
                 $products = $products->merge($additionalProducts);
             }
+
+            Cache::put($cacheKey, $productWithBrandName, now()->addDay());
 
             // Render the Inertia page with the product data
             return Inertia::render('Product', [
