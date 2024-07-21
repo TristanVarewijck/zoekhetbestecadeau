@@ -32,9 +32,9 @@ const questions = [
         questionType: "Interesses",
     },
     {
-        id: "forWho",
+        id: "delivery",
         step: 4,
-        questionType: "Voor wie",
+        questionType: "Levering",
     },
     {
         id: "Results",
@@ -49,23 +49,25 @@ const SearchMerged = ({
     setQuery,
     occasions,
     interests,
-    genders,
 }: SearchMergedProps) => {
     const [currentStep, setCurrentStep] = useState(1);
     const localStoredQuery = useLocalStorageFilters([
         "occasions",
         "interests",
-        "forWho",
         "price",
+        "delivery",
     ]);
 
     const newQuery = query || localStoredQuery;
+
+    console.log("newQuery", newQuery);
 
     const { products, loading, error } = useFetchFilterProducts(newQuery);
 
     const queryKeysLength = useMemo(() => {
         return Object.keys(newQuery || {}).filter(
             // @ts-ignore - fix this (weird typing issue)
+
             (key) => Array.isArray(newQuery[key]) && newQuery[key].length >= 1
         );
     }, [newQuery]);
@@ -106,7 +108,7 @@ const SearchMerged = ({
                                     <TabsTrigger
                                         key={question.step}
                                         value={question.questionType}
-                                        className={` flex items-start justify-center w-full h-full ${
+                                        className={`flex items-start justify-center w-full h-full ${
                                             question.step === 5 && "hidden"
                                         }`}
                                     >
@@ -134,7 +136,7 @@ const SearchMerged = ({
                         </TabsList>
                     </Tabs>
 
-                    {queryKeysLength.length === 4 && currentStep !== 4 && (
+                    {queryKeysLength.length === 4 && (
                         <Button
                             onClick={() => {
                                 localStorage.setItem("currentStep", "5");
@@ -179,7 +181,6 @@ const SearchMerged = ({
                             currentStep={currentStep}
                             occasions={occasions}
                             interests={interests}
-                            genders={genders}
                         />
                     </AccordionContent>
                 </AccordionItem>

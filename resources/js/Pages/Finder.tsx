@@ -7,17 +7,25 @@ interface FinderProps {
     occasions: Occasion[];
     interests: Interest[];
     genders: Gender[];
+    delivery: string[];
 }
 
-export default function Finder({ occasions, interests, genders }: FinderProps) {
+export default function Finder({
+    occasions,
+    interests,
+    delivery,
+}: FinderProps) {
     const [query, setQuery] = useState<FilterProps>({});
+
+    console.log(query);
+    // fetch products based on the query
 
     // Load stored filters from local storage on page load
     useEffect(() => {
         const storedOccasions = localStorage.getItem("occasions");
         const storedInterests = localStorage.getItem("interests");
-        const storedForWho = localStorage.getItem("forWho");
         const storedPrice = localStorage.getItem("price");
+        const storedDelivery = localStorage.getItem("delivery");
 
         if (storedOccasions) {
             setQuery((prevState) => ({
@@ -33,17 +41,17 @@ export default function Finder({ occasions, interests, genders }: FinderProps) {
             }));
         }
 
-        if (storedForWho) {
-            setQuery((prevState) => ({
-                ...prevState,
-                forWho: JSON.parse(storedForWho),
-            }));
-        }
-
         if (storedPrice) {
             setQuery((prevState) => ({
                 ...prevState,
                 price: JSON.parse(storedPrice),
+            }));
+        }
+
+        if (storedDelivery) {
+            setQuery((prevState) => ({
+                ...prevState,
+                delivery: JSON.parse(storedDelivery),
             }));
         }
     }, []);
@@ -60,7 +68,6 @@ export default function Finder({ occasions, interests, genders }: FinderProps) {
                     setQuery={setQuery}
                     occasions={occasions}
                     interests={interests}
-                    genders={genders}
                 />
             </SectionLayout>
         </main>

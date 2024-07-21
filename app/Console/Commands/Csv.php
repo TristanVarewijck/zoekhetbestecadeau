@@ -49,7 +49,8 @@ class Csv extends Command
 
     public function processCategory($categoryName)
     {
-        $category = Category::firstOrCreate(['name' => $categoryName, "icon" => "fas fa-gift"]);
+     
+        $category = Category::firstOrCreate(['id' => $categoryName]);
         $filePath = storage_path('imports/' . $categoryName . '.csv');
         $processedRecords = 0;
 
@@ -100,7 +101,6 @@ class Csv extends Command
 
             $row = array_combine($header, $row);
 
-            // Uncomment to limit the number of records processed
             if ($counter >= 100) {
                 break;
             }
