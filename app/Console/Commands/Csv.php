@@ -127,9 +127,19 @@ class Csv extends Command
                 'category_id' => $category->id,
             ];
             $product = $this->processRecord(Product::class, $productData, 'serial_number');
-            $subCategory = $this->processRecord(SubCategory::class, ['name' => $row[$config['sub_category']], 'category_id' => $category->id], 'name');
-            $subSubCategory = $this->processRecord(SubSubCategory::class, ['name' => $row[$config['sub_sub_category']]], 'name');
             $newCategoryPath = $category->name;
+            $subCategoryName = $row[$config['sub_category']];
+            $subSubCategoryName = $row[$config['sub_sub_category']];
+            $subCategory = null;
+            $subSubCategory = null;
+
+            if ($subCategoryName) {
+                $subCategory = $this->processRecord(SubCategory::class, ['name' => $row[$config['sub_category']], 'category_id' => $category->id], 'name');
+            }
+
+            if ($subSubCategoryName) {
+                $subSubCategory = $this->processRecord(SubSubCategory::class, ['name' => $row[$config['sub_sub_category']], 'sub_category_id' => $subCategory->id], 'name');
+            }
 
             if ($subCategory && $subSubCategory) {
                 $newCategoryPath = ucfirst($category->name) . ' > ' . ucfirst($subCategory->name) . ' > ' . ucfirst($subSubCategory->name);
@@ -149,9 +159,11 @@ class Csv extends Command
                 'updated_at' => now(),
             ]);
 
-            $subSubCategory->update([
-                'sub_category_id' => $subCategory->id ? $subCategory->id : null,
-            ]);
+            if ($subSubCategory) {
+                $subSubCategory->update([
+                    'sub_category_id' => $subCategory->id ? $subCategory->id : null,
+                ]);
+            }
 
             $processedProductIds[] = $product->id;
             $counter++;
