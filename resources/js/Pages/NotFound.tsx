@@ -1,6 +1,7 @@
 import H1Heading from "@/Components/custom/heading/h1Heading";
 import SectionLayout from "@/Components/custom/sectionLayout";
 import { Button } from "@/Components/ui/button";
+import { Head } from "@inertiajs/react";
 import { Home } from "lucide-react";
 
 const NotFound = () => {
@@ -9,6 +10,7 @@ const NotFound = () => {
     };
     return (
         <SectionLayout bgColor="white">
+            <Head title="404 - Pagina niet gevonden" />
             <div className="flex flex-col items-center justify-center h-screen">
                 <div className="flex flex-col items-center justify-center">
                     <div className="flex flex-col items-center">

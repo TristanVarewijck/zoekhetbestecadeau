@@ -89,6 +89,16 @@ const SearchResults = ({
                 </Button>
             </div>
 
+            {error && (
+                <div className="mb-4">
+                    <Alert variant="destructive">
+                        <AlertCircle className="w-4 h-4" />
+                        <AlertTitle>Fout opgetreden.</AlertTitle>
+                        <AlertDescription>{error}</AlertDescription>
+                    </Alert>
+                </div>
+            )}
+
             {/* show for laoding cards */}
             {loading && (
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -96,14 +106,6 @@ const SearchResults = ({
                         <ProductCardLoading key={i} />
                     ))}
                 </div>
-            )}
-
-            {error && (
-                <Alert variant="destructive">
-                    <AlertCircle className="w-4 h-4" />
-                    <AlertTitle>Fout opgetreden.</AlertTitle>
-                    <AlertDescription>{error}</AlertDescription>
-                </Alert>
             )}
 
             {!loading && paginatedProducts.length > 0 && (

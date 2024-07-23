@@ -2,6 +2,7 @@ import SectionLayout from "@/Components/custom/sectionLayout";
 import SearchMerged from "@/blocks/searchMerged";
 import { useState, useEffect } from "react";
 import { FilterProps, Gender, Interest, Occasion } from "@/types/types";
+import { Head } from "@inertiajs/react";
 
 interface FinderProps {
     occasions: Occasion[];
@@ -16,10 +17,6 @@ export default function Finder({
     delivery,
 }: FinderProps) {
     const [query, setQuery] = useState<FilterProps>({});
-
-    console.log(query);
-    // fetch products based on the query
-
     // Load stored filters from local storage on page load
     useEffect(() => {
         const storedOccasions = localStorage.getItem("occasions");
@@ -62,6 +59,7 @@ export default function Finder({
             style={{ overflow: "hidden" }}
         >
             <SectionLayout bgColor="white">
+                <Head title="Zoeken naar het perfecte cadeau" />
                 <SearchMerged
                     showResults={true}
                     query={query}
