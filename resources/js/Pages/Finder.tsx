@@ -6,7 +6,6 @@ import { FilterProps, Gender, Interest, Occasion } from "@/types/types";
 interface FinderProps {
     occasions: Occasion[];
     interests: Interest[];
-    genders: Gender[];
     delivery: string[];
 }
 
@@ -16,9 +15,6 @@ export default function Finder({
     delivery,
 }: FinderProps) {
     const [query, setQuery] = useState<FilterProps>({});
-
-    console.log(query);
-    // fetch products based on the query
 
     // Load stored filters from local storage on page load
     useEffect(() => {

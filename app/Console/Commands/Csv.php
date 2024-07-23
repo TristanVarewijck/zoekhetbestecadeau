@@ -8,7 +8,6 @@ use App\Models\Product;
 use App\Models\SubCategory;
 use App\Models\SubSubCategory;
 use Illuminate\Console\Command;
-use Kreait\Laravel\Firebase\Facades\Firebase;
 
 class Csv extends Command
 {
@@ -49,7 +48,6 @@ class Csv extends Command
 
     public function processCategory($categoryName)
     {
-     
         $category = Category::firstOrCreate(['id' => $categoryName]);
         $filePath = storage_path('imports/' . $categoryName . '.csv');
         $processedRecords = 0;
@@ -138,6 +136,7 @@ class Csv extends Command
             $newCategoryPath = $category->name;
             $subCategoryName = $row[$config['sub_category']] ?? null;
             $subSubCategoryName = $row[$config['sub_sub_category']] ?? null;
+            $deliveryTime = $row[$config['delivery_time']] ?? null;
             $subCategory = null;
             $subSubCategory = null;
 
@@ -161,8 +160,8 @@ class Csv extends Command
                 'sub_category_id' => $subCategory ? $subCategory->id : null,
                 'sub_sub_category_id' => $subSubCategory ? $subSubCategory->id : null,
                 'category_path' => $newCategoryPath,
+                'delivery' => $this->mapDeliveryTimeToDays($deliveryTime),
                 'occasion_id' => null, // Will be updated later
-                'gender_id' => null, // Will be updated later
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
@@ -267,6 +266,25 @@ class Csv extends Command
             }
         }
         return false;
+    }
+
+    private function mapDeliveryTimeToDays($deliveryTime)
+    {
+        $mapping = [
+            'Pre-order' => null,
+            'De levertijd is 1 werkdag(en)' => "1",
+            'De levertijd is 2 werkdag(en)' => "2",
+            'De levertijd is 3 werkdag(en)' => "3",
+            'De levertijd is 4 werkdag(en)' => "4",
+            'De levertijd is 10 werkdag(en)' => "10",
+            'Op werkdagen voor 20:00 besteld, morgen in huis' => "1",
+            'Op werkdagen voor 23:00 besteld, morgen in huis' => "1",
+            'Op werkdagen voor 15:00 besteld, morgen in huis' => "1",
+            'Op werkdagen voor 21:00 besteld, morgen in huis' => "1",
+            'Op werkdagen voor 17:00 besteld, morgen in huis' => "1",
+        ];
+
+        return $mapping[$deliveryTime] ?? null;
     }
 
     private function log($message)
