@@ -67,7 +67,7 @@ const Product = ({
                             <div className="h-[300px] md:h-[550px] relative">
                                 <img
                                     src={product.image_url}
-                                    alt={product.name}
+                                    alt={product.name + " image"}
                                     className="h-full w-full"
                                     style={{
                                         objectFit: "contain",

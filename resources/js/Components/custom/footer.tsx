@@ -10,7 +10,7 @@ const Footer = () => {
                         <a href="/">
                             <img
                                 src="/branding/logo-white.svg"
-                                alt="zoekhetbestecadeau logo"
+                                alt="zoekhetbestecadeau logo white svg"
                                 width={350}
                                 height={0}
                             />
@@ -58,8 +58,8 @@ const Footer = () => {
                                 aria-label="Instagram"
                             >
                                 <img
-                                    src="/icons/instagram.svg"
-                                    alt="Instagram icon"
+                                    src="/branding/instagram.svg"
+                                    alt="instagram icon svg"
                                     width={30}
                                     height={30}
                                 />
@@ -71,8 +71,8 @@ const Footer = () => {
                                 aria-label="Tiktok"
                             >
                                 <img
-                                    src="/icons/tiktok.svg"
-                                    alt="Tiktok icon"
+                                    src="/branding/tiktok.svg"
+                                    alt="tiktok icon svg"
                                     width={30}
                                     height={30}
                                 />
@@ -84,8 +84,8 @@ const Footer = () => {
                                 aria-label="Facebook"
                             >
                                 <img
-                                    src="/icons/facebook.svg"
-                                    alt="Facebook icon"
+                                    src="/branding/facebook.svg"
+                                    alt="facebook icon svg"
                                     width={30}
                                     height={30}
                                 />

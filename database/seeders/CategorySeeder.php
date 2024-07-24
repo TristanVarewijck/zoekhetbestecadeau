@@ -11,6 +11,7 @@ class CategorySeeder extends Seeder
     /**
      * Run the database seeds.
      */
+
     public function run(): void
     {
         $now = Carbon::now();
@@ -30,9 +31,9 @@ class CategorySeeder extends Seeder
                 'updated_at' => $now
             ],
             [
-                'icon' => '🧣',
-                'name' => 'Fashion',
-                'id' => 'fashion',
+                'icon' => '💎',
+                'name' => 'Sieraden',
+                'id' => 'sieraden',
                 'created_at' => $now,
                 'updated_at' => $now
             ],
@@ -65,26 +66,12 @@ class CategorySeeder extends Seeder
                 'updated_at' => $now
             ],
             [
-                'icon' => '🎊',
-                'name' => 'Feesten',
-                'id' => 'feesten',
-                'created_at' => $now,
-                'updated_at' => $now
-            ],
-            [
                 'icon' => '🧴',
                 'name' => 'Verzorging',
                 'id' => 'verzorging',
                 'created_at' => $now,
                 'updated_at' => $now
             ],
-            [
-                'icon' => '🍀',
-                'name' => 'Natuur',
-                'id' => 'natuur',
-                'created_at' => $now,
-                'updated_at' => $now
-            ]
         ];
 
         DB::table('categories')->insert($categories);
