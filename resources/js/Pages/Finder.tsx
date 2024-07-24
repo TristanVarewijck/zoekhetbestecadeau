@@ -7,7 +7,6 @@ import { Head } from "@inertiajs/react";
 interface FinderProps {
     occasions: Occasion[];
     interests: Interest[];
-    genders: Gender[];
     delivery: string[];
 }
 

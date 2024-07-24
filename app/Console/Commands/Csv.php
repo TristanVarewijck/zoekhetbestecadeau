@@ -8,7 +8,6 @@ use App\Models\Product;
 use App\Models\SubCategory;
 use App\Models\SubSubCategory;
 use Illuminate\Console\Command;
-use Kreait\Laravel\Firebase\Facades\Firebase;
 
 class Csv extends Command
 {
@@ -49,7 +48,6 @@ class Csv extends Command
 
     public function processCategory($categoryName)
     {
-     
         $category = Category::firstOrCreate(['id' => $categoryName]);
         $filePath = storage_path('imports/' . $categoryName . '.csv');
         $processedRecords = 0;
@@ -138,6 +136,7 @@ class Csv extends Command
             $newCategoryPath = $category->name;
             $subCategoryName = $row[$config['sub_category']] ?? null;
             $subSubCategoryName = $row[$config['sub_sub_category']] ?? null;
+            $deliveryTime = $row[$config['delivery_time']] ?? null;
             $subCategory = null;
             $subSubCategory = null;
 
@@ -161,8 +160,8 @@ class Csv extends Command
                 'sub_category_id' => $subCategory ? $subCategory->id : null,
                 'sub_sub_category_id' => $subSubCategory ? $subSubCategory->id : null,
                 'category_path' => $newCategoryPath,
+                'delivery' => $this->mapDeliveryTimeToDays($deliveryTime),
                 'occasion_id' => null, // Will be updated later
-                'gender_id' => null, // Will be updated later
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
@@ -267,6 +266,25 @@ class Csv extends Command
             }
         }
         return false;
+    }
+
+    private function mapDeliveryTimeToDays($deliveryTime)
+    {
+        $patterns = [
+            '/Pre-order/' => null,
+            '/De levertijd is (\d+) werkdag\(en\)/' => function ($matches) {
+                return $matches[1];
+            },
+            '/Op werkdagen voor \d{2}:\d{2} besteld, morgen in huis/' => "1",
+        ];
+
+        foreach ($patterns as $pattern => $replacement) {
+            if (preg_match($pattern, $deliveryTime, $matches)) {
+                return is_callable($replacement) ? $replacement($matches) : $replacement;
+            }
+        }
+
+        return null;
     }
 
     private function log($message)

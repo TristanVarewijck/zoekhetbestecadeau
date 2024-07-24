@@ -6,23 +6,30 @@ import { DatePickerProps } from "@/types/types";
 import { saveOptionsToLocalStorage } from "@/lib/utils";
 
 export function Datepicker({ setData, localStorageKey }: DatePickerProps) {
-    const [selected, setSelected] = useState<Date>();
+    const [selected, setSelected] = useState<string>();
 
-    const parseNewDateToddMMyyyy = (date: Date) => {
-        return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+    const formatDateToYYYYMMDD = (date: Date) => {
+        const padToTwoDigits = (num: number) => num.toString().padStart(2, "0");
+        return `${date.getFullYear()}-${padToTwoDigits(
+            date.getMonth() + 1
+        )}-${padToTwoDigits(date.getDate())}`;
     };
 
     useEffect(() => {
         const storedQuery = localStorage.getItem(localStorageKey);
         if (storedQuery) {
-            setSelected(new Date(JSON.parse(storedQuery)[0]));
+            setSelected(
+                formatDateToYYYYMMDD(new Date(JSON.parse(storedQuery)[0].to))
+            );
         }
     }, [localStorageKey]);
 
     const handleOptionClick = (date: Date) => {
-        setSelected(date);
-        saveOptionsToLocalStorage([date.toString()], localStorageKey);
-        const deliveryQuery = { [localStorageKey]: [date.toString()] };
+        const formattedDate = formatDateToYYYYMMDD(date);
+        console.log(formattedDate);
+        setSelected(formattedDate);
+        saveOptionsToLocalStorage([formattedDate], localStorageKey);
+        const deliveryQuery = { [localStorageKey]: [formattedDate] };
 
         setData &&
             setData((prevState) => ({
@@ -32,23 +39,25 @@ export function Datepicker({ setData, localStorageKey }: DatePickerProps) {
     };
 
     return (
-        <div className="w-full flex justify-center">
+        <div className="flex justify-center w-full">
             <DayPicker
                 mode="single"
-                selected={selected}
+                selected={selected ? new Date(selected) : undefined}
                 onSelect={(date) => date && handleOptionClick(date)}
                 className="text-lg outline-none "
                 footer={
                     <div className="mt-2">
-                        <p className="font-bold text-sm">Geselecteerd:</p>
+                        <p className="text-sm font-bold">Geselecteerd:</p>
                         <Input
-                            className="font-bold  text-lg disabled:cursor-default border-2 mt-1"
-                            value={parseNewDateToddMMyyyy(
+                            className="mt-1 text-lg font-bold border-2 disabled:cursor-default"
+                            value={
                                 selected ||
+                                formatDateToYYYYMMDD(
                                     new Date(
                                         Date.now() + 7 * 24 * 60 * 60 * 1000
                                     )
-                            )}
+                                )
+                            }
                             placeholder="Selecteer de leverdatum"
                             disabled
                         />
