@@ -1,4 +1,4 @@
-import { ArrowRight, MenuIcon, User } from "lucide-react";
+import { ArrowRight, Globe, MenuIcon, Search, User } from "lucide-react";
 import { Button } from "../ui/button";
 import { Sheet, SheetTrigger, SheetContent } from "../ui/sheet";
 
@@ -6,14 +6,12 @@ const Navbar = () => {
     return (
         <div className="flex h-16 shrink-0 items-center mx-auto px-4 md:px-6 max-w-[1440px] justify-end absolute w-full right-0 left-0 z-50">
             <nav className="flex items-center justify-between w-full gap-6 ml-auto lg:hidden">
-                <a className="mr-6" href="/">
-                    <img
-                        src="/branding/logo-black.svg"
-                        alt="zoekhetbestecadeau logo"
-                        width={225}
-                        height={0}
-                    />
-                </a>
+                <img
+                    src="/branding/icon.svg"
+                    alt="zoekhetbestecadeau logo"
+                    width={45}
+                    height={0}
+                />
                 <Sheet>
                     <SheetTrigger asChild>
                         <Button
@@ -27,25 +25,31 @@ const Navbar = () => {
                     <SheetContent side="right">
                         <a className="mr-6" href="/">
                             <img
-                                src="/branding/logo-black.svg"
+                                src="/branding/logo.svg"
                                 alt="zoekhetbestecadeau logo"
-                                width={175}
+                                width={275}
                                 height={0}
                             />
                         </a>
                         <div className="grid gap-2 py-6">
                             <a
-                                className="flex items-center w-full py-2 text-lg font-semibold"
+                                className="flex items-center w-full py-2 text-lg font-semibold gap-1"
                                 href="/"
                             >
-                                Start met zoeken
+                                <span>
+                                    <Search size={18} />
+                                </span>
+                                <span>Start met zoeken</span>
                             </a>
 
                             <a
-                                className="flex items-center w-full py-2 text-lg font-semibold"
+                                className="flex items-center w-full py-2 text-lg font-semibold gap-2"
                                 href="/about"
                             >
-                                Over ons
+                                <span>
+                                    <Globe size={18} />
+                                </span>
+                                <span> Over ons</span>
                             </a>
                         </div>
                     </SheetContent>
@@ -55,9 +59,9 @@ const Navbar = () => {
             <nav className="items-center justify-between hidden w-full gap-6 ml-auto lg:flex">
                 <a className="mr-6" href="/">
                     <img
-                        src="/branding/logo-black.svg"
+                        src="/branding/logo.svg"
                         alt="zoekhetbestecadeau logo"
-                        width={225}
+                        width={275}
                         height={0}
                     />
                 </a>

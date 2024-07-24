@@ -48,5 +48,21 @@ return [
         'sub_category' => 'sub_category',
         'sub_sub_category' => 'sub_sub_category',
         'delimiter' => ',',
-    ]
+    ],
+    // 'sport' => [
+    //     'serial_number' => 'product_id',
+    //     'name' => 'product_name',
+    //     'description' => 'product_description',
+    //     'price' => 'price',
+    //     'image_url' => 'image_url',
+    //     'affiliate_link' => 'product_url',
+    //     'currency' => 'currency',
+    //     'category_path' => 'category_path',
+    //     'delivery_time' => 'delivery_time',
+    //     'stock' => 'stock',
+    //     'brand' => 'brand',
+    //     'sub_category' => 'sub_category',
+    //     'sub_sub_category' => 'sub_sub_category',
+    //     'delimiter' => ',',
+    // ]
 ];

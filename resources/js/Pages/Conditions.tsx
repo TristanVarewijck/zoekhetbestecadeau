@@ -2,10 +2,12 @@ import DownloadPdf from "@/Components/custom/downloadPdf";
 import H1Heading from "@/Components/custom/heading/h1Heading";
 import H3Heading from "@/Components/custom/heading/h3Heading";
 import SectionLayout from "@/Components/custom/sectionLayout";
+import { Head } from "@inertiajs/react";
 
 export default function Conditions() {
     return (
         <SectionLayout bgColor="white">
+            <Head title="Algemene voorwaarden" />
             <div className="md:mt-0 w-full flex flex-col justify-center max-w-[700px] mx-auto">
                 <H1Heading
                     title="Algemene voorwaarden"

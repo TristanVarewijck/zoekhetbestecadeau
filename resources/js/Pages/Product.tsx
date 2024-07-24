@@ -20,7 +20,7 @@ import {
     AccordionTrigger,
 } from "@/Components/ui/accordion";
 import SearchResults from "@/blocks/searchResults";
-import ProductLoading from "@/Components/custom/loading/productLoading";
+import { Head } from "@inertiajs/react";
 
 const Product = ({
     product,
@@ -44,6 +44,10 @@ const Product = ({
 
     return (
         <SectionLayout bgColor="white">
+            <Head
+                title={`${product.name} - ${product.brand_name} kopen bij zoekhetbestecadeau.nl.
+            `}
+            />
             <div className="mt-8 lg:mt-10 mb-8 lg:mb-10">
                 {/* product */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 w-full">
