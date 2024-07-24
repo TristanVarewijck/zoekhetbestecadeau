@@ -13,7 +13,7 @@ export default function About() {
 
                     <img
                         src="/images/woman_gifts_bringing.png"
-                        alt="About us"
+                        alt="woman with gifts png"
                         className="relative w-[350px] h-auto"
                     />
 

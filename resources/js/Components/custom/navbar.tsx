@@ -8,7 +8,7 @@ const Navbar = () => {
             <nav className="flex items-center justify-between w-full gap-6 ml-auto lg:hidden">
                 <img
                     src="/branding/icon.svg"
-                    alt="zoekhetbestecadeau logo"
+                    alt="zoekhetbestecadeau icon svg"
                     width={45}
                     height={0}
                 />
@@ -26,7 +26,7 @@ const Navbar = () => {
                         <a className="mr-6" href="/">
                             <img
                                 src="/branding/logo.svg"
-                                alt="zoekhetbestecadeau logo"
+                                alt="zoekhetbestecadeau logo svg"
                                 width={275}
                                 height={0}
                             />
@@ -60,7 +60,7 @@ const Navbar = () => {
                 <a className="mr-6" href="/">
                     <img
                         src="/branding/logo.svg"
-                        alt="zoekhetbestecadeau logo"
+                        alt="zoekhetbestecadeau logo svg"
                         width={275}
                         height={0}
                     />
