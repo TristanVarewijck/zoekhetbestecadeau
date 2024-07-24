@@ -270,21 +270,21 @@ class Csv extends Command
 
     private function mapDeliveryTimeToDays($deliveryTime)
     {
-        $mapping = [
-            'Pre-order' => null,
-            'De levertijd is 1 werkdag(en)' => "1",
-            'De levertijd is 2 werkdag(en)' => "2",
-            'De levertijd is 3 werkdag(en)' => "3",
-            'De levertijd is 4 werkdag(en)' => "4",
-            'De levertijd is 10 werkdag(en)' => "10",
-            'Op werkdagen voor 20:00 besteld, morgen in huis' => "1",
-            'Op werkdagen voor 23:00 besteld, morgen in huis' => "1",
-            'Op werkdagen voor 15:00 besteld, morgen in huis' => "1",
-            'Op werkdagen voor 21:00 besteld, morgen in huis' => "1",
-            'Op werkdagen voor 17:00 besteld, morgen in huis' => "1",
+        $patterns = [
+            '/Pre-order/' => null,
+            '/De levertijd is (\d+) werkdag\(en\)/' => function ($matches) {
+                return $matches[1];
+            },
+            '/Op werkdagen voor \d{2}:\d{2} besteld, morgen in huis/' => "1",
         ];
 
-        return $mapping[$deliveryTime] ?? null;
+        foreach ($patterns as $pattern => $replacement) {
+            if (preg_match($pattern, $deliveryTime, $matches)) {
+                return is_callable($replacement) ? $replacement($matches) : $replacement;
+            }
+        }
+
+        return null;
     }
 
     private function log($message)

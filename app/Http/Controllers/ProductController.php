@@ -27,7 +27,7 @@ class ProductController extends Controller
         $occasions = $request->input('occasions', []);
         $priceRange = $request->input('price', []);
         $interests = $request->input('interests', []);
-        $deliveryDate  = $request->input('delivery', []);
+        $delivery  = $request->input('delivery', []);
 
         $query = Product::query();
 
@@ -44,22 +44,15 @@ class ProductController extends Controller
             $query->whereIn('category_id', $interests);
         }
 
-        if (!empty($deliveryDate)) {
+        if (!empty($delivery)) {
+            $deliveryDateStr = $delivery[0];
+            $deliveryDate = Carbon::createFromFormat('Y-m-d', $deliveryDateStr);
             $currentDate = Carbon::now();
-            $deliveryDate = str_replace('GMT+0200 (Central European Summer Time)', '', $deliveryDate[0]);
-            $deliveryDate = Carbon::parse($deliveryDate);
+
             $daysDifference = $currentDate->diffInDays($deliveryDate, false);
+            $roundedDaysDifference = ceil($daysDifference);
 
-            logger('Current Date: ' . $currentDate);
-            logger('Delivery Date: ' . $deliveryDate);
-            logger('Days Difference: ' . $daysDifference);
-
-            if ($daysDifference >= 0) {
-                $query->where('delivery', '<=', $daysDifference);
-            } else {
-                // Handle the case where delivery date is in the past
-                $query->where('delivery', '>=', $daysDifference);
-            }
+            $query->where('delivery', '<=', $roundedDaysDifference);
         }
 
         $products = $query->get();
