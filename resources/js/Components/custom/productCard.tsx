@@ -90,7 +90,7 @@ const ProductCard = (product: ProductProps) => {
 
                     {/* shipping */}
                     {product.delivery_time && (
-                        <span className="text-sm text-gray-500">
+                        <span className="text-sm font-semibold">
                             {product.delivery_time}.
                         </span>
                     )}

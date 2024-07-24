@@ -20,11 +20,9 @@
         <meta name="keywords" content="
         cadeau, cadeaus, cadeau idee, cadeau ideeën, cadeau tips, cadeau voor hem, cadeau voor haar, cadeau voor vriend, cadeau voor vriendin, cadeau voor moeder, cadeau voor vader, cadeau voor opa, cadeau voor oma, cadeau voor kind, cadeau voor baby, cadeau voor peuter, cadeau voor kleuter, cadeau voor tiener, cadeau voor volwassen
     ">
-
-        <!-- Favicon links for ico icon -->
-        <!-- <link rel=" icon" type="image/svg+xml" href="{{ asset('/assets/branding/favicon.ico') }} "> -->
-        <!-- Apple Touch Icon -->
-        <!-- <link rel="apple-touch-icon" href="{{ asset('/faveIcons/apple-touch-icon.png') }}"> -->
+        <!-- favicon -->
+        <link id="favicon-ico" rel="icon" type="image/x-icon" href="/branding/favicon.ico">
+        <link id="favicon-ico-32x32" rel="icon" type="image/png" href="/branding/favicon-32x32.png" sizes="32x32">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">

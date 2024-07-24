@@ -5,6 +5,7 @@ import Usps from "@/blocks/usps";
 import SearchMerged from "@/blocks/searchMerged";
 import PopularProducts from "@/blocks/popularProducts";
 import { FilterProps, HomeProps } from "@/types/types";
+import { Head } from "@inertiajs/react";
 
 export default function Home({
     products,
@@ -26,6 +27,7 @@ export default function Home({
 
     return (
         <main>
+            <Head title="Zoek het beste cadeau in een paar klikken." />
             <SectionLayout bgColor="gray">
                 <div>
                     <H1Heading

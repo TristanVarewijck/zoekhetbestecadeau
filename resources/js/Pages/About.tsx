@@ -1,10 +1,12 @@
 import H1Heading from "@/Components/custom/heading/h1Heading";
 import H2Heading from "@/Components/custom/heading/h2Heading";
 import SectionLayout from "@/Components/custom/sectionLayout";
+import { Head } from "@inertiajs/react";
 
 export default function About() {
     return (
         <SectionLayout bgColor="white">
+            <Head title="Over ons" />
             <div className="flex justify-center w-full mt-10 md:mt-0">
                 <div className="max-w-[700px] flex flex-col gap-4">
                     <H1Heading title="Over ons" />

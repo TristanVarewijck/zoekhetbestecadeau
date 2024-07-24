@@ -28,6 +28,6 @@ class Product extends Model
                 'sub_category_id',
                 'sub_sub_category_id',
                 'occasion_id',
-                'gender_id',
+                'delivery',
         ];
 }

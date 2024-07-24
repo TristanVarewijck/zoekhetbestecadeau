@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Gender;
 use App\Models\Occasion;
 use App\Models\Product;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -17,21 +18,22 @@ class ProductController extends Controller
 {
     public function query(Request $request)
     {
-        $cacheKey = "products_" . md5(json_encode($request->all()));
+        // $cacheKey = "products_" . md5(json_encode($request->all()));
 
-        if (Cache::has($cacheKey)) {
-            return Cache::get($cacheKey);
-        }
+        // if (Cache::has($cacheKey)) {
+        //     return Cache::get($cacheKey);
+        // }
 
         $occasions = $request->input('occasions', []);
         $priceRange = $request->input('price', []);
         $interests = $request->input('interests', []);
-        $genders = $request->input('genders', []);
+        $delivery  = $request->input('delivery', []);
 
         $query = Product::query();
 
         if (!empty($occasions)) {
-            $query->whereIn('occasion_id', $occasions);
+            // $query->whereIn('occasion_id', $occasions);
+            $query->inRandomOrder()->limit(500);
         }
 
         if (!empty($priceRange)) {
@@ -42,13 +44,20 @@ class ProductController extends Controller
             $query->whereIn('category_id', $interests);
         }
 
-        if (!empty($genders)) {
-            $query->whereIn('gender_id', $genders);
+        if (!empty($delivery)) {
+            $deliveryDateStr = $delivery[0];
+            $deliveryDate = Carbon::createFromFormat('Y-m-d', $deliveryDateStr);
+            $currentDate = Carbon::now();
+
+            $daysDifference = $currentDate->diffInDays($deliveryDate, false);
+            $roundedDaysDifference = ceil($daysDifference);
+
+            $query->where('delivery', '<=', $roundedDaysDifference);
         }
 
         $products = $query->get();
 
-        Cache::put($cacheKey, $products, now()->addDay());
+        // Cache::put($cacheKey, $products, now()->addDay());
 
         return response()->json(['data' => $products]);
     }
@@ -162,7 +171,6 @@ class ProductController extends Controller
             'products' => $products,
             'occasions' => $this->getOccasions(),
             'interests' => $this->getInterests(),
-            'genders' => $this->getGenders()
         ]);
     }
 
@@ -173,7 +181,6 @@ class ProductController extends Controller
         return Inertia::render('Finder', [
             'occasions' => $this->getOccasions(),
             'interests' => $this->getInterests(),
-            'genders' => $this->getGenders()
         ]);
     }
 
@@ -213,21 +220,6 @@ class ProductController extends Controller
         Cache::put($cacheKey, $interests, now()->addDay());
 
         return $interests;
-    }
-
-    private function getGenders()
-    {
-        $cacheKey = 'genders';
-
-        if (Cache::has($cacheKey)) {
-            return cache($cacheKey);
-        }
-
-        $genders = Gender::all();
-
-        Cache::put($cacheKey, $genders, now()->addDay());
-
-        return $genders;
     }
 
     public function getCategoriesWithSubCategories(Request $request = null)
@@ -288,10 +280,5 @@ class ProductController extends Controller
     public function getProductsByBrand($brand_id)
     {
         return Product::where('brand_id', $brand_id)->get();
-    }
-
-    public function getProductsByGender($gender_id)
-    {
-        return Product::where('gender_id', $gender_id)->get();
     }
 }
