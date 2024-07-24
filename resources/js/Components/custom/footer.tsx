@@ -9,13 +9,13 @@ const Footer = () => {
                     <div className="flex flex-col items-center justify-center gap-4 md:flex-row md:gap-10">
                         <a href="/">
                             <img
-                                src="/branding/logo.svg"
+                                src="/branding/logo-white.svg"
                                 alt="zoekhetbestecadeau logo"
-                                width={225}
+                                width={350}
                                 height={0}
                             />
                         </a>
-                        <div className="flex gap-6 text-base">
+                        <div className="flex gap-6 text-base flex-col sm:flex-row items-center">
                             <a href="/" className="flex items-center gap-1">
                                 Start met zoeken <Search size={14} />
                             </a>
@@ -33,6 +33,7 @@ const Footer = () => {
                     <div className="flex flex-col items-center gap-2 md:items-start">
                         <p className="text-lg font-bold">Paginas</p>
                         <a href="/">Homepagina</a>
+
                         <a href="/finder">Zoeken</a>
                         <a href="/about">Over ons</a>
                     </div>
