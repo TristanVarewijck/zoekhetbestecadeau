@@ -58,13 +58,23 @@ class Csv extends Command
 
             $csv = file_get_contents($filePath);
 
+            // add new categories here
             switch ($categoryName) {
                 case 'tech':
                     $processedRecords = $this->processCsv($csv, $category, 'tech');
                     break;
-                default:
-                    $processedRecords = $this->processCsv($csv, $category, 'default');
+                case 'lezen':
+                    $processedRecords = $this->processCsv($csv, $category, 'lezen');
                     break;
+                case 'sport':
+                    $processedRecords = $this->processCsv($csv, $category, 'sport');
+                    break;
+                case 'wonen':
+                    $processedRecords = $this->processCsv($csv, $category, 'wonen');
+                    break;
+                default:
+                    $this->error('Category not found');
+                    return;
             }
         } else {
             $this->error('File not found');
@@ -99,9 +109,15 @@ class Csv extends Command
 
             $row = array_combine($header, $row);
 
-            if ($counter >= 100) {
-                break;
+
+            // based on production mode or dev mode (ticket in jira to dynamically change this in de command)
+            if (env('APP_ENV') === 'local') {
+                if ($counter >= 100) {
+                    break;
+                }
             }
+
+            logger($row);
 
             // Filter out products with a price lower than 5 or higher than 150
             if ($row[$config['price']] < 5 || $row[$config['price']] > 150) {
@@ -122,15 +138,25 @@ class Csv extends Command
                 'name' => $row[$config['name']],
                 'description' => $row[$config['description']],
                 'price' => $row[$config['price']],
-                'image_url' => $row[$config['image_url']] ?? null,
                 'affiliate_link' => $row[$config['affiliate_link']],
                 'currency' => $row[$config['currency']],
                 'category_path' => $category->name,
+                'brand_id' => $brand->id,
+
+
+                // nullable fields
+                'from_price' => $row[$config['from_price']] ?? null, // wonen
+                'image_url' => $row[$config['image_url']] ?? null,
+                'material' => $row[$config['material']] ?? null, // wonen
+                'reviews' => $row[$config['reviews']] ?? null, // tech
+                'rating' => $row[$config['rating']] ?? null, // tech
+                'size' => $row[$config['size']] ?? null, // sport
                 'delivery_time' => $row[$config['delivery_time']] ?? null,
                 'stock' => $row[$config['stock']] ?? null,
-                'brand_id' => $brand->id,
                 'category_id' => $category->id,
             ];
+
+            logger($productData);
 
             $product = $this->processRecord(Product::class, $productData, 'serial_number');
             $newCategoryPath = $category->name;
