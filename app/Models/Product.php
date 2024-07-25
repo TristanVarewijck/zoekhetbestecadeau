@@ -33,7 +33,6 @@ class Product extends Model
                 'sub_sub_category_id',
                 'stock',
                 'image_url',
-                'from_price',
                 'material',
                 'reviews',
                 'rating',

@@ -14,7 +14,6 @@ return new class extends Migration {
             $table->integer('reviews')->nullable();
             $table->integer('rating')->nullable();
             $table->text('size')->nullable();
-            $table->decimal('from_price', 10, 2)->nullable();
             $table->text('material')->nullable();
         });
 
@@ -30,7 +29,6 @@ return new class extends Migration {
             $table->dropColumn('reviews');
             $table->dropColumn('rating');
             $table->dropColumn('size');
-            $table->dropColumn('from_price');
             $table->dropColumn('material');
         });
     }

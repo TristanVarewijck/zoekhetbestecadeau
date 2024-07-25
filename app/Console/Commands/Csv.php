@@ -111,11 +111,11 @@ class Csv extends Command
 
 
             // based on production mode or dev mode (ticket in jira to dynamically change this in de command)
-            if (env('APP_ENV') === 'local') {
-                if ($counter >= 100) {
-                    break;
-                }
-            }
+            // if (env('APP_ENV') === 'local') {
+            //     if ($counter >= 100) {
+            //         break;
+            //     }
+            // }
 
             logger($row);
 
@@ -143,9 +143,7 @@ class Csv extends Command
                 'category_path' => $category->name,
                 'brand_id' => $brand->id,
 
-
                 // nullable fields
-                'from_price' => $row[$config['from_price']] ?? null, // wonen
                 'image_url' => $row[$config['image_url']] ?? null,
                 'material' => $row[$config['material']] ?? null, // wonen
                 'reviews' => $row[$config['reviews']] ?? null, // tech
@@ -155,8 +153,6 @@ class Csv extends Command
                 'stock' => $row[$config['stock']] ?? null,
                 'category_id' => $category->id,
             ];
-
-            logger($productData);
 
             $product = $this->processRecord(Product::class, $productData, 'serial_number');
             $newCategoryPath = $category->name;
@@ -302,6 +298,10 @@ class Csv extends Command
                 return $matches[1];
             },
             '/Op werkdagen voor \d{2}:\d{2} besteld, morgen in huis/' => "1",
+            '/(\d+)-(\d+) werkdag\(en\)/' => function ($matches) {
+                return $matches[2];
+            },
+
         ];
 
         foreach ($patterns as $pattern => $replacement) {

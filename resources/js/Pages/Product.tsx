@@ -9,6 +9,7 @@ import {
     ChevronUp,
     ReceiptText,
     ShoppingBag,
+    Star,
     Truck,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -239,6 +240,33 @@ const Product = ({
                                 </p>
                             )}
 
+                            {/*'reviews' 'rating' */}
+                            {product.rating > 0 && product.reviews > 0 && (
+                                <p
+                                    className={`flex items-center gap-2 pb-2 border-b-2`}
+                                >
+                                    {product.rating > 0 &&
+                                        product.reviews > 0 && (
+                                            <div
+                                                className={`flex items-center gap-1 font-medium`}
+                                            >
+                                                <div className="flex items-center gap-2  ">
+                                                    <Star
+                                                        size={14}
+                                                        strokeWidth={3}
+                                                        className="text-yellow-500 fill-yellow-500"
+                                                    />
+                                                    <span>
+                                                        {product.rating}/10
+                                                    </span>
+                                                </div>
+                                                <span>
+                                                    ({product.reviews} reviews)
+                                                </span>
+                                            </div>
+                                        )}
+                                </p>
+                            )}
                             {/* more */}
                             <div>
                                 <Accordion
@@ -258,15 +286,43 @@ const Product = ({
                                             </span>
                                         </AccordionTrigger>
                                         <AccordionContent>
-                                            <div className="flex items-center gap-1">
-                                                <span>
-                                                    <strong>
-                                                        Serial number:
-                                                    </strong>
-                                                </span>
-                                                <span>
-                                                    {product.serial_number}
-                                                </span>
+                                            <div className="flex flex-col gap-2">
+                                                {product.size && (
+                                                    <div className="flex items-center gap-1">
+                                                        <span>
+                                                            <strong>
+                                                                Maat:
+                                                            </strong>
+                                                        </span>
+                                                        <span className="font-semibold">
+                                                            {product.size}
+                                                        </span>
+                                                    </div>
+                                                )}
+
+                                                {product.material && (
+                                                    <div className="flex items-center gap-1">
+                                                        <span>
+                                                            <strong>
+                                                                Materiaal:
+                                                            </strong>
+                                                        </span>
+                                                        <span className="font-semibold">
+                                                            {product.material}
+                                                        </span>
+                                                    </div>
+                                                )}
+
+                                                <div className="flex items-center gap-1">
+                                                    <span>
+                                                        <strong>
+                                                            Productnummer:
+                                                        </strong>
+                                                    </span>
+                                                    <span className="font-semibold">
+                                                        {product.serial_number}
+                                                    </span>
+                                                </div>
                                             </div>
                                         </AccordionContent>
                                     </AccordionItem>
