@@ -27,7 +27,7 @@ class ProductController extends Controller
         $occasions = $request->input('occasions', []);
         $priceRange = $request->input('price', []);
         $interests = $request->input('interests', []);
-        $delivery  = $request->input('delivery', []);
+        $delivery = $request->input('delivery', []);
 
         $query = Product::query();
 
@@ -66,9 +66,9 @@ class ProductController extends Controller
     {
         $cacheKey = "product_show_" . $product_id;
 
-        if (Cache::has($cacheKey)) {
-            return Cache::get($cacheKey);
-        }
+        // if (Cache::has($cacheKey)) {
+        //     return Cache::get($cacheKey);
+        // }
 
         try {
             $product = Product::findOrFail($product_id);
