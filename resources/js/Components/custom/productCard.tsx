@@ -1,9 +1,10 @@
 import { ProductProps } from "@/types/types";
 import { Card, CardHeader, CardContent } from "../ui/card";
 import getSymbolFromCurrency from "currency-symbol-map";
-import { ImageOff } from "lucide-react";
+import { ImageOff, Star, Truck } from "lucide-react";
 
 const ProductCard = (product: ProductProps) => {
+    console.log(product);
     return (
         <Card className="flex flex-col h-full gap-3 p-4 bg-white border shadow-none lg:border-none lg:p-0">
             <CardHeader className="p-0">
@@ -28,14 +29,14 @@ const ProductCard = (product: ProductProps) => {
             </CardHeader>
             <CardContent className="p-0">
                 <div className={`flex flex-col gap-2`}>
-                    {/* {product.beforeprice && (
+                    {/* {product.from_price && (
                         <div
                             className={`bg-red-500 text-white text-xs font-semibold rounded-md py-1 px-2 w-fit`}
                         >
                             {"-" +
                                 Math.round(
-                                    ((product.beforeprice - product.price) /
-                                        product.beforeprice) *
+                                    ((product.from_price - product.price) /
+                                        product.from_price) *
                                         100
                                 ) +
                                 "%"}
@@ -69,30 +70,34 @@ const ProductCard = (product: ProductProps) => {
                         )} */}
                     </div>
 
-                    {/* {(product.reviewsaveragescore ||
-                        product.reviewscount !== 0) && (
+                    {product.rating > 0 && product.reviews > 0 && (
                         <div className={`flex items-center gap-1`}>
-                            <div className="flex items-center gap-1">
+                            <div className="flex items-center gap-2">
                                 <Star
                                     size={14}
                                     strokeWidth={3}
                                     className="text-yellow-500 fill-yellow-500"
                                 />
                                 <span className="text-sm text-gray-500">
-                                    {product.reviewsaveragescore}/10
+                                    {product.rating}/10
                                 </span>
                             </div>
                             <span className="text-sm text-gray-500">
-                                ({product.reviewscount} reviews)
+                                ({product.reviews} reviews)
                             </span>
                         </div>
-                    )} */}
+                    )}
 
                     {/* shipping */}
                     {product.delivery_time && (
-                        <span className="text-sm font-semibold">
-                            {product.delivery_time}.
-                        </span>
+                        <div className="flex items-center gap-2">
+                            <span>
+                                <Truck size={14} />
+                            </span>
+                            <span className="text-sm font-semibold">
+                                {product.delivery_time}.
+                            </span>
+                        </div>
                     )}
                 </div>
             </CardContent>

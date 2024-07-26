@@ -9,6 +9,7 @@ import {
     ChevronUp,
     ReceiptText,
     ShoppingBag,
+    Star,
     Truck,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -85,33 +86,35 @@ const Product = ({
                                 className={`flex items-start gap-2 flex-col md:flex-row md:items-start justify-between mb-2`}
                             >
                                 {/* stock */}
-                                <p className="flex items-center font-bold gap-1 text-sm">
-                                    <span>
-                                        <Blocks
-                                            size={16}
-                                            className="text-[hsl(var(--primary))]"
-                                        />
-                                    </span>
-                                    <span>
-                                        {product.stock > 0 ? (
-                                            <span>
-                                                {product.stock > 10 ? (
-                                                    "Op voorraad"
-                                                ) : (
-                                                    <span>
-                                                        Nog maar{" "}
-                                                        <span className="text-red-500 font-bold">
-                                                            {product.stock}
-                                                        </span>{" "}
-                                                        op voorraad!
-                                                    </span>
-                                                )}
-                                            </span>
-                                        ) : (
-                                            "Niet op voorraad"
-                                        )}
-                                    </span>
-                                </p>
+                                {product.stock && (
+                                    <p className="flex items-center font-bold gap-1 text-sm">
+                                        <span>
+                                            <Blocks
+                                                size={16}
+                                                className="text-[hsl(var(--primary))]"
+                                            />
+                                        </span>
+                                        <span>
+                                            {product.stock > 0 ? (
+                                                <span>
+                                                    {product.stock > 10 ? (
+                                                        "Op voorraad"
+                                                    ) : (
+                                                        <span>
+                                                            Nog maar{" "}
+                                                            <span className="text-red-500 font-bold">
+                                                                {product.stock}
+                                                            </span>{" "}
+                                                            op voorraad!
+                                                        </span>
+                                                    )}
+                                                </span>
+                                            ) : (
+                                                "Niet op voorraad"
+                                            )}
+                                        </span>
+                                    </p>
+                                )}
 
                                 {/* brand */}
                                 <p className="flex items-center gap-1 text-sm">
@@ -237,6 +240,33 @@ const Product = ({
                                 </p>
                             )}
 
+                            {/*'reviews' 'rating' */}
+                            {product.rating > 0 && product.reviews > 0 && (
+                                <p
+                                    className={`flex items-center gap-2 pb-2 border-b-2`}
+                                >
+                                    {product.rating > 0 &&
+                                        product.reviews > 0 && (
+                                            <div
+                                                className={`flex items-center gap-1 font-medium`}
+                                            >
+                                                <div className="flex items-center gap-2  ">
+                                                    <Star
+                                                        size={14}
+                                                        strokeWidth={3}
+                                                        className="text-yellow-500 fill-yellow-500"
+                                                    />
+                                                    <span>
+                                                        {product.rating}/10
+                                                    </span>
+                                                </div>
+                                                <span>
+                                                    ({product.reviews} reviews)
+                                                </span>
+                                            </div>
+                                        )}
+                                </p>
+                            )}
                             {/* more */}
                             <div>
                                 <Accordion
@@ -256,15 +286,43 @@ const Product = ({
                                             </span>
                                         </AccordionTrigger>
                                         <AccordionContent>
-                                            <div className="flex items-center gap-1">
-                                                <span>
-                                                    <strong>
-                                                        Serial number:
-                                                    </strong>
-                                                </span>
-                                                <span>
-                                                    {product.serial_number}
-                                                </span>
+                                            <div className="flex flex-col gap-2">
+                                                {product.size && (
+                                                    <div className="flex items-center gap-1">
+                                                        <span>
+                                                            <strong>
+                                                                Maat:
+                                                            </strong>
+                                                        </span>
+                                                        <span className="font-semibold">
+                                                            {product.size}
+                                                        </span>
+                                                    </div>
+                                                )}
+
+                                                {product.material && (
+                                                    <div className="flex items-center gap-1">
+                                                        <span>
+                                                            <strong>
+                                                                Materiaal:
+                                                            </strong>
+                                                        </span>
+                                                        <span className="font-semibold">
+                                                            {product.material}
+                                                        </span>
+                                                    </div>
+                                                )}
+
+                                                <div className="flex items-center gap-1">
+                                                    <span>
+                                                        <strong>
+                                                            Productnummer:
+                                                        </strong>
+                                                    </span>
+                                                    <span className="font-semibold">
+                                                        {product.serial_number}
+                                                    </span>
+                                                </div>
                                             </div>
                                         </AccordionContent>
                                     </AccordionItem>

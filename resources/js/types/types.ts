@@ -25,6 +25,10 @@ export interface ProductProps {
     category_path: string;
     delivery_time?: string;
     stock: number;
+    size?: string;
+    material?: string;
+    reviews: number;
+    rating: number;
 }
 
 export interface SearchCtaProps {

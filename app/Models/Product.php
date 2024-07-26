@@ -17,17 +17,25 @@ class Product extends Model
                 'name',
                 'description',
                 'price',
-                'image_url',
                 'affiliate_link',
                 'currency',
                 'category_path',
-                'delivery_time',
-                'stock',
                 'brand_id',
                 'category_id',
+
+                // Temporary nullable
+                'occasion_id',
+
+                // Extra fields (nullable)
+                'delivery',
+                'delivery_time',
                 'sub_category_id',
                 'sub_sub_category_id',
-                'occasion_id',
-                'delivery',
+                'stock',
+                'image_url',
+                'material',
+                'reviews',
+                'rating',
+                'size'
         ];
 }
