@@ -111,11 +111,11 @@ class Csv extends Command
 
 
             // based on production mode or dev mode (ticket in jira to dynamically change this in de command)
-            // if (env('APP_ENV') === 'local') {
-            //     if ($counter >= 100) {
-            //         break;
-            //     }
-            // }
+            if (env('APP_ENV') === 'local') {
+                if ($counter >= 100) {
+                    break;
+                }
+            }
 
             logger($row);
 
