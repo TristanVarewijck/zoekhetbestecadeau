@@ -14,17 +14,8 @@ import { Button } from "@/Components/ui/button";
 import { Alert, AlertTitle, AlertDescription } from "@/Components/ui/alert";
 import { AlertCircle, ArrowLeft, ArrowRight } from "lucide-react";
 import H2Heading from "@/Components/custom/heading/h2Heading";
-import { ProductProps } from "@/types/types";
+import { SearchResultProps } from "@/types/types";
 import { scrollToElement } from "@/utils/scrollToElement";
-
-interface SearchResultProps {
-    productsArray: ProductProps[];
-    loading: boolean;
-    error: string | null;
-    title: string;
-    subtitle?: string;
-    productsPerPage: number;
-}
 
 const SearchResults = ({
     productsArray,
@@ -70,13 +61,19 @@ const SearchResults = ({
 
     return (
         <section id="results-list" className="product-result">
-            <div className="flex flex-col justify-between mb-4 lg:items-end lg:flex-row lg:mb-8">
-                <div
-                    className="flex flex-col justify-center"
-                    style={{ maxWidth: "750px" }}
-                >
-                    <H2Heading title={title} subtitle={subtitle} />
-                </div>
+            <div
+                className={`flex flex-col ${
+                    title ? "justify-between" : "justify-end"
+                } mb-4 lg:items-end lg:flex-row lg:mb-8`}
+            >
+                {title && (
+                    <div
+                        className="flex flex-col justify-center"
+                        style={{ maxWidth: "750px" }}
+                    >
+                        <H2Heading title={title} subtitle={subtitle} />
+                    </div>
+                )}
 
                 <Button
                     className="mt-3 lg:mt-0"
@@ -112,7 +109,7 @@ const SearchResults = ({
                 <div className="grid grid-cols-1 gap-4 lg:gap-8 sm:grid-cols-2 lg:grid-cols-4">
                     {paginatedProducts.map((product) => (
                         <a
-                            href={"/products" + "/" + product.id}
+                            href={`/products` + "/" + product.id}
                             key={product.serial_number}
                         >
                             <ProductCard {...product} />

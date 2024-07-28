@@ -3,7 +3,13 @@ import { Globe, Search } from "lucide-react";
 const Footer = () => {
     const currentYear = new Date().getFullYear();
     return (
-        <footer className="bg-[hsl(var(--primary))] text-white">
+        <footer
+            className="bg-[hsl(var(--primary))] text-white"
+            style={{
+                borderTopRightRadius: "22px",
+                borderTopLeftRadius: "22px",
+            }}
+        >
             <div className="max-w-[1440px] mx-auto pt-7 pb-3 px-3 w-full flex  items-center md:items-start flex-col gap-6 md:gap-10">
                 <div className="flex items-center justify-center md:justify-between">
                     <div className="flex flex-col items-center justify-center gap-4 md:flex-row md:gap-10">

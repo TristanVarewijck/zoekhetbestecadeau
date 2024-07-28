@@ -184,6 +184,16 @@ class ProductController extends Controller
         ]);
     }
 
+
+    public function renderProducts()
+    {
+        return Inertia::render('Products', [
+            'occasions' => $this->getOccasions(),
+            'interests' => $this->getInterests(),
+            'products' => Product::all()
+        ]);
+    }
+
     public function renderCategories()
     {
         return Inertia::render('Categories', [

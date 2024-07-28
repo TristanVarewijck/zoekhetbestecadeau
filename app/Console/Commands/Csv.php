@@ -117,8 +117,6 @@ class Csv extends Command
                 }
             }
 
-            logger($row);
-
             // Filter out products with a price lower than 5 or higher than 150
             if ($row[$config['price']] < 5 || $row[$config['price']] > 150) {
                 $this->log("Skipping product due to price: Price: {$row[$config['price']]}");

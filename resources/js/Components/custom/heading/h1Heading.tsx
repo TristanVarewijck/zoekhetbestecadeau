@@ -2,7 +2,7 @@ import { HeadingProps } from "@/types/types";
 
 const H1Heading = ({ title, subtitle, centered }: HeadingProps) => {
     return (
-        <div className="mt-8 lg:mt-10">
+        <div className="mt-14 lg:mt-16">
             <h1
                 className={`scroll-m-20 text-4xl md:text-5xl font-bold tracking-tight leading-[125%] font-display
           ${centered ? "text-center" : ""}`}

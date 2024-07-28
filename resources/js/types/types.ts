@@ -6,6 +6,21 @@ export interface HeadingProps {
     centered?: boolean;
 }
 
+export interface SearchResultProps {
+    productsArray: ProductProps[];
+    loading: boolean;
+    error: string | null;
+    title?: string;
+    subtitle?: string;
+    productsPerPage: number;
+}
+
+export interface ProductsProps {
+    occasions: Occasion[];
+    interests: Interest[];
+    products: ProductProps[];
+}
+
 export interface ProductProps {
     id: string;
     serial_number: string;

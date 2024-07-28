@@ -15,9 +15,6 @@ export default function Home({
 }: HomeProps) {
     const [query, setQuery] = useState<FilterProps>({});
 
-    console.log("query", query);
-    console.log(delivery);
-
     useEffect(() => {
         const storedOccasions = localStorage.getItem("occasions");
         if (storedOccasions) {

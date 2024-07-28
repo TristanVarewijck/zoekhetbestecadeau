@@ -3,6 +3,7 @@ import { Button } from "@/Components/ui/button";
 import { Card } from "@/Components/ui/card";
 import { ProductProps } from "@/types/types";
 import {
+    ArrowLeft,
     Blocks,
     Building2,
     ChevronDown,
@@ -22,6 +23,7 @@ import {
 } from "@/Components/ui/accordion";
 import SearchResults from "@/blocks/searchResults";
 import { Head } from "@inertiajs/react";
+import BackButton from "@/Components/custom/backButton";
 
 const Product = ({
     product,
@@ -53,7 +55,12 @@ const Product = ({
                 {/* product */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 w-full">
                     {/* image box */}
+
+                    {/* back to finder button */}
                     <div className="flex flex-col gap-2 h-full">
+                        <div>
+                            <BackButton text={"Terug"} />
+                        </div>
                         {/* tags */}
                         <div>
                             {/* product route */}
@@ -333,7 +340,6 @@ const Product = ({
                 </div>
             </div>
 
-            {/* recommends */}
             <SearchResults
                 productsArray={products}
                 loading={false}
