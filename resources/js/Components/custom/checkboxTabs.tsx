@@ -9,8 +9,11 @@ const CheckboxTabs = ({
     setData,
     localStorageKey,
     multiple,
+    variant,
 }: CheckboxTabsProps) => {
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+
+    console.log(variant);
 
     useEffect(() => {
         setSelectedOptions([]);
@@ -49,8 +52,12 @@ const CheckboxTabs = ({
     };
 
     return (
-        <div className="flex flex-col gap-4 p-4">
-            <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
+        <div className="flex flex-col gap-4 ">
+            <div
+                className={`${
+                    !variant && "grid grid-cols-2 gap-3 lg:grid-cols-3"
+                }`}
+            >
                 {checkBoxDataSet.map((data) => (
                     <div
                         className={`flex gap-1 w-auto items-center flex-col sm:flex-row-reverse justify-between px-4 py-2 shadow-sm border-2 cursor-pointer ease-in-out duration-150 rounded-lg ${

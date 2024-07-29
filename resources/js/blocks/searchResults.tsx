@@ -16,6 +16,7 @@ import { AlertCircle, ArrowLeft, ArrowRight } from "lucide-react";
 import H2Heading from "@/Components/custom/heading/h2Heading";
 import { SearchResultProps } from "@/types/types";
 import { scrollToElement } from "@/utils/scrollToElement";
+import { Input } from "@/Components/ui/input";
 
 const SearchResults = ({
     productsArray,
@@ -61,20 +62,21 @@ const SearchResults = ({
 
     return (
         <section id="results-list" className="product-result">
-            <div
-                className={`flex flex-col ${
-                    title ? "justify-between" : "justify-end"
-                } mb-4 lg:items-end lg:flex-row lg:mb-8`}
-            >
-                {title && (
-                    <div
-                        className="flex flex-col justify-center"
-                        style={{ maxWidth: "750px" }}
-                    >
-                        <H2Heading title={title} subtitle={subtitle} />
-                    </div>
-                )}
+            {title && (
+                <div style={{ maxWidth: "750px", marginBottom: "16px" }}>
+                    <H2Heading title={title} subtitle={subtitle} />
+                </div>
+            )}
 
+            <div
+                className={`flex flex-col mb-4 lg:flex-row justify-between items-end lg:mb-8 gap-6`}
+            >
+                <div className="w-full">
+                    {/* <div className="text-sm">
+                        {totalProducts} resultaten gevonden
+                    </div> */}
+                    <Input type="search" placeholder="Zoek in resultaten" />
+                </div>
                 <Button
                     className="mt-3 lg:mt-0"
                     variant="outline"
@@ -96,7 +98,7 @@ const SearchResults = ({
                 </div>
             )}
 
-            {/* show for laoding cards */}
+            {/* show for loading cards */}
             {loading && (
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     {Array.from({ length: productsPerPage }, (_, i) => (

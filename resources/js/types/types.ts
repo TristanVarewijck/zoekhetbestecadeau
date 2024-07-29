@@ -80,6 +80,7 @@ export interface CheckboxTabsProps {
     localStorageKey: string;
     setData?: Dispatch<SetStateAction<FilterProps | {}>>;
     multiple?: number;
+    variant?: "alternative";
 }
 
 export interface RangeSliderProps {
