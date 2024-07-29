@@ -23,6 +23,7 @@ return [
         'reviews' => '',
         'rating' => '',
         'size' => '',
+        'color' => '',
     ],
     'tech' => [
         'serial_number' => 'sku',
@@ -44,6 +45,7 @@ return [
         'reviews' => 'reviewscount',
         'rating' => 'reviewsaveragescore',
         'size' => '',
+        'color' => '',
     ],
     'lezen' => [
         'serial_number' => 'product ID',
@@ -65,6 +67,7 @@ return [
         'reviews' => '',
         'rating' => '',
         'size' => '',
+        'color' => '',
     ],
     'sport' => [
         'serial_number' => 'product ID',
@@ -86,5 +89,28 @@ return [
         'reviews' => '',
         'rating' => '',
         'size' => 'size',
+        'color' => '',
+    ],
+    'koken' => [
+        'serial_number' => 'product ID',
+        'name' => 'name',
+        'description' => 'description',
+        'price' => 'price',
+        'affiliate_link' => 'productURL',
+        'currency' => 'currency',
+        'brand' => 'brand',
+        'delimiter' => ';',
+
+        // Extra fields (nullable)
+        'delivery_time' => 'deliveryTime',
+        'sub_category' => 'categories',
+        'sub_sub_category' => '',
+        'stock' => 'stock',
+        'image_url' => 'imageURL',
+        'material' => '',
+        'reviews' => '',
+        'rating' => '',
+        'size' => 'size',
+        'color' => 'color',
     ]
 ];

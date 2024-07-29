@@ -150,7 +150,17 @@ const Product = ({
                                     } overflow-hidden`}
                                 >
                                     <p className="text-sm">
-                                        {product.description}
+                                        {/* this could also be a string with html tags can i remove the html tags or render both html and normal string? */}
+                                        {/* {product.description}  */}
+
+                                        {
+                                            // eslint-disable-next-line @next/next/no-html-link-for-pages
+                                            <div
+                                                dangerouslySetInnerHTML={{
+                                                    __html: product.description,
+                                                }}
+                                            ></div>
+                                        }
                                     </p>
                                     {!showDescription &&
                                         showDescriptionButton && (
@@ -303,6 +313,19 @@ const Product = ({
                                                         </span>
                                                         <span className="font-semibold">
                                                             {product.size}
+                                                        </span>
+                                                    </div>
+                                                )}
+
+                                                {product.color && (
+                                                    <div className="flex items-center gap-1">
+                                                        <span>
+                                                            <strong>
+                                                                Kleur:
+                                                            </strong>
+                                                        </span>
+                                                        <span className="font-semibold">
+                                                            {product.color}
                                                         </span>
                                                     </div>
                                                 )}

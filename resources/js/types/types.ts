@@ -42,6 +42,7 @@ export interface ProductProps {
     stock: number;
     size?: string;
     material?: string;
+    color?: string;
     reviews: number;
     rating: number;
 }

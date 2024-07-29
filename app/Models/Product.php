@@ -36,6 +36,7 @@ class Product extends Model
                 'material',
                 'reviews',
                 'rating',
-                'size'
+                'size',
+                'color'
         ];
 }

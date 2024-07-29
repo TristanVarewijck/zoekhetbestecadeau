@@ -72,6 +72,9 @@ class Csv extends Command
                 case 'wonen':
                     $processedRecords = $this->processCsv($csv, $category, 'wonen');
                     break;
+                case 'koken':
+                    $processedRecords = $this->processCsv($csv, $category, 'koken');
+                    break;
                 default:
                     $this->error('Category not found');
                     return;
@@ -150,6 +153,7 @@ class Csv extends Command
                 'delivery_time' => $row[$config['delivery_time']] ?? null,
                 'stock' => $row[$config['stock']] ?? null,
                 'category_id' => $category->id,
+                'color' => $row[$config['color']] ?? null,
             ];
 
             $product = $this->processRecord(Product::class, $productData, 'serial_number');
