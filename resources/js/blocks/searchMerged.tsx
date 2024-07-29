@@ -192,7 +192,9 @@ const SearchMerged = ({
                         title={
                             loading
                                 ? "⏳ Even geduld, we zijn de beste cadeau matches aan het ophalen..."
-                                : `Dit zijn de ${products.length} beste cadeau matches! 🎉`
+                                : `Dit zijn de ${products.length}${
+                                      products.length === 500 ? "+" : ""
+                                  } beste cadeau matches! 🎉`
                         }
                         subtitle={
                             "Blijf filteren om betere cadeau's te krijgen 🔎"
