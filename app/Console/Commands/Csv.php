@@ -112,7 +112,7 @@ class Csv extends Command
 
             // based on production mode or dev mode (ticket in jira to dynamically change this in de command)
             if (env('APP_ENV') === 'local') {
-                if ($counter >= 100) {
+                if ($counter >= 1000) {
                     break;
                 }
             }
@@ -295,6 +295,9 @@ class Csv extends Command
         $patterns = [
             '/Pre-order/' => null,
             '/De levertijd is (\d+) werkdag\(en\)/' => function ($matches) {
+                return $matches[1];
+            },
+            '/(\d+)-(\d+) werkdagen/' => function ($matches) {
                 return $matches[1];
             },
             '/Op werkdagen voor \d{2}:\d{2} besteld, morgen in huis/' => "1",

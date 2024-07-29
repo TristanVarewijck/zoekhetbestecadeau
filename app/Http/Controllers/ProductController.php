@@ -52,10 +52,15 @@ class ProductController extends Controller
             $daysDifference = $currentDate->diffInDays($deliveryDate, false);
             $roundedDaysDifference = ceil($daysDifference);
 
-            $query->where(function ($q) use ($roundedDaysDifference) {
-                $q->where('delivery', '<=', $roundedDaysDifference)
-                  ->orWhereNull('delivery');
-            });
+            if ($roundedDaysDifference <= 0) {
+                $query->where('delivery', '=', "1");
+            } else {
+                $query->where(function ($q) use ($roundedDaysDifference) {
+                    $q->where('delivery', '<=', $roundedDaysDifference)
+                      ->orWhereNull('delivery');
+                });
+            }
+
         }
 
         $products = $query->get();
