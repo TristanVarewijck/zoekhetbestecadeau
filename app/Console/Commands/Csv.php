@@ -112,7 +112,6 @@ class Csv extends Command
 
             $row = array_combine($header, $row);
 
-
             // based on production mode or dev mode (ticket in jira to dynamically change this in de command)
             if (env('APP_ENV') === 'local') {
                 if ($counter >= 1000) {
@@ -141,7 +140,7 @@ class Csv extends Command
                 'price' => $row[$config['price']],
                 'affiliate_link' => $row[$config['affiliate_link']],
                 'currency' => $row[$config['currency']],
-                'category_path' => $category->name,
+                'category_path' => ucfirst($category->name),
                 'brand_id' => $brand->id,
 
                 // nullable fields
@@ -157,7 +156,6 @@ class Csv extends Command
             ];
 
             $product = $this->processRecord(Product::class, $productData, 'serial_number');
-            $newCategoryPath = $category->name;
             $subCategoryName = $row[$config['sub_category']] ?? null;
             $subSubCategoryName = $row[$config['sub_sub_category']] ?? null;
             $deliveryTime = $row[$config['delivery_time']] ?? null;
@@ -165,24 +163,26 @@ class Csv extends Command
             $subSubCategory = null;
 
             if ($subCategoryName) {
-                $subCategory = $this->processRecord(SubCategory::class, ['name' => $row[$config['sub_category']], 'category_id' => $category->id], 'name');
+                $subCategory = $this->processRecord(SubCategory::class, ['name' => $subCategoryName, 'category_id' => $category->id], 'name');
             }
 
-            if ($subSubCategoryName) {
-                $subSubCategory = $this->processRecord(SubSubCategory::class, ['name' => $row[$config['sub_sub_category']], 'sub_category_id' => $subCategory->id], 'name');
+            // Compare lowercased names to avoid case differences
+            if ($subCategoryName && $subSubCategoryName && strtolower($subSubCategoryName) !== strtolower($subCategoryName)) {
+                $subSubCategory = $this->processRecord(SubSubCategory::class, ['name' => $subSubCategoryName, 'sub_category_id' => $subCategory->id], 'name');
             }
 
+            $newCategoryPath = ucfirst($category->name);
+
+            if ($subCategory) {
+                $newCategoryPath .= ' > ' . ucfirst($subCategory->name);
+            }
             if ($subCategory && $subSubCategory) {
-                $newCategoryPath = ucfirst($category->name) . ' > ' . ucfirst($subCategory->name) . ' > ' . ucfirst($subSubCategory->name);
-            } else if ($subCategory && !$subSubCategory) {
-                $newCategoryPath = ucfirst($category->name) . ' > ' . ucfirst($subCategory->name);
-            } else if (!$subCategory && !$subSubCategory) {
-                $newCategoryPath = ucfirst($category->name);
+                $newCategoryPath .= ' > ' . ucfirst($subSubCategory->name);
             }
 
             $product->update([
                 'sub_category_id' => $subCategory ? $subCategory->id : null,
-                'sub_sub_category_id' => $subSubCategory ? $subSubCategory->id : null,
+                'sub_sub_category_id' => ($subCategory && $subSubCategory && strtolower($subSubCategoryName) !== strtolower($subCategoryName)) ? $subSubCategory->id : null,
                 'category_path' => $newCategoryPath,
                 'delivery' => $this->mapDeliveryTimeToDays($deliveryTime),
                 'occasion_id' => null, // Will be updated later
@@ -190,7 +190,7 @@ class Csv extends Command
                 'updated_at' => now(),
             ]);
 
-            if ($subSubCategory) {
+            if ($subCategory && $subSubCategory && strtolower($subSubCategoryName) !== strtolower($subCategoryName)) {
                 $subSubCategory->update([
                     'sub_category_id' => $subCategory->id ? $subCategory->id : null,
                 ]);
