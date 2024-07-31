@@ -1,4 +1,5 @@
 import CheckboxTabs from "@/Components/custom/checkboxTabs";
+import { Datepicker } from "@/Components/custom/datepicker";
 import H1Heading from "@/Components/custom/heading/h1Heading";
 import H2Heading from "@/Components/custom/heading/h2Heading";
 import H3Heading from "@/Components/custom/heading/h3Heading";
@@ -10,39 +11,7 @@ import { Interest, Occasion, ProductProps, ProductsProps } from "@/types/types";
 import { Head } from "@inertiajs/react";
 import { ArrowRight } from "lucide-react";
 
-//   case 2:
-//             // PRIJS
-//             return (
-//                 <RangeSlider
-//                     min={5}
-//                     max={150}
-//                     localStorageKey="price"
-//                     setData={setData}
-//                 />
-//             );
-//         case 3:
-//             // INTERESSES
-//             return (
-//                 <CheckboxTabs
-//                     checkBoxDataSet={interests}
-//                     setData={setData}
-//                     localStorageKey="interests"
-//                     multiple={3}
-//                 />
-//             );
-
-//         case 4:
-//             // LEVERTIJD
-//             return (
-//                 <Datepicker setData={setData} localStorageKey="delivery" />
-//             );
-//         // RESULTATEN
-
-export default function Products({
-    products,
-    occasions,
-    interests,
-}: ProductsProps) {
+export default function Products({ products, interests }: ProductsProps) {
     return (
         <main>
             <SectionLayout bgColor="white">
@@ -68,11 +37,11 @@ export default function Products({
                 <div className="grid grid-cols-1 gap-8 lg:grid-cols-5 mt-4 lg:mt-6">
                     {/* filters */}
                     <div className="lg:col-span-1">
-                        <H2Heading title="Filters" />
-                        <div>
-                            {/* filter options */}
+                        <div
+                            className={`flex flex-col gap-4 lg:sticky lg:top-4`}
+                        >
                             <div>
-                                <H3Heading title="Interesse" />
+                                <H3Heading title="Interesses" />
                                 <div className="mt-2">
                                     <CheckboxTabs
                                         checkBoxDataSet={interests}
@@ -80,6 +49,28 @@ export default function Products({
                                         localStorageKey="interests"
                                         multiple={3}
                                         variant="alternative"
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <H3Heading title="Prijs" />
+                                <div className="mt-2">
+                                    <RangeSlider
+                                        min={5}
+                                        max={150}
+                                        localStorageKey="price"
+                                        // setData={setData}
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <H3Heading title="Levertijd" />
+                                <div className="mt-2">
+                                    <Datepicker
+                                        // setData={setData}
+                                        localStorageKey="delivery"
                                     />
                                 </div>
                             </div>

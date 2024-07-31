@@ -4,7 +4,6 @@ import getSymbolFromCurrency from "currency-symbol-map";
 import { ImageOff, Star, Truck } from "lucide-react";
 
 const ProductCard = (product: ProductProps) => {
-    console.log(product);
     return (
         <Card className="flex flex-col h-full gap-3 p-4 bg-white border shadow-none lg:border-none lg:p-0">
             <CardHeader className="p-0">

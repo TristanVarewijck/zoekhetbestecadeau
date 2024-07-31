@@ -19,7 +19,6 @@ class Product extends Model
                 'price',
                 'affiliate_link',
                 'currency',
-                'category_path',
                 'brand_id',
                 'category_id',
 

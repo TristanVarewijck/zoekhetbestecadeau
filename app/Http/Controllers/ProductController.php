@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\SubCategory;
+use App\Models\SubSubCategory;
 use App\Models\Gender;
 use App\Models\Occasion;
 use App\Models\Product;
@@ -27,6 +29,8 @@ class ProductController extends Controller
         $occasions = $request->input('occasions', []);
         $priceRange = $request->input('price', []);
         $interests = $request->input('interests', []);
+        $subCategories = $request->input('subCategories', []);
+        $subSubCategories = $request->input('subSubCategories', []);
         $delivery = $request->input('delivery', []);
 
         $query = Product::query();
@@ -44,6 +48,14 @@ class ProductController extends Controller
             $query->whereIn('category_id', $interests);
         }
 
+        if (!empty($subCategories)) {
+            $query->whereIn('sub_category_id', $subCategories);
+        }
+
+        if (!empty($subSubCategories)) {
+            $query->whereIn('sub_sub_category_id', $subSubCategories);
+        }
+
         if (!empty($delivery)) {
             $deliveryDateStr = $delivery[0];
             $deliveryDate = Carbon::createFromFormat('Y-m-d', $deliveryDateStr);
@@ -57,7 +69,7 @@ class ProductController extends Controller
             } else {
                 $query->where(function ($q) use ($roundedDaysDifference) {
                     $q->where('delivery', '<=', $roundedDaysDifference)
-                      ->orWhereNull('delivery');
+                        ->orWhereNull('delivery');
                 });
             }
 
@@ -72,15 +84,25 @@ class ProductController extends Controller
 
     public function show($product_id)
     {
-        $cacheKey = "product_show_" . $product_id;
-
         // if (Cache::has($cacheKey)) {
         //     return Cache::get($cacheKey);
         // }
 
         try {
             $product = Product::findOrFail($product_id);
+            $cacheKey = "product_show_" . $product_id;
+
+            $category_id = $product->category_id;
+            $category = Category::find($category_id);
+
+            $sub_category_id = $product->sub_category_id;
+            $subCategory = SubCategory::find($sub_category_id);
+
+            $sub_sub_category_id = $product->sub_sub_category_id;
+            $subSubCategory = SubSubCategory::find($sub_sub_category_id);
+
             $productBrand = Brand::where('id', $product->brand_id)->first();
+
             $productWithBrandName = array_merge($product->toArray(), [
                 'brand_name' => $productBrand->name
             ]);
@@ -88,8 +110,8 @@ class ProductController extends Controller
             $products = collect();
 
             // Query products with the same sub_sub_category_id
-            if ($product->sub_sub_category_id) {
-                $products = Product::where('sub_sub_category_id', $product->sub_sub_category_id)
+            if ($sub_sub_category_id) {
+                $products = Product::where('sub_sub_category_id', $sub_sub_category_id)
                     ->where('id', '!=', $product_id)
                     ->inRandomOrder()
                     ->limit(72)
@@ -97,8 +119,8 @@ class ProductController extends Controller
             }
 
             // If less than 72, fill with products from the same sub_category_id
-            if ($products->count() < 72 && $product->sub_category_id) {
-                $additionalProducts = Product::where('sub_category_id', $product->sub_category_id)
+            if ($products->count() < 72 && $sub_category_id) {
+                $additionalProducts = Product::where('sub_category_id', $sub_category_id)
                     ->where('id', '!=', $product_id)
                     ->whereNotIn('id', $products->pluck('id')->toArray())
                     ->inRandomOrder()
@@ -110,7 +132,7 @@ class ProductController extends Controller
 
             // If still less than 72, fill with products from the same category_id
             if ($products->count() < 72) {
-                $additionalProducts = Product::where('category_id', $product->category_id)
+                $additionalProducts = Product::where('category_id', $category_id)
                     ->where('id', '!=', $product_id)
                     ->whereNotIn('id', $products->pluck('id')->toArray())
                     ->inRandomOrder()
@@ -125,7 +147,12 @@ class ProductController extends Controller
             // Render the Inertia page with the product data
             return Inertia::render('Product', [
                 'product' => $productWithBrandName,
-                'products' => $products->isEmpty() ? [] : $products
+                'products' => $products->isEmpty() ? [] : $products,
+                'productCategories' => [
+                    'category' => $category,
+                    'subCategory' => $subCategory,
+                    'subSubCategory' => $subSubCategory
+                ]
             ]);
         } catch (ModelNotFoundException $e) {
             // Redirect to the fallback route for not found
@@ -192,15 +219,39 @@ class ProductController extends Controller
         ]);
     }
 
-
-    public function renderProducts()
+    public function renderProducts(Request $request)
     {
+        $category_id = $request->query('category_id');
+        $sub_category_id = $request->query('sub_category_id');
+        $sub_sub_category_id = $request->query('sub_sub_category_id');
+
+        if ($sub_sub_category_id) {
+            $products = Product::where('sub_sub_category_id', $sub_sub_category_id)
+                ->inRandomOrder()
+                ->limit(300)
+                ->get();
+        } else if ($sub_category_id) {
+            $products = Product::where('sub_category_id', $sub_category_id)
+                ->inRandomOrder()
+                ->limit(300)
+                ->get();
+        } else if ($category_id) {
+            $products = Product::where('category_id', $category_id)
+                ->inRandomOrder()
+                ->limit(300)
+                ->get();
+        } else {
+            $products = Product::inRandomOrder()
+                ->limit(300)
+                ->get();
+        }
+
         return Inertia::render('Products', [
-            'occasions' => $this->getOccasions(),
             'interests' => $this->getInterests(),
-            'products' => Product::all()
+            'products' => $products
         ]);
     }
+
 
     public function renderCategories()
     {

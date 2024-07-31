@@ -30,7 +30,6 @@ Route::get('/conditions', function () {
     return Inertia::render('Conditions');
 })->name('conditions');
 
-
 // Define the fallback route
 Route::fallback(function () {
     return Inertia::render('NotFound');

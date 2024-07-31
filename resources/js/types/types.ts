@@ -16,7 +16,6 @@ export interface SearchResultProps {
 }
 
 export interface ProductsProps {
-    occasions: Occasion[];
     interests: Interest[];
     products: ProductProps[];
 }
@@ -37,7 +36,6 @@ export interface ProductProps {
     created_at: string;
     updated_at: string;
     currency: string;
-    category_path: string;
     delivery_time?: string;
     stock: number;
     size?: string;
@@ -45,6 +43,27 @@ export interface ProductProps {
     color?: string;
     reviews: number;
     rating: number;
+}
+
+export interface ProductCategoriesProps {
+    category: {
+        id: string;
+        name: string;
+        created_at: string;
+        updated_at: string;
+    };
+    subCategory: {
+        id: string;
+        name: string;
+        created_at: string;
+        updated_at: string;
+    };
+    subSubCategory: {
+        id: string;
+        name: string;
+        created_at: string;
+        updated_at: string;
+    };
 }
 
 export interface SearchCtaProps {

@@ -30,7 +30,7 @@ class Csv extends Command
      *
      * @var bool
      */
-    protected $loggingEnabled = true; // Set to false to disable logging
+    protected $loggingEnabled = false; // Set to false to disable logging
 
     /**
      * Execute the console command.
@@ -140,7 +140,6 @@ class Csv extends Command
                 'price' => $row[$config['price']],
                 'affiliate_link' => $row[$config['affiliate_link']],
                 'currency' => $row[$config['currency']],
-                'category_path' => ucfirst($category->name),
                 'brand_id' => $brand->id,
 
                 // nullable fields
@@ -171,19 +170,10 @@ class Csv extends Command
                 $subSubCategory = $this->processRecord(SubSubCategory::class, ['name' => $subSubCategoryName, 'sub_category_id' => $subCategory->id], 'name');
             }
 
-            $newCategoryPath = ucfirst($category->name);
-
-            if ($subCategory) {
-                $newCategoryPath .= ' > ' . ucfirst($subCategory->name);
-            }
-            if ($subCategory && $subSubCategory) {
-                $newCategoryPath .= ' > ' . ucfirst($subSubCategory->name);
-            }
 
             $product->update([
                 'sub_category_id' => $subCategory ? $subCategory->id : null,
                 'sub_sub_category_id' => ($subCategory && $subSubCategory && strtolower($subSubCategoryName) !== strtolower($subCategoryName)) ? $subSubCategory->id : null,
-                'category_path' => $newCategoryPath,
                 'delivery' => $this->mapDeliveryTimeToDays($deliveryTime),
                 'occasion_id' => null, // Will be updated later
                 'created_at' => now(),

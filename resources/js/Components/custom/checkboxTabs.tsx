@@ -13,8 +13,6 @@ const CheckboxTabs = ({
 }: CheckboxTabsProps) => {
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
 
-    console.log(variant);
-
     useEffect(() => {
         setSelectedOptions([]);
         const storedQuery = localStorage.getItem(localStorageKey);
@@ -55,7 +53,9 @@ const CheckboxTabs = ({
         <div className="flex flex-col gap-4 ">
             <div
                 className={`${
-                    !variant && "grid grid-cols-2 gap-3 lg:grid-cols-3"
+                    !variant
+                        ? "grid grid-cols-2 gap-3 lg:grid-cols-3"
+                        : "flex flex-col gap-2"
                 }`}
             >
                 {checkBoxDataSet.map((data) => (
