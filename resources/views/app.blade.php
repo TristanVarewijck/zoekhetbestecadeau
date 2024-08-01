@@ -40,7 +40,6 @@
     </body>
 
     <!-- Scripts -->
-    <!-- tradetracker -->
     <script>
 
         var _TradeTrackerTagOptions = {

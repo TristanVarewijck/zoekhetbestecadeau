@@ -19,7 +19,6 @@ class Product extends Model
                 'price',
                 'affiliate_link',
                 'currency',
-                'category_path',
                 'brand_id',
                 'category_id',
 
@@ -36,6 +35,7 @@ class Product extends Model
                 'material',
                 'reviews',
                 'rating',
-                'size'
+                'size',
+                'color'
         ];
 }

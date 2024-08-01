@@ -30,7 +30,7 @@ class Csv extends Command
      *
      * @var bool
      */
-    protected $loggingEnabled = true; // Set to false to disable logging
+    protected $loggingEnabled = false; // Set to false to disable logging
 
     /**
      * Execute the console command.
@@ -72,6 +72,9 @@ class Csv extends Command
                 case 'wonen':
                     $processedRecords = $this->processCsv($csv, $category, 'wonen');
                     break;
+                case 'koken':
+                    $processedRecords = $this->processCsv($csv, $category, 'koken');
+                    break;
                 default:
                     $this->error('Category not found');
                     return;
@@ -109,15 +112,12 @@ class Csv extends Command
 
             $row = array_combine($header, $row);
 
-
             // based on production mode or dev mode (ticket in jira to dynamically change this in de command)
             if (env('APP_ENV') === 'local') {
-                if ($counter >= 100) {
+                if ($counter >= 1000) {
                     break;
                 }
             }
-
-            logger($row);
 
             // Filter out products with a price lower than 5 or higher than 150
             if ($row[$config['price']] < 5 || $row[$config['price']] > 150) {
@@ -140,7 +140,6 @@ class Csv extends Command
                 'price' => $row[$config['price']],
                 'affiliate_link' => $row[$config['affiliate_link']],
                 'currency' => $row[$config['currency']],
-                'category_path' => $category->name,
                 'brand_id' => $brand->id,
 
                 // nullable fields
@@ -152,10 +151,10 @@ class Csv extends Command
                 'delivery_time' => $row[$config['delivery_time']] ?? null,
                 'stock' => $row[$config['stock']] ?? null,
                 'category_id' => $category->id,
+                'color' => $row[$config['color']] ?? null,
             ];
 
             $product = $this->processRecord(Product::class, $productData, 'serial_number');
-            $newCategoryPath = $category->name;
             $subCategoryName = $row[$config['sub_category']] ?? null;
             $subSubCategoryName = $row[$config['sub_sub_category']] ?? null;
             $deliveryTime = $row[$config['delivery_time']] ?? null;
@@ -163,32 +162,25 @@ class Csv extends Command
             $subSubCategory = null;
 
             if ($subCategoryName) {
-                $subCategory = $this->processRecord(SubCategory::class, ['name' => $row[$config['sub_category']], 'category_id' => $category->id], 'name');
+                $subCategory = $this->processRecord(SubCategory::class, ['name' => $subCategoryName, 'category_id' => $category->id], 'name');
             }
 
-            if ($subSubCategoryName) {
-                $subSubCategory = $this->processRecord(SubSubCategory::class, ['name' => $row[$config['sub_sub_category']], 'sub_category_id' => $subCategory->id], 'name');
+            // Compare lowercased names to avoid case differences
+            if ($subCategoryName && $subSubCategoryName && strtolower($subSubCategoryName) !== strtolower($subCategoryName)) {
+                $subSubCategory = $this->processRecord(SubSubCategory::class, ['name' => $subSubCategoryName, 'sub_category_id' => $subCategory->id], 'name');
             }
 
-            if ($subCategory && $subSubCategory) {
-                $newCategoryPath = ucfirst($category->name) . ' > ' . ucfirst($subCategory->name) . ' > ' . ucfirst($subSubCategory->name);
-            } else if ($subCategory && !$subSubCategory) {
-                $newCategoryPath = ucfirst($category->name) . ' > ' . ucfirst($subCategory->name);
-            } else if (!$subCategory && !$subSubCategory) {
-                $newCategoryPath = ucfirst($category->name);
-            }
 
             $product->update([
                 'sub_category_id' => $subCategory ? $subCategory->id : null,
-                'sub_sub_category_id' => $subSubCategory ? $subSubCategory->id : null,
-                'category_path' => $newCategoryPath,
+                'sub_sub_category_id' => ($subCategory && $subSubCategory && strtolower($subSubCategoryName) !== strtolower($subCategoryName)) ? $subSubCategory->id : null,
                 'delivery' => $this->mapDeliveryTimeToDays($deliveryTime),
                 'occasion_id' => null, // Will be updated later
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
 
-            if ($subSubCategory) {
+            if ($subCategory && $subSubCategory && strtolower($subSubCategoryName) !== strtolower($subCategoryName)) {
                 $subSubCategory->update([
                     'sub_category_id' => $subCategory->id ? $subCategory->id : null,
                 ]);
@@ -295,6 +287,9 @@ class Csv extends Command
         $patterns = [
             '/Pre-order/' => null,
             '/De levertijd is (\d+) werkdag\(en\)/' => function ($matches) {
+                return $matches[1];
+            },
+            '/(\d+)-(\d+) werkdagen/' => function ($matches) {
                 return $matches[1];
             },
             '/Op werkdagen voor \d{2}:\d{2} besteld, morgen in huis/' => "1",

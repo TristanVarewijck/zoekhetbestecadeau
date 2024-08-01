@@ -1,7 +1,7 @@
 import SectionLayout from "@/Components/custom/sectionLayout";
 import { Button } from "@/Components/ui/button";
 import { Card } from "@/Components/ui/card";
-import { ProductProps } from "@/types/types";
+import { ProductCategoriesProps, ProductProps } from "@/types/types";
 import {
     Blocks,
     Building2,
@@ -22,17 +22,25 @@ import {
 } from "@/Components/ui/accordion";
 import SearchResults from "@/blocks/searchResults";
 import { Head } from "@inertiajs/react";
+import BackButton from "@/Components/custom/backButton";
 
 const Product = ({
     product,
     products,
+    productCategories,
 }: {
     product: ProductProps;
     products: ProductProps[];
+    productCategories: ProductCategoriesProps;
 }) => {
     const [showDescription, setShowDescription] = useState(false);
     const [showDescriptionButton, setShowDescriptionButton] = useState(false);
+    const [showPrice, setShowPrice] = useState(false);
     const descriptionRef = useRef<HTMLDivElement>(null);
+
+    const toUpperCase = (str: string) => {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    };
 
     useEffect(() => {
         if (descriptionRef.current) {
@@ -41,26 +49,87 @@ const Product = ({
                 setShowDescriptionButton(true);
             }
         }
+
+        // Check if the user has a referrer
+        const referrer = document.referrer;
+        const currentUrl = window.location.origin;
+
+        if (referrer && referrer.includes(currentUrl)) {
+            setShowPrice(true);
+        }
     }, [product]);
 
     return (
         <SectionLayout bgColor="white">
             <Head
-                title={`${product.name} - ${product.brand_name} kopen bij zoekhetbestecadeau.nl.
-            `}
+                title={`${product.name} - ${product.brand_name} kopen bij zoekhetbestecadeau.nl.`}
             />
             <div className="mt-8 lg:mt-10 mb-8 lg:mb-10">
                 {/* product */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 w-full">
                     {/* image box */}
+
+                    {/* back to finder button */}
                     <div className="flex flex-col gap-2 h-full">
+                        <div>
+                            <BackButton text={"Terug"} />
+                        </div>
                         {/* tags */}
                         <div>
                             {/* product route */}
-                            <p>
-                                <span className="font-bold text-xs text-[hsl(var(--primary))]">
-                                    {product.category_path}
+                            <p className="font-bold text-xs text-[hsl(var(--primary))]">
+                                <span
+                                    className="cursor-pointer"
+                                    onClick={() =>
+                                        window.location.replace(
+                                            `/products?category_id=${productCategories.category.id}`
+                                        )
+                                    }
+                                >
+                                    <span className="underline">
+                                        {toUpperCase(
+                                            productCategories.category.name
+                                        )}
+                                    </span>
                                 </span>
+
+                                {productCategories.subCategory && (
+                                    <span
+                                        className="cursor-pointer"
+                                        onClick={() =>
+                                            window.location.replace(
+                                                `/products?category_id=${productCategories.category.id}&sub_category_id=${productCategories.subCategory.id}`
+                                            )
+                                        }
+                                    >
+                                        <span>{" > "}</span>
+                                        <span className="underline">
+                                            {toUpperCase(
+                                                productCategories.subCategory
+                                                    .name
+                                            )}
+                                        </span>
+                                    </span>
+                                )}
+
+                                {productCategories.subSubCategory && (
+                                    <span
+                                        className="cursor-pointer"
+                                        onClick={() =>
+                                            window.location.replace(
+                                                `/products?category_id=${productCategories.category.id}&sub_category_id=${productCategories.subCategory.id}&sub_sub_category_id=${productCategories.subSubCategory.id}`
+                                            )
+                                        }
+                                    >
+                                        <span>{" > "}</span>
+                                        <span className="underline">
+                                            {toUpperCase(
+                                                productCategories.subSubCategory
+                                                    .name
+                                            )}
+                                        </span>
+                                    </span>
+                                )}
                             </p>
                         </div>
                         {/* image */}
@@ -143,7 +212,14 @@ const Product = ({
                                     } overflow-hidden`}
                                 >
                                     <p className="text-sm">
-                                        {product.description}
+                                        {
+                                            // eslint-disable-next-line @next/next/no-html-link-for-pages
+                                            <div
+                                                dangerouslySetInnerHTML={{
+                                                    __html: product.description,
+                                                }}
+                                            ></div>
+                                        }
                                     </p>
                                     {!showDescription &&
                                         showDescriptionButton && (
@@ -180,20 +256,23 @@ const Product = ({
                         {/* price container */}
                         <Card className="p-4 bg-gray-100 border w-ful rounded-sm flex flex-col gap-5">
                             {/* price */}
-                            <div>
-                                <p
-                                    className={`flex items-center justify-center lg:justify-start gap-2 font-bold text-4xl font-display`}
-                                >
-                                    <span>
-                                        {getSymbolFromCurrency(
-                                            product.currency
-                                        )}
-                                        {product.price},-
-                                    </span>
-                                </p>
-                            </div>
+                            {showPrice && (
+                                <div>
+                                    <p
+                                        className={`flex items-center justify-center lg:justify-start gap-2 font-bold text-4xl font-display`}
+                                    >
+                                        <span>
+                                            {getSymbolFromCurrency(
+                                                product.currency
+                                            )}
+                                            {product.price},-
+                                        </span>
+                                    </p>
+                                </div>
+                            )}
 
                             {/* affiliate link */}
+
                             <div className="flex items-center flex-col xl:flex-row gap-4">
                                 <Button
                                     asChild
@@ -204,7 +283,11 @@ const Product = ({
                                         href={product.affiliate_link}
                                         target="_blank"
                                     >
-                                        <span>Nu kopen</span>
+                                        <span>
+                                            {showPrice
+                                                ? "Nu kopen"
+                                                : "Bekijk de prijs!"}
+                                        </span>
                                     </a>
                                 </Button>
                                 <Button
@@ -300,6 +383,19 @@ const Product = ({
                                                     </div>
                                                 )}
 
+                                                {product.color && (
+                                                    <div className="flex items-center gap-1">
+                                                        <span>
+                                                            <strong>
+                                                                Kleur:
+                                                            </strong>
+                                                        </span>
+                                                        <span className="font-semibold">
+                                                            {product.color}
+                                                        </span>
+                                                    </div>
+                                                )}
+
                                                 {product.material && (
                                                     <div className="flex items-center gap-1">
                                                         <span>
@@ -333,7 +429,6 @@ const Product = ({
                 </div>
             </div>
 
-            {/* recommends */}
             <SearchResults
                 productsArray={products}
                 loading={false}

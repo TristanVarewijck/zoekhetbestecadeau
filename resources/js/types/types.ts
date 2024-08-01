@@ -6,6 +6,25 @@ export interface HeadingProps {
     centered?: boolean;
 }
 
+export interface SearchResultProps {
+    productsArray: ProductProps[];
+    loading: boolean;
+    error: string | null;
+    title?: string;
+    subtitle?: string;
+    productsPerPage: number;
+}
+
+export interface ProductsProps {
+    interests: Interest[];
+    products: ProductProps[];
+    productsCategories: {
+        category: string;
+        subCategory: string;
+        subSubCategory: string;
+    };
+}
+
 export interface ProductProps {
     id: string;
     serial_number: string;
@@ -22,13 +41,34 @@ export interface ProductProps {
     created_at: string;
     updated_at: string;
     currency: string;
-    category_path: string;
     delivery_time?: string;
     stock: number;
     size?: string;
     material?: string;
+    color?: string;
     reviews: number;
     rating: number;
+}
+
+export interface ProductCategoriesProps {
+    category: {
+        id: string;
+        name: string;
+        created_at: string;
+        updated_at: string;
+    };
+    subCategory: {
+        id: string;
+        name: string;
+        created_at: string;
+        updated_at: string;
+    };
+    subSubCategory: {
+        id: string;
+        name: string;
+        created_at: string;
+        updated_at: string;
+    };
 }
 
 export interface SearchCtaProps {
@@ -65,6 +105,8 @@ export interface CheckboxTabsProps {
     localStorageKey: string;
     setData?: Dispatch<SetStateAction<FilterProps | {}>>;
     multiple?: number;
+    variant?: "alternative";
+    defaultSelectedOptions?: string[];
 }
 
 export interface RangeSliderProps {

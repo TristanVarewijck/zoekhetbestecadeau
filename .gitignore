@@ -10,6 +10,7 @@
 /storage/imports/*
 /vendor
 .env
+/docs
 .env.backup
 .env.production
 .phpactor.json

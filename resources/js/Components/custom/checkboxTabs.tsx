@@ -8,17 +8,26 @@ const CheckboxTabs = ({
     checkBoxDataSet,
     setData,
     localStorageKey,
+    defaultSelectedOptions,
     multiple,
+    variant,
 }: CheckboxTabsProps) => {
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
 
     useEffect(() => {
         setSelectedOptions([]);
         const storedQuery = localStorage.getItem(localStorageKey);
+
+        if (variant === "alternative" && defaultSelectedOptions) {
+            setSelectedOptions(defaultSelectedOptions);
+            return;
+        }
+
         if (storedQuery) {
             setSelectedOptions(JSON.parse(storedQuery));
+            return;
         }
-    }, [localStorageKey]);
+    }, [localStorageKey, defaultSelectedOptions, variant]);
 
     const handleOptionClick = (id: string) => {
         let updatedOptions: SetStateAction<string[]>;
@@ -37,6 +46,8 @@ const CheckboxTabs = ({
             updatedOptions = selectedOptions.includes(id) ? [] : [id];
         }
 
+        console.log(updatedOptions);
+
         setSelectedOptions(updatedOptions);
         saveOptionsToLocalStorage(updatedOptions, localStorageKey);
         const occasionQuery = { [localStorageKey]: updatedOptions };
@@ -49,8 +60,14 @@ const CheckboxTabs = ({
     };
 
     return (
-        <div className="flex flex-col gap-4 p-4">
-            <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
+        <div className="flex flex-col gap-4 ">
+            <div
+                className={`${
+                    !variant
+                        ? "grid grid-cols-2 gap-3 lg:grid-cols-3"
+                        : "flex flex-col gap-2"
+                }`}
+            >
                 {checkBoxDataSet.map((data) => (
                     <div
                         className={`flex gap-1 w-auto items-center flex-col sm:flex-row-reverse justify-between px-4 py-2 shadow-sm border-2 cursor-pointer ease-in-out duration-150 rounded-lg ${
@@ -59,7 +76,10 @@ const CheckboxTabs = ({
                                 : "bg-white"
                         }`}
                         key={data.id}
-                        onClick={() => handleOptionClick(data.id.toString())}
+                        onClick={() => {
+                            console.log(data.id);
+                            handleOptionClick(data.id.toString());
+                        }}
                     >
                         <span className="text-xl">{data.icon}</span>
                         <span className="text-base font-semibold">

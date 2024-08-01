@@ -60,14 +60,11 @@ const SearchMerged = ({
 
     const newQuery = query || localStoredQuery;
 
-    console.log("newQuery", newQuery);
-
     const { products, loading, error } = useFetchFilterProducts(newQuery);
 
     const queryKeysLength = useMemo(() => {
         return Object.keys(newQuery || {}).filter(
             // @ts-ignore - fix this (weird typing issue)
-
             (key) => Array.isArray(newQuery[key]) && newQuery[key].length >= 1
         );
     }, [newQuery]);
@@ -195,7 +192,9 @@ const SearchMerged = ({
                         title={
                             loading
                                 ? "⏳ Even geduld, we zijn de beste cadeau matches aan het ophalen..."
-                                : `Dit zijn de ${products.length} beste cadeau matches! 🎉`
+                                : `Dit zijn de ${products.length}${
+                                      products.length === 500 ? "+" : ""
+                                  } beste cadeau matches! 🎉`
                         }
                         subtitle={
                             "Blijf filteren om betere cadeau's te krijgen 🔎"

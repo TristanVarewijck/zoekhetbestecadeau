@@ -10,7 +10,10 @@ require __DIR__ . '/auth.php';
 // Routes with data
 Route::get('/', [productController::class, 'renderHome'])->name('home');
 Route::get('/products/{id}', [ProductController::class, 'show'])->name('product');
+
+// both finder logic 
 Route::get('/finder', [productController::class, 'renderFinder'])->name('finder');
+Route::get('/products', [ProductController::class, 'renderProducts'])->name('products');
 Route::get('/categories', [ProductController::class, 'renderCategories'])->name('categories');
 
 // Legal routes
@@ -26,7 +29,6 @@ Route::get('/privacy-policy', function () {
 Route::get('/conditions', function () {
     return Inertia::render('Conditions');
 })->name('conditions');
-
 
 // Define the fallback route
 Route::fallback(function () {

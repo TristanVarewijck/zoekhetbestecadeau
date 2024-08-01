@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ProductCard from "@/Components/custom/productCard";
 import ProductCardLoading from "@/Components/custom/loading/productCardLoading";
 import {
@@ -14,28 +14,36 @@ import { Button } from "@/Components/ui/button";
 import { Alert, AlertTitle, AlertDescription } from "@/Components/ui/alert";
 import { AlertCircle, ArrowLeft, ArrowRight } from "lucide-react";
 import H2Heading from "@/Components/custom/heading/h2Heading";
-import { ProductProps } from "@/types/types";
+import { ProductProps, SearchResultProps } from "@/types/types";
 import { scrollToElement } from "@/utils/scrollToElement";
-
-interface SearchResultProps {
-    productsArray: ProductProps[];
-    loading: boolean;
-    error: string | null;
-    title: string;
-    subtitle?: string;
-    productsPerPage: number;
-}
+import { Input } from "@/Components/ui/input";
 
 const SearchResults = ({
-    productsArray,
+    productsArray: products,
     loading,
     error,
     title,
     subtitle,
     productsPerPage,
 }: SearchResultProps) => {
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filteredProducts, setFilteredProducts] =
+        useState<ProductProps[]>(products);
     const [currentPage, setCurrentPage] = useState(1);
     const [randomizeDisabled, setRandomizeDisabled] = useState(false);
+
+    useEffect(() => {
+        const filtered = products.filter((product) =>
+            product.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setFilteredProducts(filtered);
+        setCurrentPage(1); // Reset to first page on search term change
+    }, [searchTerm, products]);
+
+    const productsArray = useMemo(() => {
+        return searchTerm ? filteredProducts : products;
+    }, [filteredProducts, products, searchTerm]);
+
     const totalProducts = productsArray.length;
     const totalPages = Math.ceil(totalProducts / productsPerPage);
     const startIndex = (currentPage - 1) * productsPerPage;
@@ -43,12 +51,12 @@ const SearchResults = ({
     const paginatedProducts = productsArray.slice(startIndex, endIndex);
 
     const handlePrevious = () => {
-        setCurrentPage(currentPage > 1 ? currentPage - 1 : 1);
+        setCurrentPage((prev) => (prev > 1 ? prev - 1 : 1));
         scrollToElement("results-list");
     };
 
     const handleNext = () => {
-        setCurrentPage(currentPage < totalPages ? currentPage + 1 : totalPages);
+        setCurrentPage((prev) => (prev < totalPages ? prev + 1 : totalPages));
         scrollToElement("results-list");
     };
 
@@ -61,7 +69,9 @@ const SearchResults = ({
     };
 
     const handleRandomize = () => {
-        shuffleArray(productsArray);
+        const shuffled = shuffleArray([...productsArray]);
+        setFilteredProducts(shuffled);
+        setCurrentPage(1);
         setRandomizeDisabled(true);
         setTimeout(() => {
             setRandomizeDisabled(false);
@@ -70,14 +80,30 @@ const SearchResults = ({
 
     return (
         <section id="results-list" className="product-result">
-            <div className="flex flex-col justify-between mb-4 lg:items-end lg:flex-row lg:mb-8">
-                <div
-                    className="flex flex-col justify-center"
-                    style={{ maxWidth: "750px" }}
-                >
+            {title && (
+                <div style={{ maxWidth: "750px", marginBottom: "16px" }}>
                     <H2Heading title={title} subtitle={subtitle} />
                 </div>
+            )}
 
+            <div
+                className={`flex flex-col mb-4 lg:flex-row justify-between items-baseline lg:mb-8 gap-4`}
+            >
+                <div className="w-full flex flex-col gap-3">
+                    <Input
+                        type="search"
+                        placeholder="Zoek in filter resultaten"
+                        className="w-full"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+
+                    <p className="text-sm font-bold">
+                        {loading
+                            ? "Resultaten laden..."
+                            : `Resultaten: ${totalProducts}`}
+                    </p>
+                </div>
                 <Button
                     className="mt-3 lg:mt-0"
                     variant="outline"
@@ -99,7 +125,6 @@ const SearchResults = ({
                 </div>
             )}
 
-            {/* show for laoding cards */}
             {loading && (
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     {Array.from({ length: productsPerPage }, (_, i) => (
@@ -112,7 +137,7 @@ const SearchResults = ({
                 <div className="grid grid-cols-1 gap-4 lg:gap-8 sm:grid-cols-2 lg:grid-cols-4">
                     {paginatedProducts.map((product) => (
                         <a
-                            href={"/products" + "/" + product.id}
+                            href={`/products/${product.id}`}
                             key={product.serial_number}
                         >
                             <ProductCard {...product} />
@@ -126,9 +151,7 @@ const SearchResults = ({
                     <PaginationItem>
                         <div
                             className={`flex items-center gap-1 cursor-pointer max-sm:bg-[hsl(var(--primary))] max-sm:rounded-sm max-sm:px-2 max-sm:py-2`}
-                            onClick={() => {
-                                handlePrevious();
-                            }}
+                            onClick={handlePrevious}
                         >
                             <span>
                                 <ArrowLeft
@@ -166,9 +189,7 @@ const SearchResults = ({
                     <PaginationItem>
                         <div
                             className={`flex items-center gap-1 cursor-pointer max-sm:bg-[hsl(var(--primary))] max-sm:rounded-sm max-sm:px-2 max-sm:py-2`}
-                            onClick={() => {
-                                handleNext();
-                            }}
+                            onClick={handleNext}
                         >
                             <span className="hidden sm:block">Volgende</span>
                             <span>
