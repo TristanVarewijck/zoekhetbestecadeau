@@ -248,6 +248,11 @@ class ProductController extends Controller
 
         return Inertia::render('Products', [
             'interests' => $this->getInterests(),
+            'productsCategories' => [
+                'category' => $category_id,
+                'subCategory' => $sub_category_id,
+                'subSubCategory' => $sub_sub_category_id
+            ],
             'products' => $products
         ]);
     }

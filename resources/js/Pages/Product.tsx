@@ -38,6 +38,10 @@ const Product = ({
     const [showPrice, setShowPrice] = useState(false);
     const descriptionRef = useRef<HTMLDivElement>(null);
 
+    const toUpperCase = (str: string) => {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    };
+
     useEffect(() => {
         if (descriptionRef.current) {
             const descriptionHeight = descriptionRef.current.scrollHeight;
@@ -83,7 +87,9 @@ const Product = ({
                                     }
                                 >
                                     <span className="underline">
-                                        {productCategories.category.name}
+                                        {toUpperCase(
+                                            productCategories.category.name
+                                        )}
                                     </span>
                                 </span>
 
@@ -98,7 +104,10 @@ const Product = ({
                                     >
                                         <span>{" > "}</span>
                                         <span className="underline">
-                                            {productCategories.subCategory.name}
+                                            {toUpperCase(
+                                                productCategories.subCategory
+                                                    .name
+                                            )}
                                         </span>
                                     </span>
                                 )}
@@ -114,10 +123,10 @@ const Product = ({
                                     >
                                         <span>{" > "}</span>
                                         <span className="underline">
-                                            {
+                                            {toUpperCase(
                                                 productCategories.subSubCategory
                                                     .name
-                                            }
+                                            )}
                                         </span>
                                     </span>
                                 )}

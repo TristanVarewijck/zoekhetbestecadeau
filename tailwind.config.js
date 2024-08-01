@@ -9,6 +9,7 @@ export default {
         "./resources/js/**/*.tsx",
     ],
 
+    darkMode: "class",
     theme: {
         container: {
             center: true,

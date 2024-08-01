@@ -8,6 +8,7 @@ const CheckboxTabs = ({
     checkBoxDataSet,
     setData,
     localStorageKey,
+    defaultSelectedOptions,
     multiple,
     variant,
 }: CheckboxTabsProps) => {
@@ -16,10 +17,17 @@ const CheckboxTabs = ({
     useEffect(() => {
         setSelectedOptions([]);
         const storedQuery = localStorage.getItem(localStorageKey);
+
+        if (variant === "alternative" && defaultSelectedOptions) {
+            setSelectedOptions(defaultSelectedOptions);
+            return;
+        }
+
         if (storedQuery) {
             setSelectedOptions(JSON.parse(storedQuery));
+            return;
         }
-    }, [localStorageKey]);
+    }, [localStorageKey, defaultSelectedOptions, variant]);
 
     const handleOptionClick = (id: string) => {
         let updatedOptions: SetStateAction<string[]>;
@@ -37,6 +45,8 @@ const CheckboxTabs = ({
         } else {
             updatedOptions = selectedOptions.includes(id) ? [] : [id];
         }
+
+        console.log(updatedOptions);
 
         setSelectedOptions(updatedOptions);
         saveOptionsToLocalStorage(updatedOptions, localStorageKey);
@@ -66,7 +76,10 @@ const CheckboxTabs = ({
                                 : "bg-white"
                         }`}
                         key={data.id}
-                        onClick={() => handleOptionClick(data.id.toString())}
+                        onClick={() => {
+                            console.log(data.id);
+                            handleOptionClick(data.id.toString());
+                        }}
                     >
                         <span className="text-xl">{data.icon}</span>
                         <span className="text-base font-semibold">

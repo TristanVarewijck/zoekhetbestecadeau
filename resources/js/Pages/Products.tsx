@@ -1,17 +1,44 @@
 import CheckboxTabs from "@/Components/custom/checkboxTabs";
-import { Datepicker } from "@/Components/custom/datepicker";
+// import { Datepicker } from "@/Components/custom/datepicker";
 import H1Heading from "@/Components/custom/heading/h1Heading";
-import H2Heading from "@/Components/custom/heading/h2Heading";
 import H3Heading from "@/Components/custom/heading/h3Heading";
-import RangeSlider from "@/Components/custom/rangeSlider";
+// import RangeSlider from "@/Components/custom/rangeSlider";
 import SectionLayout from "@/Components/custom/sectionLayout";
-import { Button } from "@/Components/ui/button";
 import SearchResults from "@/blocks/searchResults";
-import { Interest, Occasion, ProductProps, ProductsProps } from "@/types/types";
+import { useFetchFilterProducts } from "@/hooks/useFetchFilterProducts";
+import { FilterProps, ProductsProps } from "@/types/types";
 import { Head } from "@inertiajs/react";
 import { ArrowRight } from "lucide-react";
+import { useEffect, useState } from "react";
 
-export default function Products({ products, interests }: ProductsProps) {
+export default function Products({
+    interests,
+    productsCategories,
+}: ProductsProps) {
+    const [query, setQuery] = useState<FilterProps>({});
+    const { products, loading, error } = useFetchFilterProducts(query);
+
+    useEffect(() => {
+        if (productsCategories.category) {
+            setQuery((prevState) => ({
+                ...prevState,
+                interests: [productsCategories.category],
+            }));
+
+            return;
+        }
+
+        const storedInterests = localStorage.getItem("interests");
+        if (storedInterests) {
+            setQuery((prevState) => ({
+                ...prevState,
+                interests: JSON.parse(storedInterests),
+            }));
+
+            return;
+        }
+    }, []);
+
     return (
         <main>
             <SectionLayout bgColor="white">
@@ -45,27 +72,28 @@ export default function Products({ products, interests }: ProductsProps) {
                                 <div className="mt-2">
                                     <CheckboxTabs
                                         checkBoxDataSet={interests}
-                                        // setData={setData}
+                                        setData={setQuery}
                                         localStorageKey="interests"
                                         multiple={3}
                                         variant="alternative"
+                                        defaultSelectedOptions={query.interests}
                                     />
                                 </div>
                             </div>
 
-                            <div>
+                            {/* <div>
                                 <H3Heading title="Prijs" />
                                 <div className="mt-2">
                                     <RangeSlider
                                         min={5}
                                         max={150}
                                         localStorageKey="price"
-                                        // setData={setData}
+                                        setData={setQuery}
                                     />
                                 </div>
-                            </div>
+                            </div> */}
 
-                            <div>
+                            {/* <div>
                                 <H3Heading title="Levertijd" />
                                 <div className="mt-2">
                                     <Datepicker
@@ -73,7 +101,7 @@ export default function Products({ products, interests }: ProductsProps) {
                                         localStorageKey="delivery"
                                     />
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
 
@@ -81,12 +109,8 @@ export default function Products({ products, interests }: ProductsProps) {
                     <div className="lg:col-span-4">
                         <SearchResults
                             productsArray={products}
-                            loading={false}
-                            error={
-                                products.length === 0
-                                    ? "Geen aanbevolen producten gevonden."
-                                    : ""
-                            }
+                            loading={loading}
+                            error={error}
                             productsPerPage={50}
                         />
                     </div>

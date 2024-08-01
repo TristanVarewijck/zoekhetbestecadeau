@@ -1,7 +1,7 @@
 import SectionLayout from "@/Components/custom/sectionLayout";
 import SearchMerged from "@/blocks/searchMerged";
 import { useState, useEffect } from "react";
-import { FilterProps, Gender, Interest, Occasion } from "@/types/types";
+import { FilterProps, Interest, Occasion } from "@/types/types";
 import { Head } from "@inertiajs/react";
 
 interface FinderProps {
@@ -10,18 +10,14 @@ interface FinderProps {
     delivery: string[];
 }
 
-export default function Finder({
-    occasions,
-    interests,
-    delivery,
-}: FinderProps) {
+export default function Finder({ occasions, interests }: FinderProps) {
     const [query, setQuery] = useState<FilterProps>({});
+
     // Load stored filters from local storage on page load
     useEffect(() => {
         const storedOccasions = localStorage.getItem("occasions");
         const storedInterests = localStorage.getItem("interests");
         const storedPrice = localStorage.getItem("price");
-        const storedDelivery = localStorage.getItem("delivery");
 
         if (storedOccasions) {
             setQuery((prevState) => ({
@@ -41,13 +37,6 @@ export default function Finder({
             setQuery((prevState) => ({
                 ...prevState,
                 price: JSON.parse(storedPrice),
-            }));
-        }
-
-        if (storedDelivery) {
-            setQuery((prevState) => ({
-                ...prevState,
-                delivery: JSON.parse(storedDelivery),
             }));
         }
     }, []);

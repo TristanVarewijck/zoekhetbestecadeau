@@ -18,6 +18,11 @@ export interface SearchResultProps {
 export interface ProductsProps {
     interests: Interest[];
     products: ProductProps[];
+    productsCategories: {
+        category: string;
+        subCategory: string;
+        subSubCategory: string;
+    };
 }
 
 export interface ProductProps {
@@ -101,6 +106,7 @@ export interface CheckboxTabsProps {
     setData?: Dispatch<SetStateAction<FilterProps | {}>>;
     multiple?: number;
     variant?: "alternative";
+    defaultSelectedOptions?: string[];
 }
 
 export interface RangeSliderProps {
