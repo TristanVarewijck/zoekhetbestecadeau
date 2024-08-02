@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import ProductCard from "@/Components/custom/productCard";
 import ProductCardLoading from "@/Components/custom/loading/productCardLoading";
 import {
@@ -29,6 +29,7 @@ const SearchResults = ({
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredProducts, setFilteredProducts] =
         useState<ProductProps[]>(products);
+
     const [currentPage, setCurrentPage] = useState(1);
     const [randomizeDisabled, setRandomizeDisabled] = useState(false);
 
@@ -40,15 +41,11 @@ const SearchResults = ({
         setCurrentPage(1); // Reset to first page on search term change
     }, [searchTerm, products]);
 
-    const productsArray = useMemo(() => {
-        return searchTerm ? filteredProducts : products;
-    }, [filteredProducts, products, searchTerm]);
-
-    const totalProducts = productsArray.length;
+    const totalProducts = filteredProducts.length;
     const totalPages = Math.ceil(totalProducts / productsPerPage);
     const startIndex = (currentPage - 1) * productsPerPage;
     const endIndex = startIndex + productsPerPage;
-    const paginatedProducts = productsArray.slice(startIndex, endIndex);
+    const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
 
     const handlePrevious = () => {
         setCurrentPage((prev) => (prev > 1 ? prev - 1 : 1));
@@ -65,11 +62,11 @@ const SearchResults = ({
             const j = Math.floor(Math.random() * (i + 1));
             [array[i], array[j]] = [array[j], array[i]];
         }
-        return array.slice(0, productsPerPage);
+        return array;
     };
 
     const handleRandomize = () => {
-        const shuffled = shuffleArray([...productsArray]);
+        const shuffled = shuffleArray([...filteredProducts]);
         setFilteredProducts(shuffled);
         setCurrentPage(1);
         setRandomizeDisabled(true);
@@ -92,7 +89,7 @@ const SearchResults = ({
                 <div className="w-full flex flex-col gap-3">
                     <Input
                         type="search"
-                        placeholder="Zoek in filter resultaten"
+                        placeholder="Zoek op productnaam in filterresultaten"
                         className="w-full"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
