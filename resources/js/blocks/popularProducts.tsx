@@ -8,6 +8,7 @@ interface PopularProductsProps {
 }
 
 const PopularProducts = ({ products }: PopularProductsProps) => {
+    console.log(products);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<null | string>(null);
 
@@ -28,6 +29,7 @@ const PopularProducts = ({ products }: PopularProductsProps) => {
             <SearchResults
                 productsArray={products}
                 loading={loading}
+                showResultsCount={false}
                 error={error}
                 title={
                     loading
@@ -39,7 +41,7 @@ const PopularProducts = ({ products }: PopularProductsProps) => {
                         ? "Hieronder vind je de meest populaire cadeaus van dit moment."
                         : ""
                 }
-                productsPerPage={20}
+                productsPerPage={50}
             />
         </div>
     );

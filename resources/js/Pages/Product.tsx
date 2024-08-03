@@ -33,6 +33,7 @@ const Product = ({
     products: ProductProps[];
     productCategories: ProductCategoriesProps;
 }) => {
+    console.log(product);
     const [showDescription, setShowDescription] = useState(false);
     const [showDescriptionButton, setShowDescriptionButton] = useState(false);
     const [showPrice, setShowPrice] = useState(false);
@@ -431,6 +432,7 @@ const Product = ({
 
             <SearchResults
                 productsArray={products}
+                showResultsCount={false}
                 loading={false}
                 error={
                     products.length === 0
@@ -441,7 +443,7 @@ const Product = ({
                 subtitle={
                     "Vind hier cadeaus die even leuk zijn als degene hierboven!"
                 }
-                productsPerPage={24}
+                productsPerPage={50}
             />
         </SectionLayout>
     );

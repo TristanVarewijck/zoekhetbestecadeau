@@ -6,7 +6,6 @@ use App\Models\Brand;
 use App\Models\Category;
 use App\Models\SubCategory;
 use App\Models\SubSubCategory;
-use App\Models\Gender;
 use App\Models\Occasion;
 use App\Models\Product;
 use Carbon\Carbon;
@@ -18,6 +17,47 @@ use Illuminate\Support\Facades\Cache;
 
 class ProductController extends Controller
 {
+    public function getRandomProducts()
+    {
+        // Step 1: Retrieve all categories
+        $categories = Category::all();
+        $totalCategories = $categories->count();
+
+        // Step 2: Determine the number of products per category
+        $productsPerCategory = intdiv(500, $totalCategories);
+        $remainder = 500 % $totalCategories;
+
+        $products = collect();
+
+        // Step 3: Retrieve products from each category
+        foreach ($categories as $category) {
+            $limit = $productsPerCategory + ($remainder > 0 ? 1 : 0);
+            $remainder--;
+
+            $categoryProducts = Product::where('category_id', $category->id)
+                ->inRandomOrder()
+                ->limit($limit)
+                ->get();
+
+            $products = $products->merge($categoryProducts);
+        }
+
+        // Step 4: If we have fewer than 500 products, fetch additional products
+        if ($products->count() < 500) {
+            $needed = 500 - $products->count();
+            $additionalProducts = Product::whereNotIn('id', $products->pluck('id')->toArray())
+                ->inRandomOrder()
+                ->limit($needed)
+                ->get();
+
+            $products = $products->merge($additionalProducts);
+        }
+
+        // Step 5: Shuffle the final collection of products to ensure randomness
+        $products = $products->shuffle();
+
+        return $products;
+    }
     public function query(Request $request)
     {
         // $cacheKey = "products_" . md5(json_encode($request->all()));
@@ -32,12 +72,18 @@ class ProductController extends Controller
         $subCategories = $request->input('subCategories', []);
         $subSubCategories = $request->input('subSubCategories', []);
         $delivery = $request->input('delivery', []);
+        $limit = $request->input('limit'); // Allow limit to be null
 
         $query = Product::query();
 
+        // Get the ID of the "tech" category
+        $techCategoryId = Category::where('name', 'tech')->value('id');
+
+        // Check if the interests array contains only the "tech" category
+        $isOnlyTechInterest = count($interests) === 1 && in_array($techCategoryId, $interests);
+
         if (!empty($occasions)) {
-            // $query->whereIn('occasion_id', $occasions);
-            $query->inRandomOrder()->limit(500);
+            $query->whereIn('occasion_id', $occasions);
         }
 
         if (!empty($priceRange)) {
@@ -72,7 +118,18 @@ class ProductController extends Controller
                         ->orWhereNull('delivery');
                 });
             }
+        }
 
+        // Apply order by reviewsCount if only "tech" is in the interests
+        if ($isOnlyTechInterest) {
+            $query->orderBy('reviews', 'desc');
+        } else {
+            $query->inRandomOrder();
+        }
+
+        // Apply limit if specified, otherwise fetch all matching products
+        if ($limit !== null) {
+            $query->limit($limit);
         }
 
         $products = $query->get();
@@ -81,6 +138,8 @@ class ProductController extends Controller
 
         return response()->json(['data' => $products]);
     }
+
+
 
     public function show($product_id)
     {
@@ -114,29 +173,29 @@ class ProductController extends Controller
                 $products = Product::where('sub_sub_category_id', $sub_sub_category_id)
                     ->where('id', '!=', $product_id)
                     ->inRandomOrder()
-                    ->limit(72)
+                    ->limit(500)
                     ->get();
             }
 
-            // If less than 72, fill with products from the same sub_category_id
-            if ($products->count() < 72 && $sub_category_id) {
+            // If less than 500, fill with products from the same sub_category_id
+            if ($products->count() < 500 && $sub_category_id) {
                 $additionalProducts = Product::where('sub_category_id', $sub_category_id)
                     ->where('id', '!=', $product_id)
                     ->whereNotIn('id', $products->pluck('id')->toArray())
                     ->inRandomOrder()
-                    ->limit(72 - $products->count())
+                    ->limit(500 - $products->count())
                     ->get();
 
                 $products = $products->merge($additionalProducts);
             }
 
-            // If still less than 72, fill with products from the same category_id
-            if ($products->count() < 72) {
+            // If still less than 500, fill with products from the same category_id
+            if ($products->count() < 500) {
                 $additionalProducts = Product::where('category_id', $category_id)
                     ->where('id', '!=', $product_id)
                     ->whereNotIn('id', $products->pluck('id')->toArray())
                     ->inRandomOrder()
-                    ->limit(72 - $products->count())
+                    ->limit(500 - $products->count())
                     ->get();
 
                 $products = $products->merge($additionalProducts);
@@ -165,49 +224,14 @@ class ProductController extends Controller
 
     public function renderHome()
     {
-        // Step 1: Retrieve all categories
-        $categories = Category::all();
-        $totalCategories = $categories->count();
-
-        // Step 2: Determine the number of products per category
-        $productsPerCategory = intdiv(100, $totalCategories);
-        $remainder = 100 % $totalCategories;
-
-        $products = collect();
-
-        // Step 3: Retrieve products from each category
-        foreach ($categories as $category) {
-            $limit = $productsPerCategory + ($remainder > 0 ? 1 : 0);
-            $remainder--;
-
-            $categoryProducts = Product::where('category_id', $category->id)
-                ->inRandomOrder()
-                ->limit($limit)
-                ->get();
-
-            $products = $products->merge($categoryProducts);
-        }
-
-        // Step 4: If we have fewer than 100 products, fetch additional products
-        if ($products->count() < 100) {
-            $needed = 100 - $products->count();
-            $additionalProducts = Product::whereNotIn('id', $products->pluck('id')->toArray())
-                ->inRandomOrder()
-                ->limit($needed)
-                ->get();
-
-            $products = $products->merge($additionalProducts);
-        }
-
-        // Step 5: Shuffle the final collection of products to ensure randomness
-        $products = $products->shuffle();
-
+        $products = $this->getRandomProducts();
         return Inertia::render('Home', [
             'products' => $products,
             'occasions' => $this->getOccasions(),
             'interests' => $this->getInterests(),
         ]);
     }
+
 
 
 
@@ -218,45 +242,6 @@ class ProductController extends Controller
             'interests' => $this->getInterests(),
         ]);
     }
-
-    public function renderProducts(Request $request)
-    {
-        $category_id = $request->query('category_id');
-        $sub_category_id = $request->query('sub_category_id');
-        $sub_sub_category_id = $request->query('sub_sub_category_id');
-
-        if ($sub_sub_category_id) {
-            $products = Product::where('sub_sub_category_id', $sub_sub_category_id)
-                ->inRandomOrder()
-                ->limit(300)
-                ->get();
-        } else if ($sub_category_id) {
-            $products = Product::where('sub_category_id', $sub_category_id)
-                ->inRandomOrder()
-                ->limit(300)
-                ->get();
-        } else if ($category_id) {
-            $products = Product::where('category_id', $category_id)
-                ->inRandomOrder()
-                ->limit(300)
-                ->get();
-        } else {
-            $products = Product::inRandomOrder()
-                ->limit(300)
-                ->get();
-        }
-
-        return Inertia::render('Products', [
-            'interests' => $this->getInterests(),
-            'productsCategories' => [
-                'category' => $category_id,
-                'subCategory' => $sub_category_id,
-                'subSubCategory' => $sub_sub_category_id
-            ],
-            'products' => $products
-        ]);
-    }
-
 
     public function renderCategories()
     {

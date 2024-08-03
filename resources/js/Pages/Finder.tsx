@@ -11,7 +11,12 @@ interface FinderProps {
 }
 
 export default function Finder({ occasions, interests }: FinderProps) {
-    const [query, setQuery] = useState<FilterProps>({});
+    const [query, setQuery] = useState<FilterProps>({
+        occasions: [],
+        interests: [],
+        price: [],
+        delivery: [],
+    });
 
     // Load stored filters from local storage on page load
     useEffect(() => {
