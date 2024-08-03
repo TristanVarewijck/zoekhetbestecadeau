@@ -243,6 +243,23 @@ class ProductController extends Controller
         ]);
     }
 
+    public function renderProducts(Request $request)
+    {
+        $category_id = $request->query('category_id');
+        $sub_category_id = $request->query('sub_category_id');
+        $sub_sub_category_id = $request->query('sub_sub_category_id');
+
+        return Inertia::render('Products', [
+            'interests' => $this->getInterests(),
+            'productsCategories' => [
+                'category' => $category_id,
+                'subCategory' => $sub_category_id,
+                'subSubCategory' => $sub_sub_category_id
+            ],
+        ]);
+    }
+
+
     public function renderCategories()
     {
         return Inertia::render('Categories', [

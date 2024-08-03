@@ -76,7 +76,7 @@ export default function Products({
                                 <H3Heading title="Interesses" />
                                 <div className="mt-2">
                                     <CheckboxTabs
-                                        checkBoxDataSet={interests}
+                                        checkBoxDataSet={interests || []}
                                         setData={setQuery}
                                         localStorageKey="interests"
                                         multiple={3}
