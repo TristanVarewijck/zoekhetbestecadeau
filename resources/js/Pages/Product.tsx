@@ -33,7 +33,6 @@ const Product = ({
     products: ProductProps[];
     productCategories: ProductCategoriesProps;
 }) => {
-    console.log(product);
     const [showDescription, setShowDescription] = useState(false);
     const [showDescriptionButton, setShowDescriptionButton] = useState(false);
     const [showPrice, setShowPrice] = useState(false);
