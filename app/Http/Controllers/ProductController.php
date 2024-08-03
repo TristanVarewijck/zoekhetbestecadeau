@@ -6,7 +6,6 @@ use App\Models\Brand;
 use App\Models\Category;
 use App\Models\SubCategory;
 use App\Models\SubSubCategory;
-use App\Models\Gender;
 use App\Models\Occasion;
 use App\Models\Product;
 use Carbon\Carbon;
@@ -73,12 +72,18 @@ class ProductController extends Controller
         $subCategories = $request->input('subCategories', []);
         $subSubCategories = $request->input('subSubCategories', []);
         $delivery = $request->input('delivery', []);
+        $limit = $request->input('limit'); // Allow limit to be null
 
         $query = Product::query();
 
+        // Get the ID of the "tech" category
+        $techCategoryId = Category::where('name', 'tech')->value('id');
+
+        // Check if the interests array contains only the "tech" category
+        $isOnlyTechInterest = count($interests) === 1 && in_array($techCategoryId, $interests);
+
         if (!empty($occasions)) {
-            // $query->whereIn('occasion_id', $occasions);
-            $query->inRandomOrder()->limit(500);
+            $query->whereIn('occasion_id', $occasions);
         }
 
         if (!empty($priceRange)) {
@@ -113,7 +118,18 @@ class ProductController extends Controller
                         ->orWhereNull('delivery');
                 });
             }
+        }
 
+        // Apply order by reviewsCount if only "tech" is in the interests
+        if ($isOnlyTechInterest) {
+            $query->orderBy('reviews', 'desc');
+        } else {
+            $query->inRandomOrder();
+        }
+
+        // Apply limit if specified, otherwise fetch all matching products
+        if ($limit !== null) {
+            $query->limit($limit);
         }
 
         $products = $query->get();
@@ -122,6 +138,8 @@ class ProductController extends Controller
 
         return response()->json(['data' => $products]);
     }
+
+
 
     public function show($product_id)
     {
@@ -224,45 +242,6 @@ class ProductController extends Controller
             'interests' => $this->getInterests(),
         ]);
     }
-
-    public function renderProducts(Request $request)
-    {
-        $category_id = $request->query('category_id');
-        $sub_category_id = $request->query('sub_category_id');
-        $sub_sub_category_id = $request->query('sub_sub_category_id');
-
-        if ($sub_sub_category_id) {
-            $products = Product::where('sub_sub_category_id', $sub_sub_category_id)
-                ->inRandomOrder()
-                ->limit(300)
-                ->get();
-        } else if ($sub_category_id) {
-            $products = Product::where('sub_category_id', $sub_category_id)
-                ->inRandomOrder()
-                ->limit(300)
-                ->get();
-        } else if ($category_id) {
-            $products = Product::where('category_id', $category_id)
-                ->inRandomOrder()
-                ->limit(300)
-                ->get();
-        } else {
-            $products = Product::inRandomOrder()
-                ->limit(300)
-                ->get();
-        }
-
-        return Inertia::render('Products', [
-            'interests' => $this->getInterests(),
-            'productsCategories' => [
-                'category' => $category_id,
-                'subCategory' => $sub_category_id,
-                'subSubCategory' => $sub_sub_category_id
-            ],
-            'products' => $products
-        ]);
-    }
-
 
     public function renderCategories()
     {

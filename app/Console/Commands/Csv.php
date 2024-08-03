@@ -112,12 +112,11 @@ class Csv extends Command
 
             $row = array_combine($header, $row);
 
-            // based on production mode or dev mode (ticket in jira to dynamically change this in de command)
-            if (env('APP_ENV') === 'local') {
-                if ($counter >= 1000) {
-                    break;
-                }
-            }
+            // if (env('APP_ENV') === 'local') {
+            //     if ($counter >= 1000) {
+            //         break;
+            //     }
+            // }
 
             // Filter out products with a price lower than 5 or higher than 150
             if ($row[$config['price']] < 5 || $row[$config['price']] > 150) {

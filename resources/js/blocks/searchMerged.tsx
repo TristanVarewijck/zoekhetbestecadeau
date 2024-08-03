@@ -60,9 +60,7 @@ const SearchMerged = ({
 
     const newQuery = query || localStoredQuery;
 
-    const { products, loading, error } = useFetchFilterProducts(newQuery);
-
-    console.log(products.length);
+    const { products, loading, error } = useFetchFilterProducts(newQuery, 500);
 
     const queryKeysLength = useMemo(() => {
         return Object.keys(newQuery || {}).filter(

@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { FilterProps } from "@/types/types";
 
-export const useFetchFilterProducts = (query: FilterProps) => {
-    console.log("query", query);
+export const useFetchFilterProducts = (query: FilterProps, limit?: number) => {
     const [products, setProducts] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
@@ -13,7 +12,10 @@ export const useFetchFilterProducts = (query: FilterProps) => {
             if (Object.keys(query).length > 0) {
                 setLoading(true);
                 try {
-                    const response = await axios.post("/api/query", query);
+                    const response = await axios.post("/api/query", {
+                        ...query,
+                        limit,
+                    });
                     const products = response.data.data;
                     setProducts(products);
                 } catch (error) {
@@ -26,7 +28,7 @@ export const useFetchFilterProducts = (query: FilterProps) => {
         };
 
         fetchProducts();
-    }, [query]);
+    }, [query, limit]);
 
     return { products, loading, error };
 };
