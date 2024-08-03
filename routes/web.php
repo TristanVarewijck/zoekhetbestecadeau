@@ -13,11 +13,7 @@ Route::get('/products/{id}', [ProductController::class, 'show'])->name('product'
 
 // both finder logic 
 Route::get('/finder', [productController::class, 'renderFinder'])->name('finder');
-
-Route::get('/products', function () {
-    return Inertia::render('Products');
-})->name('products');
-
+Route::get('/products', [ProductController::class, 'renderProducts'])->name('products');
 Route::get('/categories', [ProductController::class, 'renderCategories'])->name('categories');
 
 // Legal routes
