@@ -62,6 +62,8 @@ const SearchMerged = ({
 
     const { products, loading, error } = useFetchFilterProducts(newQuery);
 
+    console.log(products.length);
+
     const queryKeysLength = useMemo(() => {
         return Object.keys(newQuery || {}).filter(
             // @ts-ignore - fix this (weird typing issue)
@@ -189,6 +191,7 @@ const SearchMerged = ({
                         productsArray={products}
                         loading={loading}
                         error={error}
+                        showResultsCount={false}
                         title={
                             loading
                                 ? "⏳ Even geduld, we zijn de beste cadeau matches aan het ophalen..."
@@ -199,7 +202,7 @@ const SearchMerged = ({
                         subtitle={
                             "Blijf filteren om betere cadeau's te krijgen 🔎"
                         }
-                        productsPerPage={25}
+                        productsPerPage={50}
                     />
                 )}
             </div>

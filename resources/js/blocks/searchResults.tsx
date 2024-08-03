@@ -25,6 +25,7 @@ const SearchResults = ({
     title,
     subtitle,
     productsPerPage,
+    showResultsCount = true,
 }: SearchResultProps) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredProducts, setFilteredProducts] =
@@ -42,7 +43,7 @@ const SearchResults = ({
             setFilteredProducts(filtered);
             setCurrentPage(1); // Reset to first page on search term change
             setIsFiltering(false);
-        }, 500);
+        }, 250);
 
         return () => {
             clearTimeout(handler);
@@ -190,11 +191,14 @@ const SearchResults = ({
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
-                    <p className="text-sm font-bold">
-                        {isFiltering
-                            ? "Filteren..."
-                            : `Resultaten: ${totalProducts}`}
-                    </p>
+
+                    {showResultsCount && (
+                        <p className="text-sm font-bold">
+                            {isFiltering
+                                ? "Filteren..."
+                                : `Resultaten: ${totalProducts}`}
+                        </p>
+                    )}
                 </div>
                 <Button
                     className="mt-3 lg:mt-0"

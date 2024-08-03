@@ -15,7 +15,12 @@ export default function Products({
     interests,
     productsCategories,
 }: ProductsProps) {
-    const [query, setQuery] = useState<FilterProps>({});
+    const [query, setQuery] = useState<FilterProps>({
+        interests: [],
+        occasions: [],
+        price: [],
+        delivery: [],
+    });
     const { products, loading, error } = useFetchFilterProducts(query);
 
     useEffect(() => {

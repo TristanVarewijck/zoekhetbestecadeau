@@ -3,6 +3,7 @@ import axios from "axios";
 import { FilterProps } from "@/types/types";
 
 export const useFetchFilterProducts = (query: FilterProps) => {
+    console.log("query", query);
     const [products, setProducts] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);

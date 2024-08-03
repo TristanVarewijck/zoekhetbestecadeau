@@ -4,7 +4,12 @@ import { useEffect, useState } from "react";
 export const useLocalStorageFilters = (
     filterKeys: (keyof FilterProps)[]
 ): FilterProps => {
-    const [filters, setFilters] = useState<FilterProps>({});
+    const [filters, setFilters] = useState<FilterProps>({
+        occasions: [],
+        interests: [],
+        price: [],
+        delivery: [],
+    });
 
     useEffect(() => {
         const getFiltersFromLocalStorage = (): FilterProps => {

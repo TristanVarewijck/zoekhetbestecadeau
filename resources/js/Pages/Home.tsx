@@ -7,18 +7,23 @@ import PopularProducts from "@/blocks/popularProducts";
 import { FilterProps, HomeProps } from "@/types/types";
 import { Head } from "@inertiajs/react";
 
-export default function Home({
-    products,
-    occasions,
-    interests,
-    delivery,
-}: HomeProps) {
-    const [query, setQuery] = useState<FilterProps>({});
+export default function Home({ products, occasions, interests }: HomeProps) {
+    const [query, setQuery] = useState<FilterProps>({
+        occasions: [],
+        interests: [],
+        price: [],
+        delivery: [],
+    });
 
     useEffect(() => {
         const storedOccasions = localStorage.getItem("occasions");
         if (storedOccasions) {
-            setQuery({ occasions: JSON.parse(storedOccasions) });
+            setQuery({
+                occasions: JSON.parse(storedOccasions),
+                interests: [],
+                price: [],
+                delivery: [],
+            });
         }
     }, []);
 
