@@ -134,7 +134,7 @@ class ProductController extends Controller
 
         $products = $query->get();
 
-        // Cache::put($cacheKey, $products, now()->addDay());
+        // Cache::put($cacheKey, $products, now()->addHour());
 
         return response()->json(['data' => $products]);
     }
@@ -143,28 +143,102 @@ class ProductController extends Controller
 
     public function show($product_id)
     {
-        // if (Cache::has($cacheKey)) {
-        //     return Cache::get($cacheKey);
-        // }
+        $cacheKey = "product_show_" . $product_id;
 
-        try {
-            $product = Product::findOrFail($product_id);
-            $cacheKey = "product_show_" . $product_id;
+        if (Cache::has($cacheKey)) {
+            $cachedData = Cache::get($cacheKey);
+        } else {
+            try {
+                $product = Product::findOrFail($product_id);
 
-            $category_id = $product->category_id;
-            $category = Category::find($category_id);
+                $category_id = $product->category_id;
+                $category = Category::find($category_id);
 
-            $sub_category_id = $product->sub_category_id;
-            $subCategory = SubCategory::find($sub_category_id);
+                $sub_category_id = $product->sub_category_id;
+                $subCategory = SubCategory::find($sub_category_id);
 
-            $sub_sub_category_id = $product->sub_sub_category_id;
-            $subSubCategory = SubSubCategory::find($sub_sub_category_id);
+                $sub_sub_category_id = $product->sub_sub_category_id;
+                $subSubCategory = SubSubCategory::find($sub_sub_category_id);
 
-            $productBrand = Brand::where('id', $product->brand_id)->first();
+                $productBrand = Brand::where('id', $product->brand_id)->first();
 
-            $productWithBrandName = array_merge($product->toArray(), [
-                'brand_name' => $productBrand->name
-            ]);
+                $productWithBrandName = array_merge($product->toArray(), [
+                    'brand_name' => $productBrand->name
+                ]);
+
+                $products = collect();
+
+                // Query products with the same sub_sub_category_id
+                if ($sub_sub_category_id) {
+                    $products = Product::where('sub_sub_category_id', $sub_sub_category_id)
+                        ->where('id', '!=', $product_id)
+                        ->inRandomOrder()
+                        ->limit(72)
+                        ->get();
+                }
+
+                // If less than 72, fill with products from the same sub_category_id
+                if ($products->count() < 72 && $sub_category_id) {
+                    $additionalProducts = Product::where('sub_category_id', $sub_category_id)
+                        ->where('id', '!=', $product_id)
+                        ->whereNotIn('id', $products->pluck('id')->toArray())
+                        ->inRandomOrder()
+                        ->limit(72 - $products->count())
+                        ->get();
+
+                    $products = $products->merge($additionalProducts);
+                }
+
+                // If still less than 72, fill with products from the same category_id
+                if ($products->count() < 72) {
+                    $additionalProducts = Product::where('category_id', $category_id)
+                        ->where('id', '!=', $product_id)
+                        ->whereNotIn('id', $products->pluck('id')->toArray())
+                        ->inRandomOrder()
+                        ->limit(72 - $products->count())
+                        ->get();
+
+                    $products = $products->merge($additionalProducts);
+                }
+
+                $cachedData = [
+                    'product' => $productWithBrandName,
+                    'products' => $products->isEmpty() ? [] : $products,
+                    'productCategories' => [
+                        'category' => $category,
+                        'subCategory' => $subCategory,
+                        'subSubCategory' => $subSubCategory
+                    ]
+                ];
+
+                Cache::put($cacheKey, $cachedData, now()->addHour());
+            } catch (ModelNotFoundException $e) {
+                // Redirect to the fallback route for not found
+                return Inertia::render('NotFound');
+            } catch (QueryException $e) {
+                // Redirect to the application error page
+                return Inertia::render('applicationError');
+            }
+        }
+
+        // Render the Inertia page with the cached data or the freshly fetched data
+        return Inertia::render('Product', $cachedData);
+    }
+
+    public function renderHome()
+    {
+        $cacheKey = "home_products";
+
+        if (Cache::has($cacheKey)) {
+            $cachedData = Cache::get($cacheKey);
+        } else {
+            // Step 1: Retrieve all categories
+            $categories = Category::all();
+            $totalCategories = $categories->count();
+
+            // Step 2: Determine the number of products per category
+            $productsPerCategory = intdiv(100, $totalCategories);
+            $remainder = 100 % $totalCategories;
 
             $products = collect();
 
@@ -186,7 +260,7 @@ class ProductController extends Controller
                     ->limit(500 - $products->count())
                     ->get();
 
-                $products = $products->merge($additionalProducts);
+                $products = $products->merge($categoryProducts);
             }
 
             // If still less than 500, fill with products from the same category_id
@@ -201,39 +275,19 @@ class ProductController extends Controller
                 $products = $products->merge($additionalProducts);
             }
 
-            Cache::put($cacheKey, $productWithBrandName, now()->addDay());
+            // Step 5: Shuffle the final collection of products to ensure randomness
+            $products = $products->shuffle();
+            $cachedData = [
+                'products' => $products,
+                'occasions' => $this->getOccasions(),
+                'interests' => $this->getInterests(),
+            ];
 
-            // Render the Inertia page with the product data
-            return Inertia::render('Product', [
-                'product' => $productWithBrandName,
-                'products' => $products->isEmpty() ? [] : $products,
-                'productCategories' => [
-                    'category' => $category,
-                    'subCategory' => $subCategory,
-                    'subSubCategory' => $subSubCategory
-                ]
-            ]);
-        } catch (ModelNotFoundException $e) {
-            // Redirect to the fallback route for not found
-            return Inertia::render('NotFound');
-        } catch (QueryException $e) {
-            // Redirect to the application error page
-            return Inertia::render('applicationError');
+            Cache::put($cacheKey, $cachedData, now()->addHour());
         }
+
+        return Inertia::render('Home', $cachedData);
     }
-
-    public function renderHome()
-    {
-        $products = $this->getRandomProducts();
-        return Inertia::render('Home', [
-            'products' => $products,
-            'occasions' => $this->getOccasions(),
-            'interests' => $this->getInterests(),
-        ]);
-    }
-
-
-
 
     public function renderFinder()
     {
@@ -262,6 +316,18 @@ class ProductController extends Controller
 
     public function renderCategories()
     {
+        $cacheKey = 'categories_with_subcategories';
+
+        if (Cache::has($cacheKey)) {
+            return Cache::get($cacheKey);
+        }
+
+        $categories = $this->getCategoriesWithSubCategories();
+
+        Cache::put($cacheKey, Inertia::render('Categories', [
+            'categories' => $categories
+        ]), now()->addHour());
+
         return Inertia::render('Categories', [
             'categories' => $this->getCategoriesWithSubCategories()
         ]);
@@ -277,7 +343,7 @@ class ProductController extends Controller
 
         $occasions = Occasion::all();
 
-        Cache::put($cacheKey, $occasions, now()->addDay());
+        Cache::put($cacheKey, $occasions, now()->addHour());
 
         return $occasions;
     }
@@ -293,13 +359,19 @@ class ProductController extends Controller
         // Fetch all categories that have products
         $interests = Category::whereHas('products')->get();
 
-        Cache::put($cacheKey, $interests, now()->addDay());
+        Cache::put($cacheKey, $interests, now()->addHour());
 
         return $interests;
     }
 
     public function getCategoriesWithSubCategories(Request $request = null)
     {
+        $cacheKey = 'categories_with_subcategories';
+
+        if (Cache::has($cacheKey)) {
+            return Cache::get($cacheKey);
+        }
+
         $categories = Category::whereHas('products')->get();
 
         $categories->each(function ($category) {
@@ -307,8 +379,12 @@ class ProductController extends Controller
         });
 
         if ($request) {
-            return response()->json(['data' => $categories]);
+            $cachedData = response()->json(['data' => $categories]);
+            Cache::put($cacheKey, $cachedData, now()->addHour());
+            return $cachedData;
         }
+
+        Cache::put($cacheKey, $categories, now()->addHour());
 
         return $categories;
     }
@@ -317,35 +393,52 @@ class ProductController extends Controller
     {
         $category_id = $request->route('category_id');
         $sub_category_id = $request->route('sub_category_id');
+        $cacheKey = "products_by_category_{$category_id}_{$sub_category_id}";
+
+        if (Cache::has($cacheKey)) {
+            return Cache::get($cacheKey);
+        }
 
         if ($category_id && !$sub_category_id) {
             $products = Product::where('category_id', $category_id)
                 ->inRandomOrder()
                 ->limit(300)
                 ->get();
-
-            return response()->json(['data' => $products]);
+        } else {
+            $products = Product::where('category_id', $category_id)
+                ->where('sub_category_id', $sub_category_id)
+                ->inRandomOrder()
+                ->limit(300)
+                ->get();
         }
 
-        $products = Product::where('category_id', $category_id)
-            ->where('sub_category_id', $sub_category_id)
-            ->inRandomOrder()
-            ->limit(300)
-            ->get();
+        $cachedData = response()->json(['data' => $products]);
+        Cache::put($cacheKey, $cachedData, now()->addHour());
 
-        return response()->json($products);
+        return $cachedData;
     }
+
 
     // NEW ENDPOINTS
     public function getProductsByCategory($category_id, $sub_category_id = null)
     {
-        if ($sub_category_id) {
-            return Product::where('category_id', $category_id)
-                ->where('sub_category_id', $sub_category_id)
-                ->get();
+        $cacheKey = "products_by_category_{$category_id}_{$sub_category_id}";
+
+        if (Cache::has($cacheKey)) {
+            return Cache::get($cacheKey);
         }
 
-        return Product::where('category_id', $category_id)->get();
+        if ($sub_category_id) {
+            $products = Product::where('category_id', $category_id)
+                ->where('sub_category_id', $sub_category_id)
+                ->get();
+        } else {
+            $products = Product::where('category_id', $category_id)->get();
+        }
+
+        Cache::put($cacheKey, $products, now()->addHour());
+
+        return $products;
     }
 
     public function getProductsBySubCategory($sub_category_id)
