@@ -72,7 +72,6 @@ class ProductController extends Controller
         $subCategories = $request->input('subCategories', []);
         $subSubCategories = $request->input('subSubCategories', []);
         $delivery = $request->input('delivery', []);
-        $limit = $request->input('limit'); // Allow limit to be null
 
         $query = Product::query();
 
@@ -122,14 +121,9 @@ class ProductController extends Controller
 
         // Apply order by reviewsCount if only "tech" is in the interests
         if ($isOnlyTechInterest) {
-            $query->orderBy('reviews', 'desc');
+            $query->orderBy('reviews', 'desc')->limit(500);
         } else {
-            $query->inRandomOrder();
-        }
-
-        // Apply limit if specified, otherwise fetch all matching products
-        if ($limit !== null) {
-            $query->limit($limit);
+            $query->inRandomOrder()->limit(500);
         }
 
         $products = $query->get();
@@ -138,7 +132,6 @@ class ProductController extends Controller
 
         return response()->json(['data' => $products]);
     }
-
 
 
     public function show($product_id)
@@ -249,6 +242,27 @@ class ProductController extends Controller
         $sub_category_id = $request->query('sub_category_id');
         $sub_sub_category_id = $request->query('sub_sub_category_id');
 
+        if ($sub_sub_category_id) {
+            $products = Product::where('sub_sub_category_id', $sub_sub_category_id)
+                ->inRandomOrder()
+                ->limit(300)
+                ->get();
+        } else if ($sub_category_id) {
+            $products = Product::where('sub_category_id', $sub_category_id)
+                ->inRandomOrder()
+                ->limit(300)
+                ->get();
+        } else if ($category_id) {
+            $products = Product::where('category_id', $category_id)
+                ->inRandomOrder()
+                ->limit(300)
+                ->get();
+        } else {
+            $products = Product::inRandomOrder()
+                ->limit(300)
+                ->get();
+        }
+
         return Inertia::render('Products', [
             'interests' => $this->getInterests(),
             'productsCategories' => [
@@ -256,6 +270,7 @@ class ProductController extends Controller
                 'subCategory' => $sub_category_id,
                 'subSubCategory' => $sub_sub_category_id
             ],
+            'products' => $products
         ]);
     }
 

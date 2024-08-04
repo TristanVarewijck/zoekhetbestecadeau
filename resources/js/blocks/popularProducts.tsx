@@ -8,7 +8,6 @@ interface PopularProductsProps {
 }
 
 const PopularProducts = ({ products }: PopularProductsProps) => {
-    console.log(products);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<null | string>(null);
 
