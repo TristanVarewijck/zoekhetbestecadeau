@@ -13,6 +13,7 @@ export interface SearchResultProps {
     title?: string;
     subtitle?: string;
     productsPerPage: number;
+    showResultsCount?: boolean;
 }
 
 export interface ProductsProps {
@@ -72,7 +73,7 @@ export interface ProductCategoriesProps {
 }
 
 export interface SearchCtaProps {
-    setData?: Dispatch<SetStateAction<FilterProps | {}>>;
+    setData?: Dispatch<SetStateAction<FilterProps>>;
     setCurrentStep: Dispatch<SetStateAction<number>>;
     currentStep: number;
     showResults: boolean;
@@ -83,7 +84,7 @@ export interface SearchCtaProps {
 export interface SearchMergedProps {
     showResults: boolean;
     query?: FilterProps;
-    setQuery?: Dispatch<SetStateAction<FilterProps | {}>>;
+    setQuery?: Dispatch<SetStateAction<FilterProps>>;
     occasions: Occasion[];
     interests: Interest[];
 }
@@ -103,7 +104,7 @@ export interface HomeProps {
 export interface CheckboxTabsProps {
     checkBoxDataSet: Interest[] | Occasion[] | Gender[];
     localStorageKey: string;
-    setData?: Dispatch<SetStateAction<FilterProps | {}>>;
+    setData?: Dispatch<SetStateAction<FilterProps>>;
     multiple?: number;
     variant?: "alternative";
     defaultSelectedOptions?: string[];
@@ -112,20 +113,20 @@ export interface CheckboxTabsProps {
 export interface RangeSliderProps {
     min: number;
     max: number;
-    setData?: Dispatch<SetStateAction<FilterProps | {}>>;
+    setData?: Dispatch<SetStateAction<FilterProps>>;
     localStorageKey: string;
 }
 
 export interface DatePickerProps {
-    setData?: Dispatch<SetStateAction<FilterProps | {}>>;
+    setData?: Dispatch<SetStateAction<FilterProps>>;
     localStorageKey: string;
 }
 
 export interface FilterProps {
-    occasions?: string[];
-    interests?: string[];
-    delivery?: string[];
-    price?: number[];
+    occasions: string[];
+    interests: string[];
+    delivery: string[];
+    price: number[];
 }
 
 export interface CountdownCancelProps {

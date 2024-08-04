@@ -25,20 +25,29 @@ const SearchResults = ({
     title,
     subtitle,
     productsPerPage,
+    showResultsCount = true,
 }: SearchResultProps) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredProducts, setFilteredProducts] =
         useState<ProductProps[]>(products);
-
     const [currentPage, setCurrentPage] = useState(1);
     const [randomizeDisabled, setRandomizeDisabled] = useState(false);
+    const [isFiltering, setIsFiltering] = useState(false);
 
     useEffect(() => {
-        const filtered = products.filter((product) =>
-            product.name.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        setFilteredProducts(filtered);
-        setCurrentPage(1); // Reset to first page on search term change
+        const handler = setTimeout(() => {
+            setIsFiltering(true);
+            const filtered = products.filter((product) =>
+                product.name.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            setFilteredProducts(filtered);
+            setCurrentPage(1); // Reset to first page on search term change
+            setIsFiltering(false);
+        }, 250);
+
+        return () => {
+            clearTimeout(handler);
+        };
     }, [searchTerm, products]);
 
     const totalProducts = filteredProducts.length;
@@ -75,6 +84,94 @@ const SearchResults = ({
         }, 3000);
     };
 
+    const renderPagination = () => {
+        const pages = [];
+        const maxLength = totalPages;
+
+        if (maxLength <= 5) {
+            for (let i = 1; i <= maxLength; i++) {
+                pages.push(
+                    <PaginationItem key={i}>
+                        <PaginationLink
+                            href="#results-list"
+                            onClick={() => setCurrentPage(i)}
+                            className={i === currentPage ? "bg-gray-200" : ""}
+                        >
+                            {i}
+                        </PaginationLink>
+                    </PaginationItem>
+                );
+            }
+        } else {
+            const ellipsis = <PaginationEllipsis key="ellipsis" />;
+            const firstPage = (
+                <PaginationItem key={1}>
+                    <PaginationLink
+                        href="#results-list"
+                        onClick={() => setCurrentPage(1)}
+                        className={1 === currentPage ? "bg-gray-200" : ""}
+                    >
+                        1
+                    </PaginationLink>
+                </PaginationItem>
+            );
+            const lastPage = (
+                <PaginationItem key={maxLength}>
+                    <PaginationLink
+                        href="#results-list"
+                        onClick={() => setCurrentPage(maxLength)}
+                        className={
+                            maxLength === currentPage ? "bg-gray-200" : ""
+                        }
+                    >
+                        {maxLength}
+                    </PaginationLink>
+                </PaginationItem>
+            );
+
+            const middlePages = [];
+            let startPage = currentPage - 2;
+            let endPage = currentPage + 2;
+
+            if (startPage <= 1) {
+                startPage = 2;
+                endPage = 5;
+            } else if (endPage >= maxLength) {
+                startPage = maxLength - 4;
+                endPage = maxLength - 1;
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                middlePages.push(
+                    <PaginationItem key={i}>
+                        <PaginationLink
+                            href="#results-list"
+                            className={`
+                                ${i === currentPage ? "bg-gray-200" : ""}
+
+                            `}
+                            onClick={() => setCurrentPage(i)}
+                        >
+                            {i}
+                        </PaginationLink>
+                    </PaginationItem>
+                );
+            }
+
+            pages.push(firstPage);
+            if (startPage > 2) {
+                pages.push(ellipsis);
+            }
+            pages.push(...middlePages);
+            if (endPage < maxLength - 1) {
+                pages.push(ellipsis);
+            }
+            pages.push(lastPage);
+        }
+
+        return pages;
+    };
+
     return (
         <section id="results-list" className="product-result">
             {title && (
@@ -95,11 +192,13 @@ const SearchResults = ({
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
 
-                    <p className="text-sm font-bold">
-                        {loading
-                            ? "Resultaten laden..."
-                            : `Resultaten: ${totalProducts}`}
-                    </p>
+                    {showResultsCount && (
+                        <p className="text-sm font-bold">
+                            {isFiltering
+                                ? "Filteren..."
+                                : `Resultaten: ${totalProducts}`}
+                        </p>
+                    )}
                 </div>
                 <Button
                     className="mt-3 lg:mt-0"
@@ -122,7 +221,7 @@ const SearchResults = ({
                 </div>
             )}
 
-            {loading && (
+            {(loading || isFiltering) && (
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     {Array.from({ length: productsPerPage }, (_, i) => (
                         <ProductCardLoading key={i} />
@@ -130,7 +229,7 @@ const SearchResults = ({
                 </div>
             )}
 
-            {!loading && paginatedProducts.length > 0 && (
+            {!loading && !isFiltering && paginatedProducts.length > 0 && (
                 <div className="grid grid-cols-1 gap-4 lg:gap-8 sm:grid-cols-2 lg:grid-cols-4">
                     {paginatedProducts.map((product) => (
                         <a
@@ -143,62 +242,53 @@ const SearchResults = ({
                 </div>
             )}
 
-            <Pagination className="mt-3 lg:mt-6">
-                <PaginationContent>
-                    <PaginationItem>
-                        <div
-                            className={`flex items-center gap-1 cursor-pointer max-sm:bg-[hsl(var(--primary))] max-sm:rounded-sm max-sm:px-2 max-sm:py-2`}
-                            onClick={handlePrevious}
-                        >
-                            <span>
-                                <ArrowLeft
-                                    size={16}
-                                    className="max-sm:text-white"
-                                />
-                            </span>
-                            <span className="hidden sm:block">Vorige</span>
+            {!loading && !isFiltering && paginatedProducts.length > 0 && (
+                <Pagination className="mt-3 lg:mt-6">
+                    <PaginationContent>
+                        <PaginationItem>
+                            <div
+                                className={`flex items-center gap-1 cursor-pointer max-sm:bg-[hsl(var(--primary))] max-sm:rounded-sm max-sm:px-2 max-sm:py-2`}
+                                onClick={handlePrevious}
+                            >
+                                <span>
+                                    <ArrowLeft
+                                        size={16}
+                                        className="max-sm:text-white"
+                                    />
+                                </span>
+                                <span className="hidden sm:block">Vorige</span>
+                            </div>
+                        </PaginationItem>
+
+                        <div className="hidden sm:flex items-center gap-1">
+                            {renderPagination()}
                         </div>
-                    </PaginationItem>
 
-                    <div className="hidden sm:flex items-center gap-1">
-                        {Array.from({ length: totalPages }, (_, i) => (
-                            <PaginationItem key={i}>
-                                <PaginationLink
-                                    href="#results-list"
-                                    onClick={() => setCurrentPage(i + 1)}
-                                >
-                                    {i + 1}
-                                </PaginationLink>
-                            </PaginationItem>
-                        ))}
-                    </div>
-
-                    <div className="px-4">
-                        <span className="sm:hidden">
-                            {currentPage} / {totalPages}
-                        </span>
-                    </div>
-
-                    <div className="hidden sm:flex items-center gap-1">
-                        {totalPages > 5 && <PaginationEllipsis />}
-                    </div>
-
-                    <PaginationItem>
-                        <div
-                            className={`flex items-center gap-1 cursor-pointer max-sm:bg-[hsl(var(--primary))] max-sm:rounded-sm max-sm:px-2 max-sm:py-2`}
-                            onClick={handleNext}
-                        >
-                            <span className="hidden sm:block">Volgende</span>
-                            <span>
-                                <ArrowRight
-                                    size={16}
-                                    className="max-sm:text-white"
-                                />
+                        <div className="px-4">
+                            <span className="sm:hidden">
+                                {currentPage} / {totalPages}
                             </span>
                         </div>
-                    </PaginationItem>
-                </PaginationContent>
-            </Pagination>
+
+                        <PaginationItem>
+                            <div
+                                className={`flex items-center gap-1 cursor-pointer max-sm:bg-[hsl(var(--primary))] max-sm:rounded-sm max-sm:px-2 max-sm:py-2`}
+                                onClick={handleNext}
+                            >
+                                <span className="hidden sm:block">
+                                    Volgende
+                                </span>
+                                <span>
+                                    <ArrowRight
+                                        size={16}
+                                        className="max-sm:text-white"
+                                    />
+                                </span>
+                            </div>
+                        </PaginationItem>
+                    </PaginationContent>
+                </Pagination>
+            )}
         </section>
     );
 };

@@ -15,7 +15,12 @@ export default function Products({
     interests,
     productsCategories,
 }: ProductsProps) {
-    const [query, setQuery] = useState<FilterProps>({});
+    const [query, setQuery] = useState<FilterProps>({
+        interests: [],
+        occasions: [],
+        price: [],
+        delivery: [],
+    });
     const { products, loading, error } = useFetchFilterProducts(query);
 
     useEffect(() => {
@@ -71,7 +76,7 @@ export default function Products({
                                 <H3Heading title="Interesses" />
                                 <div className="mt-2">
                                     <CheckboxTabs
-                                        checkBoxDataSet={interests}
+                                        checkBoxDataSet={interests || []}
                                         setData={setQuery}
                                         localStorageKey="interests"
                                         multiple={3}

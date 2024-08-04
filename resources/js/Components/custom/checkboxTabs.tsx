@@ -46,8 +46,6 @@ const CheckboxTabs = ({
             updatedOptions = selectedOptions.includes(id) ? [] : [id];
         }
 
-        console.log(updatedOptions);
-
         setSelectedOptions(updatedOptions);
         saveOptionsToLocalStorage(updatedOptions, localStorageKey);
         const occasionQuery = { [localStorageKey]: updatedOptions };
@@ -77,7 +75,6 @@ const CheckboxTabs = ({
                         }`}
                         key={data.id}
                         onClick={() => {
-                            console.log(data.id);
                             handleOptionClick(data.id.toString());
                         }}
                     >
