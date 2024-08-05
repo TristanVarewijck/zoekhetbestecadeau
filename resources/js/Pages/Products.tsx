@@ -1,48 +1,55 @@
 import CheckboxTabs from "@/Components/custom/checkboxTabs";
-// import { Datepicker } from "@/Components/custom/datepicker";
 import H1Heading from "@/Components/custom/heading/h1Heading";
 import H3Heading from "@/Components/custom/heading/h3Heading";
-// import RangeSlider from "@/Components/custom/rangeSlider";
 import SectionLayout from "@/Components/custom/sectionLayout";
 import SearchResults from "@/blocks/searchResults";
-import { useFetchFilterProducts } from "@/hooks/useFetchFilterProducts";
-import { FilterProps, ProductsProps } from "@/types/types";
+import { ProductsProps } from "@/types/types";
 import { Head } from "@inertiajs/react";
 import { ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function Products({
+    products,
     interests,
     productsCategories,
 }: ProductsProps) {
-    const [query, setQuery] = useState<FilterProps>({
+    const [query, setQuery] = useState({
         interests: [],
         occasions: [],
         price: [],
         delivery: [],
     });
-    const { products, loading, error } = useFetchFilterProducts(query);
 
+    const [selectedOptions, setSelectedOptions] = useState(() => {
+        return JSON.parse(localStorage.getItem("interests") || "[]");
+    });
+
+    // Synchronize query state with selectedOptions
     useEffect(() => {
-        if (productsCategories.category) {
-            setQuery((prevState) => ({
-                ...prevState,
-                interests: [productsCategories.category],
-            }));
+        setQuery((prevQuery) => ({
+            ...prevQuery,
+            interests: selectedOptions.interests,
+        }));
+    }, [selectedOptions]);
 
-            return;
-        }
+    // Update the URL based on query.interests
+    useEffect(() => {
+        const updateURL = () => {
+            if (query.interests.length > 0) {
+                const newUrl = `/products?category_id=${query.interests.join(
+                    ","
+                )}`;
+                window.location.replace(newUrl);
+            } else {
+                window.location.replace("/products");
+            }
+        };
 
-        const storedInterests = localStorage.getItem("interests");
-        if (storedInterests) {
-            setQuery((prevState) => ({
-                ...prevState,
-                interests: JSON.parse(storedInterests),
-            }));
+        // Debounce URL updates
+        const timer = setTimeout(updateURL, 300);
 
-            return;
-        }
-    }, []);
+        return () => clearTimeout(timer);
+    }, [query.interests]);
 
     return (
         <main>
@@ -67,7 +74,6 @@ export default function Products({
                 </div>
 
                 <div className="grid grid-cols-1 gap-8 lg:grid-cols-5 mt-4 lg:mt-6">
-                    {/* filters */}
                     <div className="lg:col-span-1">
                         <div
                             className={`flex flex-col gap-4 lg:sticky lg:top-4`}
@@ -77,45 +83,26 @@ export default function Products({
                                 <div className="mt-2">
                                     <CheckboxTabs
                                         checkBoxDataSet={interests || []}
-                                        setData={setQuery}
+                                        setData={setSelectedOptions}
                                         localStorageKey="interests"
                                         multiple={3}
                                         variant="alternative"
-                                        defaultSelectedOptions={query.interests}
+                                        defaultSelectedOptions={selectedOptions}
                                     />
                                 </div>
                             </div>
-
-                            {/* <div>
-                                <H3Heading title="Prijs" />
-                                <div className="mt-2">
-                                    <RangeSlider
-                                        min={5}
-                                        max={150}
-                                        localStorageKey="price"
-                                        setData={setQuery}
-                                    />
-                                </div>
-                            </div> */}
-
-                            {/* <div>
-                                <H3Heading title="Levertijd" />
-                                <div className="mt-2">
-                                    <Datepicker
-                                        // setData={setData}
-                                        localStorageKey="delivery"
-                                    />
-                                </div>
-                            </div> */}
                         </div>
                     </div>
 
-                    {/* products section */}
                     <div className="lg:col-span-4">
                         <SearchResults
                             productsArray={products}
-                            loading={loading}
-                            error={error}
+                            loading={false}
+                            error={
+                                products.length === 0
+                                    ? "Geen resultaten gevonden"
+                                    : ""
+                            }
                             productsPerPage={50}
                         />
                     </div>

@@ -12,6 +12,7 @@ export const saveOptionsToLocalStorage = (
 ) => {
     try {
         // store selected occasions in local storage
+        console.log(selectedOptions);
         localStorage.setItem(localStorageKey, JSON.stringify(selectedOptions));
         // setData && setData((prevState) => [prevState, selectedOptions]);
         const optionsArray = [...selectedOptions, ...selectedOptions];

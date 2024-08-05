@@ -27,11 +27,10 @@ const CheckboxTabs = ({
             setSelectedOptions(JSON.parse(storedQuery));
             return;
         }
-    }, [localStorageKey, defaultSelectedOptions, variant]);
+    }, [localStorageKey, variant]);
 
     const handleOptionClick = (id: string) => {
         let updatedOptions: SetStateAction<string[]>;
-
         if (multiple && multiple > 1) {
             if (selectedOptions.includes(id)) {
                 updatedOptions = selectedOptions.filter(

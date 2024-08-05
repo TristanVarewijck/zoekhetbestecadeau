@@ -13,6 +13,8 @@ Route::get('/products/{id}', [ProductController::class, 'show'])->name('product'
 
 // both finder logic 
 Route::get('/finder', [productController::class, 'renderFinder'])->name('finder');
+// possible query string example in /products
+// ?category_id=tech&sub_category_id=9cae1b65-2dcd-492c-a34f-99791b1dc3bd&sub_sub_category_id=9cae1b65-342b-4775-8e28-03d2e6bb7d8b
 Route::get('/products', [ProductController::class, 'renderProducts'])->name('products');
 Route::get('/categories', [ProductController::class, 'renderCategories'])->name('categories');
 
