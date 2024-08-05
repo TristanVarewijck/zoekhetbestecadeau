@@ -50,7 +50,8 @@ class ProductController extends Controller
         $isOnlyTechInterest = count($interests) === 1 && in_array($techCategoryId, $interests);
 
         if (!empty($occasions)) {
-            $query->whereIn('occasion_id', $occasions);
+            // $query->whereIn('occasion_id', $occasions);
+            $query->whereNull('occasion_id');
         }
 
         if (!empty($priceRange)) {

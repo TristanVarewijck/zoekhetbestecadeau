@@ -8,6 +8,7 @@
 /storage/firebase
 /storage/firebase/firebase_credentials.json
 /storage/imports/*
+/storage/exports/*
 /vendor
 .env
 /docs
