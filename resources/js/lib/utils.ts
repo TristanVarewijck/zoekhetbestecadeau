@@ -1,6 +1,5 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { ProductProps } from "@/types/types";
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -11,10 +10,10 @@ export const saveOptionsToLocalStorage = (
     localStorageKey: string
 ) => {
     try {
-        // store selected occasions in local storage
-        localStorage.setItem(localStorageKey, JSON.stringify(selectedOptions));
+        const cleanArray = selectedOptions.filter((option) => option !== "");
+        localStorage.setItem(localStorageKey, JSON.stringify(cleanArray));
         // setData && setData((prevState) => [prevState, selectedOptions]);
-        const optionsArray = [...selectedOptions, ...selectedOptions];
+        const optionsArray = [...cleanArray];
         return optionsArray;
     } catch (error) {
         console.error(error);

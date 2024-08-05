@@ -53,6 +53,7 @@ export default function Finder({ occasions, interests }: FinderProps) {
         >
             <SectionLayout bgColor="white">
                 <Head title="Zoeken naar het perfecte cadeau" />
+
                 <SearchMerged
                     showResults={true}
                     query={query}

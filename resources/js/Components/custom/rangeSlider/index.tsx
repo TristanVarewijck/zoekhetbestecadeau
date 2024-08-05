@@ -5,12 +5,14 @@ import { saveOptionsToLocalStorage } from "@/lib/utils";
 
 const RangeSlider = ({
     min,
+    defaultMinValue,
     max,
+    defaultMaxValue,
     setData,
     localStorageKey,
 }: RangeSliderProps) => {
-    const [minVal, setMinVal] = useState(min);
-    const [maxVal, setMaxVal] = useState(max);
+    const [minVal, setMinVal] = useState(defaultMinValue ?? min);
+    const [maxVal, setMaxVal] = useState(defaultMaxValue ?? max);
     const minValRef = useRef(min);
     const maxValRef = useRef(max);
     const range = useRef(null);

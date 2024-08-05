@@ -52,7 +52,7 @@ const Navbar = () => {
                                 <span>
                                     <Gift size={18} />
                                 </span>
-                                <span>Al onze cadeaus</span>
+                                <span>Bekijk al onze cadeaus</span>
                             </a>
 
                             <a
@@ -92,7 +92,9 @@ const Navbar = () => {
 
                     <Button asChild variant={"outline"}>
                         <a href="/products" className="flex items-center gap-1">
-                            <span className="font-bold">Alle cadeaus</span>
+                            <span className="font-bold">
+                                Bekijk al onze cadeaus
+                            </span>
                             <Gift size={18} />
                         </a>
                     </Button>

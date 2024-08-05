@@ -2,7 +2,10 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { FilterProps } from "@/types/types";
 
-export const useFetchFilterProducts = (query: FilterProps, limit?: number) => {
+export const useFetchFilterProductsClient = (
+    query: FilterProps,
+    limit?: number
+) => {
     const [products, setProducts] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
