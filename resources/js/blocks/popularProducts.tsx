@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import SearchResults from "./searchResults";
 import { ProductProps } from "@/types/types";
+import { ArrowRight } from "lucide-react";
 
 interface PopularProductsProps {
     products: ProductProps[];
@@ -25,6 +26,15 @@ const PopularProducts = ({ products }: PopularProductsProps) => {
 
     return (
         <div>
+            <a
+                href="/products"
+                className="flex items-center gap-1 mt-1  text-[hsl(var(--primary))] font-bold mb-4 hover:underline"
+            >
+                <span>Alle cadeaus bekijken</span>
+                <span>
+                    <ArrowRight size={16} />
+                </span>
+            </a>
             <SearchResults
                 productsArray={products}
                 loading={loading}

@@ -5,7 +5,9 @@ import { saveOptionsToLocalStorage } from "@/lib/utils";
 
 const RangeSlider = ({
     min,
+    defaultMinValue,
     max,
+    defaultMaxValue,
     setData,
     localStorageKey,
 }: RangeSliderProps) => {

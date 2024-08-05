@@ -67,7 +67,9 @@ const SearchCta = ({
                 return (
                     <RangeSlider
                         min={5}
-                        max={150}
+                        defaultMinValue={25}
+                        defaultMaxValue={250}
+                        max={1000}
                         localStorageKey="price"
                         setData={setData}
                     />

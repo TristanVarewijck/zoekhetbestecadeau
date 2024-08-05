@@ -21,10 +21,9 @@ export default function Products({
     });
 
     const [selectedOptions, setSelectedOptions] = useState(() => {
-        return JSON.parse(localStorage.getItem("interests") || "[]");
+        return JSON.parse(localStorage.getItem("interests") as string) || [];
     });
 
-    // Synchronize query state with selectedOptions
     useEffect(() => {
         setQuery((prevQuery) => ({
             ...prevQuery,
@@ -32,13 +31,13 @@ export default function Products({
         }));
     }, [selectedOptions]);
 
-    // Update the URL based on query.interests
     useEffect(() => {
         const updateURL = () => {
             if (query.interests.length > 0) {
                 const newUrl = `/products?category_id=${query.interests.join(
                     ","
                 )}`;
+
                 window.location.replace(newUrl);
             } else {
                 window.location.replace("/products");
@@ -63,8 +62,8 @@ export default function Products({
                     />
 
                     <a
-                        href="/finder"
-                        className="flex items-center gap-1 mt-1 w-fit text-[hsl(var(--primary))] font-bold"
+                        href="/"
+                        className="flex items-center gap-1 mt-1 w-fit text-[hsl(var(--primary))] font-bold hover:underline"
                     >
                         <span>Of zoek via onze cadeauzoeker</span>
                         <span>
@@ -87,7 +86,9 @@ export default function Products({
                                         localStorageKey="interests"
                                         multiple={3}
                                         variant="alternative"
-                                        defaultSelectedOptions={selectedOptions}
+                                        defaultSelectedOptions={
+                                            productsCategories.categoryIds
+                                        }
                                     />
                                 </div>
                             </div>

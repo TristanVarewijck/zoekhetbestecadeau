@@ -1,7 +1,7 @@
 import SearchCta from "./searchCta";
 import SearchResults from "./searchResults";
 import { useEffect, useMemo, useState } from "react";
-import { useFetchFilterProducts } from "@/hooks/useFetchFilterProducts";
+import { useFetchFilterProductsClient } from "@/hooks/useFetchFilterProductsClient";
 import { useLocalStorageFilters } from "@/hooks/useLocalStorageFilters";
 import {
     Accordion,
@@ -60,7 +60,10 @@ const SearchMerged = ({
 
     const newQuery = query || localStoredQuery;
 
-    const { products, loading, error } = useFetchFilterProducts(newQuery, 500);
+    const { products, loading, error } = useFetchFilterProductsClient(
+        newQuery,
+        1000
+    );
 
     const queryKeysLength = useMemo(() => {
         return Object.keys(newQuery || {}).filter(
@@ -193,9 +196,12 @@ const SearchMerged = ({
                         title={
                             loading
                                 ? "⏳ Even geduld, we zijn de beste cadeau matches aan het ophalen..."
-                                : `Dit zijn de ${products.length}${
-                                      products.length === 500 ? "+" : ""
-                                  } beste cadeau matches! 🎉`
+                                : `Dit zijn de ${
+                                      products.length >= 1000
+                                          ? "+ 1000"
+                                          : products.length
+                                  } cadeau's die we voor je hebben gevonden! 🎉
+                                  `
                         }
                         subtitle={
                             "Blijf filteren om betere cadeau's te krijgen 🔎"

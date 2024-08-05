@@ -20,7 +20,7 @@ export interface ProductsProps {
     interests: Interest[];
     products: ProductProps[];
     productsCategories: {
-        category: string;
+        categoryIds: string[];
         subCategory: string;
         subSubCategory: string;
     };
@@ -112,7 +112,9 @@ export interface CheckboxTabsProps {
 
 export interface RangeSliderProps {
     min: number;
+    defaultMinValue: number;
     max: number;
+    defaultMaxValue: number;
     setData?: Dispatch<SetStateAction<FilterProps>>;
     localStorageKey: string;
 }
