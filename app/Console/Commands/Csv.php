@@ -8,9 +8,6 @@ use App\Models\Product;
 use App\Models\SubCategory;
 use App\Models\SubSubCategory;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Storage;
-
 
 class Csv extends Command
 {
@@ -19,7 +16,7 @@ class Csv extends Command
      *
      * @var string
      */
-    protected $signature = 'import:csv {categories*}';
+    protected $signature = 'import:csv {categories*} {--json}';
 
     /**
      * The console command description.
@@ -43,10 +40,52 @@ class Csv extends Command
         ini_set('memory_limit', '-1');
 
         $categories = $this->argument('categories');
+        $exportJson = $this->option('json');
 
         foreach ($categories as $category) {
             $this->processCategory($category);
         }
+
+        if ($exportJson) {
+            $this->exportProductsToJson();
+        }
+    }
+
+    private function exportProductsToJson()
+    {
+        $products = Product::with(['brand', 'category', 'subCategory', 'subSubCategory'])->get();
+        $productsCount = $products->count();
+
+        $productsJson = $products->map(function ($product) {
+            return [
+                'id' => $product->id,
+                'serial_number' => $product->serial_number,
+                'name' => $product->name,
+                'description' => $product->description,
+                'price' => $product->price,
+                'affiliate_link' => $product->affiliate_link,
+                'currency' => $product->currency,
+                'brand' => $product->brand->id,
+                'image_url' => $product->image_url,
+                'material' => $product->material,
+                'reviews' => $product->reviews,
+                'rating' => $product->rating,
+                'size' => $product->size,
+                'delivery_time' => $product->delivery_time,
+                'stock' => $product->stock,
+                'category' => $product->category ? $product->category->id : null,
+                'sub_category' => $product->subCategory ? $product->subCategory->id : null,
+                'sub_sub_category' => $product->subSubCategory ? $product->subSubCategory->id : null,
+                'color' => $product->color,
+            ];
+        })->toJson(JSON_PRETTY_PRINT);
+
+        // Save JSON to file
+        $filePath = storage_path('exports/products.json');
+        file_put_contents($filePath, $productsJson);
+
+        $this->info("Products have been exported to JSON");
+        $this->info("Total products: {$productsCount}");
     }
 
     public function processCategory($categoryName)
@@ -57,15 +96,6 @@ class Csv extends Command
 
         if (file_exists($filePath)) {
             $fileSize = filesize($filePath);
-            $lastModified = filemtime($filePath);
-            $cacheKey = "csv_{$categoryName}_{$lastModified}";
-
-            if (Cache::has($cacheKey)) {
-                $processedRecords = Cache::get($cacheKey);
-                $this->info("{$processedRecords} records processed for category {$categoryName} (cached)");
-                return;
-            }
-
             $this->log('File size: ' . $fileSize . ' bytes');
 
             $csv = file_get_contents($filePath);
@@ -91,8 +121,6 @@ class Csv extends Command
                     $this->error('Category not found');
                     return;
             }
-
-            Cache::put($cacheKey, $processedRecords, now()->addHour());
         } else {
             $this->error('File not found');
             return;
@@ -100,7 +128,6 @@ class Csv extends Command
 
         $this->info("{$processedRecords} records processed for category {$categoryName}");
     }
-
 
     public function processCsv($csv, $category, $configKey)
     {
@@ -128,13 +155,13 @@ class Csv extends Command
             $row = array_combine($header, $row);
 
             if (env('APP_ENV') === 'local') {
-                if ($counter >= 1000) {
-                    break;
-                }
+                // if ($counter >= 10000) {
+                //     break;
+                // }
             }
 
-            // Filter out products with a price lower than 5 or higher than 150
-            if ($row[$config['price']] < 5 || $row[$config['price']] > 150) {
+            // Filter out products with a price lower than 5 or higher than 1000
+            if ($row[$config['price']] < 5 || $row[$config['price']] > 1000) {
                 $this->log("Skipping product due to price: Price: {$row[$config['price']]}");
                 continue;
             }
