@@ -274,8 +274,6 @@ class ProductController extends Controller
         ]);
     }
 
-
-
     public function renderFinder()
     {
         return Inertia::render('Finder', [
