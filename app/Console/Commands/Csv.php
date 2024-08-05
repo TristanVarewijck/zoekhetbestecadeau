@@ -8,9 +8,6 @@ use App\Models\Product;
 use App\Models\SubCategory;
 use App\Models\SubSubCategory;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Storage;
-
 
 class Csv extends Command
 {
@@ -57,15 +54,6 @@ class Csv extends Command
 
         if (file_exists($filePath)) {
             $fileSize = filesize($filePath);
-            $lastModified = filemtime($filePath);
-            $cacheKey = "csv_{$categoryName}_{$lastModified}";
-
-            if (Cache::has($cacheKey)) {
-                $processedRecords = Cache::get($cacheKey);
-                $this->info("{$processedRecords} records processed for category {$categoryName} (cached)");
-                return;
-            }
-
             $this->log('File size: ' . $fileSize . ' bytes');
 
             $csv = file_get_contents($filePath);
@@ -91,8 +79,6 @@ class Csv extends Command
                     $this->error('Category not found');
                     return;
             }
-
-            Cache::put($cacheKey, $processedRecords, now()->addHour());
         } else {
             $this->error('File not found');
             return;
@@ -100,7 +86,6 @@ class Csv extends Command
 
         $this->info("{$processedRecords} records processed for category {$categoryName}");
     }
-
 
     public function processCsv($csv, $category, $configKey)
     {
