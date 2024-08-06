@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import SearchResults from "./searchResults";
 import { ProductProps } from "@/types/types";
 import { ArrowRight } from "lucide-react";

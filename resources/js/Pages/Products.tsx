@@ -97,6 +97,7 @@ export default function Products({
 
                     <div className="lg:col-span-4">
                         <SearchResults
+                            showResultsCount={false}
                             productsArray={products}
                             loading={false}
                             error={

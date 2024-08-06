@@ -89,9 +89,9 @@ class ProductController extends Controller
         }
 
         if ($isOnlyTechInterest) {
-            $query->orderBy('reviews', 'desc')->limit(1000);
+            $query->orderBy('reviews', 'desc')->limit(500);
         } else {
-            $query->inRandomOrder()->limit(1000);
+            $query->inRandomOrder()->limit(500);
         }
 
         $products = $query->get();
@@ -135,24 +135,24 @@ class ProductController extends Controller
                     $products = Product::where('sub_sub_category_id', $sub_sub_category_id)
                         ->where('id', '!=', $product_id)
                         ->inRandomOrder()
-                        ->limit(1000)
+                        ->limit(500)
                         ->get();
                 }
 
                 // If less than 72, fill with products from the same sub_category_id
-                if ($products->count() < 1000 && $sub_category_id) {
+                if ($products->count() < 500 && $sub_category_id) {
                     $additionalProducts = Product::where('sub_category_id', $sub_category_id)
                         ->where('id', '!=', $product_id)
                         ->whereNotIn('id', $products->pluck('id')->toArray())
                         ->inRandomOrder()
-                        ->limit(1000 - $products->count())
+                        ->limit(500 - $products->count())
                         ->get();
 
                     $products = $products->merge($additionalProducts);
                 }
 
                 // If still less than 72, fill with products from the same category_id
-                if ($products->count() < 1000) {
+                if ($products->count() < 500) {
                     $additionalProducts = Product::where('category_id', $category_id)
                         ->where('id', '!=', $product_id)
                         ->whereNotIn('id', $products->pluck('id')->toArray())
@@ -201,8 +201,8 @@ class ProductController extends Controller
             $totalCategories = $categories->count();
 
             // Step 2: Determine the number of products per category
-            $productsPerCategory = intdiv(1000, $totalCategories);
-            $remainder = 1000 % $totalCategories;
+            $productsPerCategory = intdiv(500, $totalCategories);
+            $remainder = 500 % $totalCategories;
 
             $products = collect();
 
@@ -219,9 +219,9 @@ class ProductController extends Controller
                 $products = $products->merge($categoryProducts);
             }
 
-            // Step 4: If we have fewer than 1000 products, fetch additional products
-            if ($products->count() < 1000) {
-                $needed = 1000 - $products->count();
+            // Step 4: If we have fewer than 500 products, fetch additional products
+            if ($products->count() < 500) {
+                $needed = 500 - $products->count();
                 $additionalProducts = Product::whereNotIn('id', $products->pluck('id')->toArray())
                     ->inRandomOrder()
                     ->limit($needed)
@@ -283,9 +283,9 @@ class ProductController extends Controller
 
         // Apply order by reviewsCount if only "tech" is in the interests
         if ($isOnlyTechInterest) {
-            $query->orderBy('reviews', 'desc');
+            $query->orderBy('reviews', 'desc')->limit(500);
         } else {
-            $query->inRandomOrder();
+            $query->inRandomOrder()->limit(500);
         }
 
         $products = $query->get();
@@ -298,6 +298,7 @@ class ProductController extends Controller
                 'subSubCategory' => $sub_sub_category_id
             ],
             'products' => $products
+
         ]);
     }
 
