@@ -179,7 +179,7 @@ class ProductController extends Controller
                 return Inertia::render('NotFound');
             } catch (QueryException $e) {
                 // Redirect to the application error page
-                return Inertia::render('applicationError');
+                return Inertia::render('ApplicationError');
             }
         }
 
