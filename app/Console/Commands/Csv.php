@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\SubCategory;
 use App\Models\SubSubCategory;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 
 class Csv extends Command
 {
@@ -49,6 +50,9 @@ class Csv extends Command
         if ($exportJson) {
             $this->exportProductsToJson();
         }
+
+        // clear cache after importing new data
+        Cache::flush();
     }
 
     private function exportProductsToJson()

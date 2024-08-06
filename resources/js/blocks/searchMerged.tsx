@@ -197,8 +197,8 @@ const SearchMerged = ({
                             loading
                                 ? "⏳ Even geduld, we zijn de beste cadeau matches aan het ophalen..."
                                 : `Dit zijn de ${
-                                      products.length >= 1000
-                                          ? "+ 1000"
+                                      products.length >= 500
+                                          ? "+ 500"
                                           : products.length
                                   } cadeau's die we voor je hebben gevonden! 🎉
                                   `
