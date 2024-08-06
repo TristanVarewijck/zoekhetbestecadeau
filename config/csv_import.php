@@ -112,5 +112,27 @@ return [
         'rating' => '',
         'size' => 'size',
         'color' => 'color',
+    ],
+    'sieraden' => [
+        'serial_number' => 'product ID',
+        'name' => 'name',
+        'description' => 'description',
+        'price' => 'price',
+        'affiliate_link' => 'productURL',
+        'currency' => 'currency',
+        'brand' => 'brand',
+        'delimiter' => ';',
+
+        // Extra fields (nullable)
+        'delivery_time' => '',
+        'sub_category' => 'categories',
+        'sub_sub_category' => '',
+        'stock' => '',
+        'image_url' => 'imageURL',
+        'material' => '',
+        'reviews' => '',
+        'rating' => '',
+        'size' => '',
+        'color' => '',
     ]
 ];

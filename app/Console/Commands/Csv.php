@@ -121,6 +121,9 @@ class Csv extends Command
                 case 'koken':
                     $processedRecords = $this->processCsv($csv, $category, 'koken');
                     break;
+                case 'sieraden':
+                    $processedRecords = $this->processCsv($csv, $category, 'sieraden');
+                    break;
                 default:
                     $this->error('Category not found');
                     return;
@@ -159,9 +162,9 @@ class Csv extends Command
             $row = array_combine($header, $row);
 
             if (env('APP_ENV') === 'local') {
-                // if ($counter >= 10000) {
-                //     break;
-                // }
+                if ($counter >= 1000) {
+                    break;
+                }
             }
 
             // Filter out products with a price lower than 5 or higher than 1000
