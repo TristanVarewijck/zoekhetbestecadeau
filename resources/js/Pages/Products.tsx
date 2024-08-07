@@ -20,34 +20,39 @@ export default function Products({
         delivery: [],
     });
 
-    const [selectedOptions, setSelectedOptions] = useState(() => {
+    const [selectedCategories, setSelectedCategories] = useState(() => {
         return JSON.parse(localStorage.getItem("interests") as string) || [];
     });
+    console.log(selectedCategories);
 
     useEffect(() => {
         setQuery((prevQuery) => ({
             ...prevQuery,
-            interests: selectedOptions.interests,
+            interests: selectedCategories.interests,
         }));
-    }, [selectedOptions]);
+    }, [selectedCategories]);
+
+    console.log(query);
 
     useEffect(() => {
-        const updateURL = () => {
-            if (query.interests.length > 0) {
-                const newUrl = `/products?category_id=${query.interests.join(
-                    ","
-                )}`;
+        if (query.interests) {
+            const updateURL = () => {
+                if (query.interests.length > 0) {
+                    const newUrl = `/products?category_id=${query.interests.join(
+                        ","
+                    )}`;
 
-                window.location.replace(newUrl);
-            } else {
-                window.location.replace("/products");
-            }
-        };
+                    window.location.replace(newUrl);
+                } else {
+                    window.location.replace("/products");
+                }
+            };
 
-        // Debounce URL updates
-        const timer = setTimeout(updateURL, 300);
+            // Debounce URL updates
+            const timer = setTimeout(updateURL, 300);
 
-        return () => clearTimeout(timer);
+            return () => clearTimeout(timer);
+        }
     }, [query.interests]);
 
     return (
@@ -74,15 +79,13 @@ export default function Products({
 
                 <div className="grid grid-cols-1 gap-8 lg:grid-cols-5 mt-4 lg:mt-6">
                     <div className="lg:col-span-1">
-                        <div
-                            className={`flex flex-col gap-4 lg:sticky lg:top-4`}
-                        >
+                        <div className={`flex flex-col gap-4`}>
                             <div>
                                 <H3Heading title="Interesses" />
                                 <div className="mt-2">
                                     <CheckboxTabs
                                         checkBoxDataSet={interests || []}
-                                        setData={setSelectedOptions}
+                                        setData={setSelectedCategories}
                                         localStorageKey="interests"
                                         multiple={3}
                                         variant="alternative"

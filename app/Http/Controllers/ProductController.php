@@ -290,15 +290,25 @@ class ProductController extends Controller
 
         $products = $query->get();
 
+        // Retrieve interests and their sub-categories
+        $interests = $this->getInterests();
+        logger($interests);
+        $interestsWithSubCategories = $interests->map(function ($interest) {
+            $subCategories = SubCategory::where('category_id', $interest->id)->get();
+            $interest->sub_categories = $subCategories;
+            return $interest;
+        });
+
+        logger($interestsWithSubCategories);
+
         return Inertia::render('Products', [
-            'interests' => $this->getInterests(),
+            'interests' => $interestsWithSubCategories,
             'productsCategories' => [
                 'categoryIds' => $category_ids_array,
                 'subCategory' => $sub_category_id,
                 'subSubCategory' => $sub_sub_category_id
             ],
             'products' => $products
-
         ]);
     }
 

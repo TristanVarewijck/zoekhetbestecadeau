@@ -102,9 +102,9 @@ export interface HomeProps {
 }
 
 export interface CheckboxTabsProps {
-    checkBoxDataSet: Interest[] | Occasion[] | Gender[];
+    checkBoxDataSet: Interest[] | Occasion[];
     localStorageKey: string;
-    setData?: Dispatch<SetStateAction<FilterProps>>;
+    setData: Dispatch<SetStateAction<FilterProps>>;
     multiple?: number;
     variant?: "alternative";
     defaultSelectedOptions?: string[];
@@ -171,6 +171,15 @@ export interface Occasion {
     icon: string;
     created_at: string;
     updated_at: string;
+    sub_categories?: SubCategory[];
+}
+
+export interface SubCategory {
+    id: number;
+    name: string;
+    created_at: string;
+    updated_at: string;
+    category_id: string;
 }
 
 export interface Interest {
@@ -179,6 +188,7 @@ export interface Interest {
     icon: string;
     created_at: string;
     updated_at: string;
+    sub_categories?: SubCategory[];
 }
 
 export interface Gender {
