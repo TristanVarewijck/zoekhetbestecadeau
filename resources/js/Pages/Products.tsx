@@ -14,46 +14,67 @@ export default function Products({
     productsCategories,
 }: ProductsProps) {
     const [query, setQuery] = useState({
-        interests: [],
+        interests: {},
         occasions: [],
         price: [],
         delivery: [],
     });
 
-    const [selectedCategories, setSelectedCategories] = useState(() => {
-        return JSON.parse(localStorage.getItem("interests") as string) || [];
-    });
-    console.log(selectedCategories);
+    // const [selectedCategories, setSelectedCategories] = useState(() => {
+    //     return JSON.parse(localStorage.getItem("interests") as string) || [];
+    // });
+
+    const [selectedCategories, setSelectedCategories] = useState({});
 
     useEffect(() => {
         setQuery((prevQuery) => ({
             ...prevQuery,
-            interests: selectedCategories.interests,
+            interests: selectedCategories,
         }));
     }, [selectedCategories]);
 
-    console.log(query);
+    console.log(query.interests);
 
     useEffect(() => {
-        if (query.interests) {
+        if (
+            query.interests.categoryIds &&
+            query.interests.categoryIds.length > 0
+        ) {
             const updateURL = () => {
-                if (query.interests.length > 0) {
-                    const newUrl = `/products?category_id=${query.interests.join(
-                        ","
-                    )}`;
+                let url = "/products?";
 
-                    window.location.replace(newUrl);
-                } else {
-                    window.location.replace("/products");
+                if (
+                    query.interests.categoryIds &&
+                    query.interests.categoryIds.length > 0
+                ) {
+                    url += `category_id=${query.interests.categoryIds.join(
+                        ","
+                    )}&`;
                 }
+
+                if (
+                    query.interests.subCategoryIds &&
+                    query.interests.subCategoryIds.length > 0
+                ) {
+                    for (const [key, value] of Object.entries(
+                        query.interests.subCategoryIds
+                    )) {
+                        url += `sub_category_id[${key}]=${value.join(",")}&`;
+                    }
+                }
+
+                window.location.replace(url);
             };
 
-            // Debounce URL updates
             const timer = setTimeout(updateURL, 300);
 
             return () => clearTimeout(timer);
         }
-    }, [query.interests]);
+    }, [
+        query.interests.categoryIds,
+        query.interests.subCategoryIds,
+        query.interests.subCategoryIds,
+    ]);
 
     return (
         <main>
@@ -90,6 +111,7 @@ export default function Products({
                                         multiple={3}
                                         variant="alternative"
                                         defaultSelectedOptions={
+                                            // send back from server interests+subinterests
                                             productsCategories.categoryIds
                                         }
                                     />

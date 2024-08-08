@@ -36,6 +36,7 @@ const CheckboxTabs = ({
 
     const handleOptionClick = (id: string) => {
         let updatedOptions: SetStateAction<string[]>;
+
         if (multiple && multiple > 1) {
             if (selectedOptions.includes(id)) {
                 updatedOptions = selectedOptions.filter(
@@ -62,8 +63,8 @@ const CheckboxTabs = ({
         saveOptionsToLocalStorage(updatedOptions, localStorageKey);
 
         const query = {
-            interests: updatedOptions,
-            subInterests: updatedOptions.reduce((acc, categoryId) => {
+            categoryIds: updatedOptions,
+            subCategoryIds: updatedOptions.reduce((acc, categoryId) => {
                 acc[categoryId] = selectedSubOptions[categoryId] || [];
                 return acc;
             }, {}),
@@ -90,8 +91,8 @@ const CheckboxTabs = ({
             }
 
             const query = {
-                interests: selectedOptions,
-                subInterests: {
+                categoryIds: selectedOptions,
+                subCategoryIds: {
                     ...updatedSubOptions,
                 },
             };
