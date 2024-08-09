@@ -6,15 +6,11 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const saveOptionsToLocalStorage = (
-    selectedOptions: string[],
+    selectedOptions: any,
     localStorageKey: string
 ) => {
     try {
-        const cleanArray = selectedOptions.filter((option) => option !== "");
-        localStorage.setItem(localStorageKey, JSON.stringify(cleanArray));
-        // setData && setData((prevState) => [prevState, selectedOptions]);
-        const optionsArray = [...cleanArray];
-        return optionsArray;
+        localStorage.setItem(localStorageKey, JSON.stringify(selectedOptions));
     } catch (error) {
         console.error(error);
     }

@@ -20,11 +20,11 @@ export default function Products({
         delivery: [],
     });
 
-    // const [selectedCategories, setSelectedCategories] = useState(() => {
-    //     return JSON.parse(localStorage.getItem("interests") as string) || [];
-    // });
+    const [selectedCategories, setSelectedCategories] = useState(() => {
+        return JSON.parse(localStorage.getItem("interests") as string) || [];
+    });
 
-    const [selectedCategories, setSelectedCategories] = useState({});
+    console.log(selectedCategories);
 
     useEffect(() => {
         setQuery((prevQuery) => ({
@@ -33,48 +33,43 @@ export default function Products({
         }));
     }, [selectedCategories]);
 
-    console.log(query.interests);
-
     useEffect(() => {
+        if (productsCategories.categoryIds) return;
+        const updateURL = () => {
+            let url = "/products?";
+
+            if (
+                query.interests.categoryIds &&
+                query.interests.categoryIds.length > 0
+            ) {
+                url += `category_id=${query.interests.categoryIds.join(",")}&`;
+            }
+
+            if (
+                query.interests.subCategoryIds &&
+                Object.keys(query.interests.subCategoryIds).length > 0
+            ) {
+                for (const [key, value] of Object.entries(
+                    query.interests.subCategoryIds
+                )) {
+                    url += `sub_category_id[${key}]=${value.join(",")}&`;
+                }
+            }
+
+            window.location.replace(url);
+        };
+
         if (
-            query.interests.categoryIds &&
-            query.interests.categoryIds.length > 0
+            (query.interests.categoryIds &&
+                query.interests.categoryIds.length > 0) ||
+            (query.interests.subCategoryIds &&
+                Object.keys(query.interests.subCategoryIds).length > 0)
         ) {
-            const updateURL = () => {
-                let url = "/products?";
-
-                if (
-                    query.interests.categoryIds &&
-                    query.interests.categoryIds.length > 0
-                ) {
-                    url += `category_id=${query.interests.categoryIds.join(
-                        ","
-                    )}&`;
-                }
-
-                if (
-                    query.interests.subCategoryIds &&
-                    query.interests.subCategoryIds.length > 0
-                ) {
-                    for (const [key, value] of Object.entries(
-                        query.interests.subCategoryIds
-                    )) {
-                        url += `sub_category_id[${key}]=${value.join(",")}&`;
-                    }
-                }
-
-                window.location.replace(url);
-            };
-
             const timer = setTimeout(updateURL, 300);
 
             return () => clearTimeout(timer);
         }
-    }, [
-        query.interests.categoryIds,
-        query.interests.subCategoryIds,
-        query.interests.subCategoryIds,
-    ]);
+    }, [query.interests.categoryIds, query.interests.subCategoryIds]);
 
     return (
         <main>
@@ -111,8 +106,7 @@ export default function Products({
                                         multiple={3}
                                         variant="alternative"
                                         defaultSelectedOptions={
-                                            // send back from server interests+subinterests
-                                            productsCategories.categoryIds
+                                            selectedCategories
                                         }
                                     />
                                 </div>

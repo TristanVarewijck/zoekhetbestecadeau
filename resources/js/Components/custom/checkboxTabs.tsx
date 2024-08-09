@@ -23,13 +23,15 @@ const CheckboxTabs = ({
         const storedQuery = localStorage.getItem(localStorageKey);
 
         if (variant === "alternative" && defaultSelectedOptions) {
-            setSelectedOptions(defaultSelectedOptions);
+            setSelectedOptions(defaultSelectedOptions.categoryIds);
+            setSelectedSubOptions(defaultSelectedOptions.subCategoryIds);
             return;
         }
 
         if (storedQuery) {
             const parsedQuery = JSON.parse(storedQuery);
-            setSelectedOptions(parsedQuery);
+            setSelectedOptions(parsedQuery.categoryIds);
+            setSelectedSubOptions(parsedQuery.subCategoryIds);
             return;
         }
     }, [localStorageKey, variant]);
@@ -42,6 +44,7 @@ const CheckboxTabs = ({
                 updatedOptions = selectedOptions.filter(
                     (option) => option !== id
                 );
+
                 // Clear sub-category selections if the parent category is deselected
                 setSelectedSubOptions((prevState) => {
                     const newState = { ...prevState };
@@ -60,7 +63,6 @@ const CheckboxTabs = ({
         }
 
         setSelectedOptions(updatedOptions);
-        saveOptionsToLocalStorage(updatedOptions, localStorageKey);
 
         const query = {
             categoryIds: updatedOptions,
@@ -75,6 +77,8 @@ const CheckboxTabs = ({
                 ...prevState,
                 ...query,
             }));
+
+        saveOptionsToLocalStorage(query, localStorageKey);
     };
 
     const handleSubOptionClick = (parentId: string, subId: string) => {
@@ -103,6 +107,7 @@ const CheckboxTabs = ({
                     ...query,
                 }));
 
+            saveOptionsToLocalStorage(query, localStorageKey);
             return updatedSubOptions;
         });
     };
